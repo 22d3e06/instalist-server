@@ -1,0 +1,39 @@
+pubsub:
+
+rpc:
+    addList:
+        parameters: [uuid, name, category]
+        returns: {code:int, badparams:list}
+        description: |
+            Creates or updates a list.
+            code: HTTP-Codes. Can especially be 409, when name or uuid is already used. Always set.
+            badparams: A list of strings, containing the names of bad parameters.
+    updateList:
+        parameters: [uuid, name, category]
+        returns: {code:int, badparams:list}
+        description: |
+            Updates a list.
+            code: HTTP-Codes. Can especially be 409, when name already used. Always set.
+            badparams: A list of strings, containing the names of bad parameters.
+    deleteList:
+        parameters: [uuid]
+        returns: {code:int}
+        description: |
+            Deletes one list.
+            code: See HTTP-return-codes. Always set.
+    getList:
+        parameters: [uuid]
+        returns: {code:int, uuid:string, name:string, category:string}
+        description: |
+            Returns one list.
+            code: See HTTP-return-codes. Always set.
+            category: Either null (no category) or uuid of category.
+    getListUuids:
+        parameters: []
+        returns: {code:int, lists:list}
+        description: |
+            Returns all accessible lists.
+            code: See HTTP-return-codes. Always set.
+            lists: Lists of strings containing list-uuids.
+    
+    
