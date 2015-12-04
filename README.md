@@ -1,4 +1,3 @@
- 
 # Einkaufsliste Server
 
 ## Setup
@@ -39,7 +38,14 @@
                 router:
                     resources:
                         - @InstalistBundle/Resources/config/pubsub/routing.yml
-                    
-5. Starten des WebSocket-Servers:
+
+5. Verlinken der Resourcen:
+
+        php app/console assets:install web --symlink
+
+6. Starten des WebSocket-Servers:
 
         php app/console gos:websocket:server
+
+## Tests
+Sind ebenfalls verfügbar. Nach der Installation des Bundles einfach `/bundles/instalist/tests/test.html` im Browser aufrufen (der Websocket-Server muss dafür natürlich laufen.
