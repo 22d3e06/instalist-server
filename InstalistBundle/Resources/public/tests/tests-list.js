@@ -39,7 +39,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_tagged_product", {uuid}).then(function (result) { 
+        session.call("instalist/get_tagged_product", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getTaggedProduct");
             console.log(result);
             done();
@@ -55,7 +55,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_tagged_product_uuids_by_tag", {tag}).then(function (result) { 
+        session.call("instalist/get_tagged_product_uuids_by_tag", {"tag":"TODO"}).then(function (result) { 
             console.log("result getTaggedProductUuidsByTag");
             console.log(result);
             done();
@@ -71,7 +71,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_category", {uuid, name}).then(function (result) { 
+        session.call("instalist/update_category", {"uuid":"TODO", "name":"TODO"}).then(function (result) { 
             console.log("result updateCategory");
             console.log(result);
             done();
@@ -103,7 +103,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_list", {uuid}).then(function (result) { 
+        session.call("instalist/get_list", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getList");
             console.log(result);
             done();
@@ -119,7 +119,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_category", {uuid}).then(function (result) { 
+        session.call("instalist/get_category", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getCategory");
             console.log(result);
             done();
@@ -135,7 +135,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_list_entry", {uuid, shoppingList, product, amount, struck, priority}).then(function (result) { 
+        session.call("instalist/add_list_entry", {"uuid":"TODO", "shoppingList":"TODO", "product":"TODO", "amount": 0.6, "struck":true, "priority":"TODO"}).then(function (result) { 
             console.log("result addListEntry");
             console.log(result);
             done();
@@ -151,7 +151,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_tagged_product", {uuid}).then(function (result) { 
+        session.call("instalist/delete_tagged_product", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteTaggedProduct");
             console.log(result);
             done();
@@ -167,7 +167,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_ingredient", {uuid, product, recipe, amount}).then(function (result) { 
+        session.call("instalist/update_ingredient", {"uuid":"TODO", "product":"TODO", "recipe":"TODO", "amount": 0.5}).then(function (result) { 
             console.log("result updateIngredient");
             console.log(result);
             done();
@@ -183,7 +183,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_recipe", {uuid}).then(function (result) { 
+        session.call("instalist/get_recipe", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getRecipe");
             console.log(result);
             done();
@@ -199,7 +199,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_recipe", {uuid}).then(function (result) { 
+        session.call("instalist/delete_recipe", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteRecipe");
             console.log(result);
             done();
@@ -215,7 +215,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_list_entry", {uuid}).then(function (result) { 
+        session.call("instalist/get_list_entry", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getListEntry");
             console.log(result);
             done();
@@ -231,7 +231,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_ingredient", {uuid}).then(function (result) { 
+        session.call("instalist/get_ingredient", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getIngredient");
             console.log(result);
             done();
@@ -263,7 +263,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_list_entry", {uuid, shoppingList, product, amount, struck, priority}).then(function (result) { 
+        session.call("instalist/update_list_entry", {"uuid":"TODO", "shoppingList":"TODO", "product":"TODO", "amount":"TODO", "struck":"TODO", "priority":"TODO"}).then(function (result) { 
             console.log("result updateListEntry");
             console.log(result);
             done();
@@ -279,7 +279,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_ingredient", {uuid, product, recipe, amount}).then(function (result) { 
+        session.call("instalist/add_ingredient", {"uuid":"TODO", "product":"TODO", "recipe":"TODO", "amount":"TODO"}).then(function (result) { 
             console.log("result addIngredient");
             console.log(result);
             done();
@@ -311,7 +311,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_tagged_product", {uuid, tag, product}).then(function (result) { 
+        session.call("instalist/add_tagged_product", {"uuid":"TODO", "tag":"TODO", "product":"TODO"}).then(function (result) { 
             console.log("result addTaggedProduct");
             console.log(result);
             done();
@@ -327,7 +327,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_tag", {uuid, name}).then(function (result) { 
+        session.call("instalist/update_tag", {"uuid":"TODO", "name":"TODO"}).then(function (result) { 
             console.log("result updateTag");
             console.log(result);
             done();
@@ -343,7 +343,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_unit", {uuid}).then(function (result) { 
+        session.call("instalist/delete_unit", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteUnit");
             console.log(result);
             done();
@@ -359,7 +359,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_unit", {uuid}).then(function (result) { 
+        session.call("instalist/get_unit", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getUnit");
             console.log(result);
             done();
@@ -375,7 +375,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_product", {uuid}).then(function (result) { 
+        session.call("instalist/delete_product", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteProduct");
             console.log(result);
             done();
@@ -391,7 +391,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_product", {uuid, name, unit, defaultAmount, stepAmount}).then(function (result) { 
+        session.call("instalist/update_product", {"uuid":"TODO", "name":"TEST_PRODUCT", "unit":"TODO", "defaultAmount": 0.5, "stepAmount":0.5}).then(function (result) { 
             console.log("result updateProduct");
             console.log(result);
             done();
@@ -407,7 +407,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_ingredient_uuids_by_recipe", {recipe}).then(function (result) { 
+        session.call("instalist/get_ingredient_uuids_by_recipe", {"recipe":"TODO"}).then(function (result) { 
             console.log("result getIngredientUuidsByRecipe");
             console.log(result);
             done();
@@ -423,7 +423,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_category", {uuid}).then(function (result) { 
+        session.call("instalist/delete_category", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteCategory");
             console.log(result);
             done();
@@ -439,7 +439,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_tagged_product", {uuid, tag, product}).then(function (result) { 
+        session.call("instalist/update_tagged_product", {"uuid":"TODO", "tag":"TODO", "product":"TODO"}).then(function (result) { 
             console.log("result updateTaggedProduct");
             console.log(result);
             done();
@@ -455,7 +455,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_list_entry", {uuid}).then(function (result) { 
+        session.call("instalist/delete_list_entry", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteListEntry");
             console.log(result);
             done();
@@ -471,7 +471,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_recipe", {uuid, name}).then(function (result) { 
+        session.call("instalist/add_recipe", {"uuid":"TODO", "name":"TEST_RECIPE"}).then(function (result) { 
             console.log("result addRecipe");
             console.log(result);
             done();
@@ -519,7 +519,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_tag", {uuid}).then(function (result) { 
+        session.call("instalist/get_tag", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getTag");
             console.log(result);
             done();
@@ -535,7 +535,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_ingredient", {uuid}).then(function (result) { 
+        session.call("instalist/delete_ingredient", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteIngredient");
             console.log(result);
             done();
@@ -567,7 +567,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_category", {uuid, name}).then(function (result) { 
+        session.call("instalist/add_category", {"uuid":"TODO", "name":"TEST_CATEGORY"}).then(function (result) { 
             console.log("result addCategory");
             console.log(result);
             done();
@@ -599,7 +599,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_tagged_product_uuids_by_product", {product}).then(function (result) { 
+        session.call("instalist/get_tagged_product_uuids_by_product", {"product":"TODO"}).then(function (result) { 
             console.log("result getTaggedProductUuidsByProduct");
             console.log(result);
             done();
@@ -631,7 +631,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_unit", {uuid, name}).then(function (result) { 
+        session.call("instalist/update_unit", {"uuid":"TODO", "name":"TEST_UNIT"}).then(function (result) { 
             console.log("result updateUnit");
             console.log(result);
             done();
@@ -647,7 +647,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_unit", {uuid, name}).then(function (result) { 
+        session.call("instalist/add_unit", {"uuid":"TODO", "name":"TEST_UNIT"}).then(function (result) { 
             console.log("result addUnit");
             console.log(result);
             done();
@@ -663,7 +663,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_list", {uuid}).then(function (result) { 
+        session.call("instalist/delete_list", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteList");
             console.log(result);
             done();
@@ -679,7 +679,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_list", {uuid, name, category}).then(function (result) { 
+        session.call("instalist/update_list", {"uuid":"TODO", "name":"TEST_LIST", "category":"TODO"}).then(function (result) { 
             console.log("result updateList");
             console.log(result);
             done();
@@ -695,7 +695,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_list", {uuid, name, category}).then(function (result) { 
+        session.call("instalist/add_list", {"uuid":"TODO", "name":"TEST_LIST", "category":"TODO"}).then(function (result) { 
             console.log("result addList");
             console.log(result);
             done();
@@ -711,7 +711,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_tag", {uuid, name}).then(function (result) { 
+        session.call("instalist/add_tag", {"uuid": "TODO", "name":"TEST_TAG"}).then(function (result) { 
             console.log("result addTag");
             console.log(result);
             done();
@@ -727,7 +727,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/get_product", {uuid}).then(function (result) { 
+        session.call("instalist/get_product", {"uuid":"TODO"}).then(function (result) { 
             console.log("result getProduct");
             console.log(result);
             done();
@@ -743,7 +743,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/add_product", {uuid, name, unit, defaultAmount, stepAmount}).then(function (result) { 
+        session.call("instalist/add_product", {"uuid":"TODO", "name":"TEST_PRODUCT", "unit":"TODO", "defaultAmount":0.5, "stepAmount":1.0}).then(function (result) { 
             console.log("result addProduct");
             console.log(result);
             done();
@@ -759,7 +759,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/delete_tag", {uuid}).then(function (result) { 
+        session.call("instalist/delete_tag", {"uuid":"TODO"}).then(function (result) { 
             console.log("result deleteTag");
             console.log(result);
             done();
@@ -775,7 +775,7 @@ QUnit.module("Test RPC API", function (hooks) {
         var done = assert.async(1); 
         // do something here that requires open connection... 
         // WAMP session established here .. 
-        session.call("instalist/update_recipe", {uuid, name}).then(function (result) { 
+        session.call("instalist/update_recipe", {"uuid":"TODO", "name":"TEST_RECIPE"}).then(function (result) { 
             console.log("result updateRecipe");
             console.log(result);
             done();
