@@ -10,7 +10,7 @@
 
 3. Abhängigkeiten von dem Bundle im Symfony project root installieren:
 
-   - composer require gos/websocket-client
+   - composer require gos/websocket-server
 
 4. Konfiguration vornehmen, damit Symfony das Bundle nutzt:
 
