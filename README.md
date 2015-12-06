@@ -2,10 +2,16 @@
 
 ## Setup
 1. Symfony2 installieren
-2. Repository in src-Ordner pullen
-3. Abhängigkeiten von dem Bundle Installieren:
-   - cd src/InstalistBundle
-   - composer install
+2. Repository in src-Ordner pullen:
+
+   - git init im src Ordner
+   - git add remote origin https://<your-nickname>@bitbucket.org/fhnoorg/einkaufsliste-server.git
+   - git pull master
+
+3. Abhängigkeiten von dem Bundle im Symfony project root installieren:
+
+   - composer require gos/websocket-client
+
 4. Konfiguration vornehmen, damit Symfony das Bundle nutzt:
 
         // app/AppKernel.php
