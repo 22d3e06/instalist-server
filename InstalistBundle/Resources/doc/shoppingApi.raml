@@ -1,0 +1,1473 @@
+﻿#%RAML 0.8 
+title: InstantList API 
+version: v1 
+baseUri: http://instantlist.noorganization.org/{version} 
+mediaType: application/json 
+
+/Category: 
+	put: 
+		description:|
+			Updates the category.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a category to the category pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Category
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the list by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the category.name: The name of the category.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the category related to the given id. (Deletes no category with lists in it?)code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/TaggedProductUuids: 
+	get: 
+		description:|
+			Returns a list of all taggedProduct uuids.code: See HTTP-return-codes. Always set.taggedProducts: list of taggedProduct uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/Product: 
+	put: 
+		description:|
+			Updates the product.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			unit:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			defaultAmount:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			stepAmount:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a product to the product pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Product
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the product by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the product.name: The name of the product.unit: The uuid of the unit or null if no unit.defaultAmount: The amount of this item that is added to the shoppingList.stepAmount: The amount of a step when increasing or decreasing the value.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the product related to the given id. (Mit deletion mode?)code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/ProductUuids: 
+	get: 
+		description:|
+			Returns a list of all product uuids.code: See HTTP-return-codes. Always set.products: list of product uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/ListUuids: 
+	get: 
+		description:|
+			Returns all accessible lists.code: See HTTP-return-codes. Always set.lists: Lists of strings containing list-uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/TagUuids: 
+	get: 
+		description:|
+			Returns a list of all tag uuids.code: See HTTP-return-codes. Always set.tags: list of tag uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/List: 
+	put: 
+		description:|
+			Updates a list.code: HTTP-Codes. Can especially be 409, when name already used. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			category:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Creates or updates a list.code: HTTP-Codes. Can especially be 409, when name or uuid is already used. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					List
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns one list.code: See HTTP-return-codes. Always set.category: Either null (no category) or uuid of category.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes one list.code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/Recipe: 
+	put: 
+		description:|
+			Updates the recipe.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a recipe to the recipe pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Recipe
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the recipe related to the given uuid. Also deletes all related ingredients.code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the recipe by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the recipe.name: The name of the recipe.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/TaggedProduct: 
+	put: 
+		description:|
+			Updates the taggedProduct.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			tag:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			product:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a taggedProduct to the taggedProduct pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					TaggedProduct
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the taggedProduct related to the given uuid.code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the taggedProduct by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the taggedProduct.tag: The tag uuid of the taggedProduct.product: The product uuid of the taggedProduct.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/TaggedProductUuidsByTag: 
+	get: 
+		description:|
+			Returns a list of all taggedProduct uuids related to a given tag uuid.code: See HTTP-return-codes. Always set.taggedProducts: list of taggedProduct uuids.: 
+		queryParameters:
+			tag:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/IngredientUuidsByRecipe: 
+	get: 
+		description:|
+			Returns a list of all ingredient uuids that are related to this recipe.code: See HTTP-return-codes. Always set.ingredients: list of ingredient uuids.: 
+		queryParameters:
+			recipe:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/Tag: 
+	put: 
+		description:|
+			Updates the tag.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a tag to the tag pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Tag
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the tag related to the given id. (Mit deletion mode?)code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the tag by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the tag.name: The name of the tag.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/CategoryUuids: 
+	get: 
+		description:|
+			Returns a list of all category ids.code: See HTTP-return-codes. Always set.categories: list of category uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/TaggedProductUuidsByProduct: 
+	get: 
+		description:|
+			Returns a list of all taggedProduct uuids related to a given product uuid.code: See HTTP-return-codes. Always set.taggedProducts: list of taggedProduct uuids.: 
+		queryParameters:
+			product:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/RecipeUuids: 
+	get: 
+		description:|
+			Returns a list of all recipe uuids.code: See HTTP-return-codes. Always set.recipes: list of recipe uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/ListEntryUuids: 
+	get: 
+		description:|
+			Returns a list of all listEntry uuids.code: See HTTP-return-codes. Always set.listEntries: list of listEntry uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/UnitUuids: 
+	get: 
+		description:|
+			Returns a list of all unit ids.code: See HTTP-return-codes. Always set.units: list of unit uuids.: 
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/ListEntry: 
+	put: 
+		description:|
+			Updates the listEntry.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			shoppingList:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			product:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			amount:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			struck:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			priority:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a listEntry to the listEntry pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					ListEntry
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the listEntry related to the given id.code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the product by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the listEntry.shoppingList: The uuid of the shoppingList the entry is related to.product: The product uuid the listEntry represents.amount: The amount of how many items of this product are in the current list.struck: Represents if a entry is struck(true) or not struck (false).priority: An indicator which priority this entry has.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/Unit: 
+	put: 
+		description:|
+			Updates the unit.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			name:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a unit to the unit pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Unit
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the unit by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the unit.name: The name of the unit.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the unit related to the given id. (Mit deletion mode?)code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+/Ingredient: 
+	put: 
+		description:|
+			Updates the ingredient.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			product:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			recipe:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			amount:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	post: 
+		description:|
+			Adds a ingredient to the ingredient pool.code: See HTTP-return-codes. Always set.badparams: A list of strings, containing the names of bad parameters.: 
+		body:
+			application/json:
+				schema:
+					Ingredient
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	delete: 
+		description:|
+			Deletes the ingredient related to the given uuid.code: See HTTP-return-codes. Always set.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+	get: 
+		description:|
+			Returns the ingredient by the given uuid.code: See HTTP-return-codes. Always set.uuid: The uuid of the ingredient.product: The uuid of the product the ingredient represents.recipe: The uuid of the recipe the ingredient is related to.amount: The amount of how many items of this product are in the recipe.: 
+		queryParameters:
+			uuid:
+				displayName: todo
+				type: todo
+				description: todo
+				example: todo
+				required: true
+			access_token:
+				description: "The access token provided by the authentication application"
+				example: AABBCCDD
+				required: true
+				type: string
+		responses:
+			200:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
+			400:
+				body:
+					application/json:
+						example:|
+							{
+								todo
+							}
