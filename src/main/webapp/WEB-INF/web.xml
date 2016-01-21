@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
-    <display-name>org.damihe.mytest</display-name>
+    <display-name>org.noorganization.instalist.server</display-name>
     <servlet>
         <servlet-name>Jersey REST Service</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>org.damihe.mytest</param-value>
+            <param-value>org.noorganization.instalist.server</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
