@@ -27,7 +27,10 @@ def splitMethodName(_methodName):
     return None
 
 def utf8Write(_file, _string):
-    _file.write(_string)
+    _file.write(_string.replace("\t", "  "))
+
+def uncapitalize(s):
+    return s[:1].lower() + s[1:]
 
 def main(argv):
     if len(argv) != 1:
@@ -71,25 +74,31 @@ def main(argv):
             if len(description_line.strip(' \t\n\r')) == 0:
                 continue
             description += description_line
+            description = description.replace(":"," ")
 
         apiPathNameMap[splittedName[1]][mapApiSpecToStandardSpec(splittedName[0])]["desc"] = description
     # print(apiPathNameMap)
     OrderedDict(sorted(apiPathNameMap.items(), key=lambda t:t[0]))
 
     for methodNameKey, methodName in apiPathNameMap.iteritems():
-        utf8Write(f, "/" + methodNameKey + ": \n")
+        utf8Write(f, "/" + uncapitalize(methodNameKey) + ": \n")
         for methodTypeKey, methodType in methodName.iteritems():
             utf8Write(f, "\t" + methodTypeKey + ": \n")
-            utf8Write(f, "\t\tdescription:|\n\t\t\t" + methodType["desc"] + ": \n")
+            utf8Write(f, "\t\tdescription: |\n\t\t\t" + methodType["desc"] + "\n")
             if "params" in methodType:
                 if len(methodType["params"].keys()) > 0:
-                    if methodTypeKey == "post":
+                    utf8Write(f, "\t\tqueryParameters:\n")
+                    utf8Write(f, "\t\t\taccess_token:\n")
+                    utf8Write(f, '\t\t\t\tdescription: "The access token provided by the authentication application"\n')
+                    utf8Write(f, "\t\t\t\texample: AABBCCDD\n")
+                    utf8Write(f, "\t\t\t\trequired: true\n")
+                    utf8Write(f, "\t\t\t\ttype: string\n")
+                    if methodTypeKey == "post" or methodTypeKey == "put":
                         utf8Write(f, "\t\tbody:\n")
                         utf8Write(f, "\t\t\tapplication/json:\n")
                         utf8Write(f, "\t\t\t\tschema:\n")
                         utf8Write(f, "\t\t\t\t\t" + methodNameKey + "\n")
                     else:
-                        utf8Write(f, "\t\tqueryParameters:\n")
                         for paramKey, param in methodType["params"].iteritems():
                             utf8Write(f, "\t\t\t" + param + ":\n")
                             utf8Write(f, "\t\t\t\tdisplayName: todo\n")
@@ -98,24 +107,18 @@ def main(argv):
                             utf8Write(f, "\t\t\t\texample: todo\n")
                             utf8Write(f, "\t\t\t\trequired: true\n")
 
-            utf8Write(f, "\t\t\taccess_token:\n")
-            utf8Write(f, '\t\t\t\tdescription: "The access token provided by the authentication application"\n')
-            utf8Write(f, "\t\t\t\texample: AABBCCDD\n")
-            utf8Write(f, "\t\t\t\trequired: true\n")
-            utf8Write(f, "\t\t\t\ttype: string\n")
-
             utf8Write(f, "\t\tresponses:\n")
             utf8Write(f, "\t\t\t200:\n")
             utf8Write(f, "\t\t\t\tbody:\n")
             utf8Write(f, "\t\t\t\t\tapplication/json:\n")
-            utf8Write(f, "\t\t\t\t\t\texample:|\n")
+            utf8Write(f, "\t\t\t\t\t\texample: |\n")
             utf8Write(f, "\t\t\t\t\t\t\t{\n")
             utf8Write(f, "\t\t\t\t\t\t\t\ttodo\n")
             utf8Write(f, "\t\t\t\t\t\t\t}\n")
             utf8Write(f, "\t\t\t400:\n")
             utf8Write(f, "\t\t\t\tbody:\n")
             utf8Write(f, "\t\t\t\t\tapplication/json:\n")
-            utf8Write(f, "\t\t\t\t\t\texample:|\n")
+            utf8Write(f, "\t\t\t\t\t\texample: |\n")
             utf8Write(f, "\t\t\t\t\t\t\t{\n")
             utf8Write(f, "\t\t\t\t\t\t\t\ttodo\n")
             utf8Write(f, "\t\t\t\t\t\t\t}\n")
