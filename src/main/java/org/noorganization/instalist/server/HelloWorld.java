@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.MediaType;
 
 /**
  * Created by damihe on 17.01.16.
@@ -31,18 +32,44 @@ public class HelloWorld {
 
         @JsonProperty("fuck")
         String fuck;
+
+        public String getWhat() {
+            return what;
+        }
+
+        public void setWhat(String _what) {
+            what = _what;
+        }
+
+        public String getThe() {
+            return the;
+        }
+
+        public void setThe(String _the) {
+            the = _the;
+        }
+
+        public String getFuck() {
+            return fuck;
+        }
+
+        public void setFuck(String _fuck) {
+            fuck = _fuck;
+        }
+
+        public AJSON() {}
     }
 
     // The Java method will process HTTP GET requests
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
-    @Produces("application/json")
+    @Produces(MediaType.APPLICATION_JSON)
     public AJSON getClichedMessage() {
         // Return some cliched textual content
         AJSON rtn = new AJSON();
-        rtn.what = "Hello World";
-        rtn.the = "Is there someone?";
-        rtn.fuck = "World is strange.";
+        rtn.setWhat("Hello World");
+        rtn.setThe("Is there someone?");
+        rtn.setFuck("World is strange.");
         return rtn;
     }
 
