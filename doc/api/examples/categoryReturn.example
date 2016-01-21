@@ -1,0 +1,10 @@
+{
+"status" : 200,
+"success" : true,
+"data" :
+    {
+      "id" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
+      "name" : "test_Category1",
+      "lastChanged": 2016-01-19T11:54:07+01:00
+    }
+}

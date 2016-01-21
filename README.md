@@ -1,6 +1,27 @@
 # Einkaufsliste Server
 
+Die Serverseite für die [Einkaufsliste](https://bitbucket.org/fhnoorg/einkaufsliste). Dient vor allem zur 
+Synchronisation zwischen mehreren Geräten. 
+
 ## Setup
+Benötigt:
+ 
+ - Maven 3
+ - JRE/JDK 8
+ - Applikationsserver. Empfohlen: [Apache Tomcat 8](http://tomcat.apache.org/download-80.cgi)
+ - Internetverbindung für den ersten Build (zum Abhängigkeiten herunterladen)
+
+Dies ist ein Maven-Projekt. Mit
+
+    mvn compile
+    mvn package
+    
+lässt es sich kompilieren bzw. in ein war-File verpacken.
+
+Dieses Projekt enthält außerdem ein Projekt für IntelliJ IDEA, der Applikations-Server muss jedoch selbst eingebunden werden.
+
+
+## Altes Setup
 1. Symfony2 installieren
 2. Repository in src-Ordner pullen:
 
@@ -53,5 +74,5 @@
 
         php app/console gos:websocket:server
 
-## Tests
+## Alte Tests
 Sind ebenfalls verfügbar. Nach der Installation des Bundles einfach `/bundles/instalist/tests/test.html` im Browser aufrufen (der Websocket-Server muss dafür natürlich laufen.

@@ -1,0 +1,12 @@
+{
+"status" : 200,
+"success" : true,
+"data" :
+  {
+    "id" : "8b4343ba-273e-417c-b89d-b7abab780cb2",
+    "productId" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
+    "recipeId" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
+    "amount" : 0.5,
+    "lastChanged": 2016-01-19T11:54:07+01:00
+  }
+}

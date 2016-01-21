@@ -1,0 +1,13 @@
+{
+"status" : 200,
+"success" : true,
+"data" :
+  {
+      "id" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
+      "name" : "test_Product1",
+      "unitId" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
+      "defaultAmount" : 1.5,
+      "stepAmount" : 0.5,
+      "lastChanged": 2016-01-19T11:54:07+01:00
+  }
+}
