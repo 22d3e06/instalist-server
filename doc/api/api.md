@@ -5,6 +5,10 @@ http://instantlist.noorganization.org/v1
 
 ## /user
 
+### /user/token
+
+* **get** *(secured)*: Get the auth token
+
 ### /user/register
 
 * **post**: The action to register an user.
@@ -65,11 +69,11 @@ Collection of available lists.
 ### /lists/{listId}
 Entity representing a list.
 
-* **get**: Returns the list.
+* **get** *(secured)*: Returns the list.
 
-* **put**: Updates the list.
+* **put** *(secured)*: Updates the list.
 
-* **delete**: Deletes the list.
+* **delete** *(secured)*: Deletes the list.
 
 ## /recipes
 Collection of available recipes.
@@ -83,11 +87,11 @@ Collection of available recipes.
 ### /recipes/{recipeId}
 Entity representing a recipe.
 
-* **get**: Returns the recipe.
+* **get** *(secured)*: Returns the recipe.
 
-* **put**: Updates the recipe.
+* **put** *(secured)*: Updates the recipe.
 
-* **delete**: Deletes the recipe.
+* **delete** *(secured)*: Deletes the recipe.
 
 ### /recipes/ingredients
 Collection of available ingredients.
@@ -126,11 +130,11 @@ Collection of available tags.
 ### /tags/{tagId}
 Entity representing a tag.
 
-* **get**: Returns the tag.
+* **get** *(secured)*: Returns the tag.
 
-* **put**: Updates the tag.
+* **put** *(secured)*: Updates the tag.
 
-* **delete**: Deletes the tag.
+* **delete** *(secured)*: Deletes the tag.
 
 ## /listEntries
 Collection of available listEntries.

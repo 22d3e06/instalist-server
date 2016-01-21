@@ -64,138 +64,140 @@ traits:
                   "status" : 202,
                   "success" : false
                 }
-        204:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "Successfull processed by server, no content."
-                    },
-                  "status" : 204,
-                  "success" : true
-                }
-        300:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "Various changes, look into the location header fields"
-                    },
-                  "status" : 300,
-                  "success" : false
-                }
-        403:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "You have no rights to do this!"
-                    },
-                  "status" : 403,
-                  "success" : false
-                }
-        405:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "This method is not supported!"
-                    },
-                  "status" : 405,
-                  "success" : false
-                }
-        408:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "The request timed out, try again!"
-                    },
-                  "status" : 408,
-                  "success" : false
-                }
-        409:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "There is a conflict with data!"
-                    },
-                  "status" : 409,
-                  "success" : false
-                }
-        410:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "The resource is gone!"
-                    },
-                  "status" : 410,
-                  "success" : false
-                }
-        413:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "The sent entity was too large!"
-                    },
-                  "status" : 413,
-                  "success" : false
-                }
-        423:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "This resource is currently locked."
-                    },
-                  "status" : 423,
-                  "success" : false
-                }
-        429:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "Too many requests. Calm down!"
-                    },
-                  "status" : 429,
-                  "success" : false
-                }
-        500:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "Server error!"
-                    },
-                  "status" : 500,
-                  "success" : false
-                }
+#        204:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "Successfull processed by server, no content."
+#                    },
+#                  "status" : 204,
+#                  "success" : true
+#                }
+#       300:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "Various changes, look into the location header fields"
+#                    },
+#                  "status" : 300,
+#                  "success" : false
+#                }
+#
+#        403:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "You have no rights to do this!"
+#                    },
+#                  "status" : 403,
+#                  "success" : false
+#                }
+#        405:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "This method is not supported!"
+#                    },
+#                  "status" : 405,
+#                  "success" : false
+#                }
+#        408:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "The request timed out, try again!"
+#                    },
+#                  "status" : 408,
+#                  "success" : false
+#                }
+#        409:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "There is a conflict with data!"
+#                    },
+#                  "status" : 409,
+#                  "success" : false
+#                }
+#        410:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "The resource is gone!"
+#                    },
+#                  "status" : 410,
+#                  "success" : false
+#                }
+#        413:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "The sent entity was too large!"
+#                    },
+#                  "status" : 413,
+#                  "success" : false
+#                }
+#        423:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "This resource is currently locked."
+#                    },
+#                  "status" : 423,
+#                  "success" : false
+#                }
+#        429:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "Too many requests. Calm down!"
+#                    },
+#                  "status" : 429,
+#                  "success" : false
+#                }
+#        500:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "Server error!"
+#                    },
+#                  "status" : 500,
+#                  "success" : false
+#                }
+
       #queryParameters:
       #  accessToken:
       #    displayName: AccessToken
@@ -515,12 +517,14 @@ resourceTypes:
   is: [secured]
   type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example , exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example} }
   /{listId}:
+    is: [secured]
     type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
 
 /recipes:
   is: [secured]
   type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example} }
   /{recipeId}:
+    is: [secured]
     type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
   /ingredients:
     is: [secured]
@@ -537,6 +541,7 @@ resourceTypes:
   is: [secured]
   type:  { collection: {exampleCollection : , exampleSchema : tag, exampleItem : !include examples/tag.example} }
   /{tagId}:
+    is: [secured]
     type:  { collection-item: {exampleReturnItem : , exampleSchema : tag, exampleItem : !include examples/tag.example } }
 
 /listEntries:
