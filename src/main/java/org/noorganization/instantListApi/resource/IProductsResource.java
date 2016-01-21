@@ -30,6 +30,8 @@ public interface IProductsResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface IProductsResource {
     })
     IProductsResource.GetProductsResponse getProducts(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface IProductsResource {
      * Add a new product.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -67,7 +73,9 @@ public interface IProductsResource {
     @Produces({
         "application/json"
     })
-    IProductsResource.PostProductsResponse postProducts(Product entity)
+    IProductsResource.PostProductsResponse postProducts(
+        @QueryParam("accessToken")
+        String accessToken, Product entity)
         throws Exception
     ;
 
@@ -77,6 +85,8 @@ public interface IProductsResource {
      * 
      * @param productId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{productId}")
@@ -85,7 +95,9 @@ public interface IProductsResource {
     })
     IProductsResource.GetProductsByProductIdResponse getProductsByProductId(
         @PathParam("productId")
-        String productId)
+        String productId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -95,6 +107,8 @@ public interface IProductsResource {
      * 
      * @param productId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -120,7 +134,9 @@ public interface IProductsResource {
     })
     IProductsResource.PutProductsByProductIdResponse putProductsByProductId(
         @PathParam("productId")
-        String productId, Product entity)
+        String productId,
+        @QueryParam("accessToken")
+        String accessToken, Product entity)
         throws Exception
     ;
 
@@ -130,6 +146,8 @@ public interface IProductsResource {
      * 
      * @param productId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{productId}")
@@ -138,7 +156,9 @@ public interface IProductsResource {
     })
     IProductsResource.DeleteProductsByProductIdResponse deleteProductsByProductId(
         @PathParam("productId")
-        String productId)
+        String productId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

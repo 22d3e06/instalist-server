@@ -30,6 +30,8 @@ public interface IListEntriesResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface IListEntriesResource {
     })
     IListEntriesResource.GetListEntriesResponse getListEntries(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface IListEntriesResource {
      * Add a new listEntry.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -63,7 +69,9 @@ public interface IListEntriesResource {
     @Produces({
         "application/json"
     })
-    IListEntriesResource.PostListEntriesResponse postListEntries(ListEntry entity)
+    IListEntriesResource.PostListEntriesResponse postListEntries(
+        @QueryParam("accessToken")
+        String accessToken, ListEntry entity)
         throws Exception
     ;
 
@@ -73,6 +81,8 @@ public interface IListEntriesResource {
      * 
      * @param listEntryId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{listEntryId}")
@@ -81,7 +91,9 @@ public interface IListEntriesResource {
     })
     IListEntriesResource.GetListEntriesByListEntryIdResponse getListEntriesByListEntryId(
         @PathParam("listEntryId")
-        String listEntryId)
+        String listEntryId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -91,6 +103,8 @@ public interface IListEntriesResource {
      * 
      * @param listEntryId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -112,7 +126,9 @@ public interface IListEntriesResource {
     })
     IListEntriesResource.PutListEntriesByListEntryIdResponse putListEntriesByListEntryId(
         @PathParam("listEntryId")
-        String listEntryId, ListEntry entity)
+        String listEntryId,
+        @QueryParam("accessToken")
+        String accessToken, ListEntry entity)
         throws Exception
     ;
 
@@ -122,6 +138,8 @@ public interface IListEntriesResource {
      * 
      * @param listEntryId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{listEntryId}")
@@ -130,7 +148,9 @@ public interface IListEntriesResource {
     })
     IListEntriesResource.DeleteListEntriesByListEntryIdResponse deleteListEntriesByListEntryId(
         @PathParam("listEntryId")
-        String listEntryId)
+        String listEntryId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

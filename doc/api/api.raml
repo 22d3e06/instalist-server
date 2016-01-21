@@ -28,15 +28,16 @@ traits:
       securedBy: [basic]
       displayName: Secured
       description: Request require authentication!
-      queryParameters:
-        accessToken:
-            displayName: AccessToken
-            description: An access token is required for secured routes
-            required: true
       responses:
         401:
           description: Unauthorized
-
+  - hasAuth:
+      queryParameters:
+        accessToken:
+          displayName: AccessToken
+          description: An access token is required for secured routes
+          required: true
+            
   - responseTypes:
       responses:
         201:
@@ -208,7 +209,7 @@ resourceTypes:
   - collection:
       description: Collection of available <<resourcePathName>>.
       get:
-        is: [responseTypes]
+        is: [responseTypes, hasAuth]
         description: |
           Get a list of <<resourcePathName>>.
         queryParameters:
@@ -237,7 +238,7 @@ resourceTypes:
                     "success" : false
                   }
       post:
-        is: [responseTypes]
+        is: [responseTypes, hasAuth]
         description: |
           Add a new <<resourcePathName|!singularize>>.
         body:
@@ -272,7 +273,7 @@ resourceTypes:
   - collection-item:
       description: Entity representing a <<resourcePathName|!singularize>>.
       get:
-        is: [responseTypes]
+        is: [responseTypes, hasAuth]
         description: |
           Returns the <<resourcePathName|!singularize>>.
         responses:
@@ -293,7 +294,7 @@ resourceTypes:
                     "success" : false
                   }
       put:
-        is: [responseTypes]
+        is: [responseTypes, hasAuth]
         description: |
           Updates the <<resourcePathName|!singularize>>.
         body:
@@ -326,7 +327,7 @@ resourceTypes:
                   "success" : false
                   }
       delete:
-        is: [responseTypes]
+        is: [responseTypes, hasAuth]
         description: |
           Deletes the <<resourcePathName|!singularize>>.
         responses:
@@ -360,7 +361,7 @@ resourceTypes:
     is: [secured]
     securedBy: [basic]
     get:
-      is: [responseTypes]
+      is: [responseTypes, hasAuth]
       description: Get the auth token
       responses:
         200:
@@ -389,7 +390,7 @@ resourceTypes:
                 }
   /register:
     post:
-      is: [responseTypes]
+      is: [responseTypes, hasAuth]
       description: The action to register an user.
       body:
         application/json:
@@ -426,7 +427,7 @@ resourceTypes:
                 }
   /login:
     post:
-      is: [responseTypes]
+      is: [responseTypes, hasAuth]
       description: The action to login an user.
       body:
         application/json:
@@ -465,7 +466,7 @@ resourceTypes:
 
   /resetPassword:
     post:
-      is: [responseTypes]
+      is: [responseTypes, hasAuth]
       description: The action to reset a password of a user.
       body:
         application/json:

@@ -30,6 +30,8 @@ public interface ITagsResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface ITagsResource {
     })
     ITagsResource.GetTagsResponse getTags(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface ITagsResource {
      * Add a new tag.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -61,7 +67,9 @@ public interface ITagsResource {
     @Produces({
         "application/json"
     })
-    ITagsResource.PostTagsResponse postTags(Tag entity)
+    ITagsResource.PostTagsResponse postTags(
+        @QueryParam("accessToken")
+        String accessToken, Tag entity)
         throws Exception
     ;
 
@@ -71,6 +79,8 @@ public interface ITagsResource {
      * 
      * @param tagId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{tagId}")
@@ -79,7 +89,9 @@ public interface ITagsResource {
     })
     ITagsResource.GetTagsByTagIdResponse getTagsByTagId(
         @PathParam("tagId")
-        String tagId)
+        String tagId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -89,6 +101,8 @@ public interface ITagsResource {
      * 
      * @param tagId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -108,7 +122,9 @@ public interface ITagsResource {
     })
     ITagsResource.PutTagsByTagIdResponse putTagsByTagId(
         @PathParam("tagId")
-        String tagId, Tag entity)
+        String tagId,
+        @QueryParam("accessToken")
+        String accessToken, Tag entity)
         throws Exception
     ;
 
@@ -118,6 +134,8 @@ public interface ITagsResource {
      * 
      * @param tagId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{tagId}")
@@ -126,7 +144,9 @@ public interface ITagsResource {
     })
     ITagsResource.DeleteTagsByTagIdResponse deleteTagsByTagId(
         @PathParam("tagId")
-        String tagId)
+        String tagId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

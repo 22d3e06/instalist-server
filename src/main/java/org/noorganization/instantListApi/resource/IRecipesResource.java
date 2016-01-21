@@ -31,6 +31,8 @@ public interface IRecipesResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -38,7 +40,9 @@ public interface IRecipesResource {
     })
     IRecipesResource.GetRecipesResponse getRecipes(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -46,6 +50,8 @@ public interface IRecipesResource {
      * Add a new recipe.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -62,7 +68,9 @@ public interface IRecipesResource {
     @Produces({
         "application/json"
     })
-    IRecipesResource.PostRecipesResponse postRecipes(Recipe entity)
+    IRecipesResource.PostRecipesResponse postRecipes(
+        @QueryParam("accessToken")
+        String accessToken, Recipe entity)
         throws Exception
     ;
 
@@ -70,6 +78,8 @@ public interface IRecipesResource {
      * Returns the recipe.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param recipeId
      *     
      */
@@ -80,7 +90,9 @@ public interface IRecipesResource {
     })
     IRecipesResource.GetRecipesByRecipeIdResponse getRecipesByRecipeId(
         @PathParam("recipeId")
-        String recipeId)
+        String recipeId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -88,6 +100,8 @@ public interface IRecipesResource {
      * Updates the recipe.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param recipeId
      *     
      * @param entity
@@ -109,7 +123,9 @@ public interface IRecipesResource {
     })
     IRecipesResource.PutRecipesByRecipeIdResponse putRecipesByRecipeId(
         @PathParam("recipeId")
-        String recipeId, Recipe entity)
+        String recipeId,
+        @QueryParam("accessToken")
+        String accessToken, Recipe entity)
         throws Exception
     ;
 
@@ -117,6 +133,8 @@ public interface IRecipesResource {
      * Deletes the recipe.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param recipeId
      *     
      */
@@ -127,7 +145,9 @@ public interface IRecipesResource {
     })
     IRecipesResource.DeleteRecipesByRecipeIdResponse deleteRecipesByRecipeId(
         @PathParam("recipeId")
-        String recipeId)
+        String recipeId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -137,6 +157,8 @@ public interface IRecipesResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("ingredients")
@@ -145,7 +167,9 @@ public interface IRecipesResource {
     })
     IRecipesResource.GetRecipesIngredientsResponse getRecipesIngredients(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -153,6 +177,8 @@ public interface IRecipesResource {
      * Add a new ingredient.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -174,7 +200,9 @@ public interface IRecipesResource {
     @Produces({
         "application/json"
     })
-    IRecipesResource.PostRecipesIngredientsResponse postRecipesIngredients(Ingredient entity)
+    IRecipesResource.PostRecipesIngredientsResponse postRecipesIngredients(
+        @QueryParam("accessToken")
+        String accessToken, Ingredient entity)
         throws Exception
     ;
 

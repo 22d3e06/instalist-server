@@ -30,6 +30,8 @@ public interface IUnitsResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface IUnitsResource {
     })
     IUnitsResource.GetUnitsResponse getUnits(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface IUnitsResource {
      * Add a new unit.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -61,7 +67,9 @@ public interface IUnitsResource {
     @Produces({
         "application/json"
     })
-    IUnitsResource.PostUnitsResponse postUnits(Unit entity)
+    IUnitsResource.PostUnitsResponse postUnits(
+        @QueryParam("accessToken")
+        String accessToken, Unit entity)
         throws Exception
     ;
 
@@ -71,6 +79,8 @@ public interface IUnitsResource {
      * 
      * @param unitId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{unitId}")
@@ -79,7 +89,9 @@ public interface IUnitsResource {
     })
     IUnitsResource.GetUnitsByUnitIdResponse getUnitsByUnitId(
         @PathParam("unitId")
-        String unitId)
+        String unitId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -89,6 +101,8 @@ public interface IUnitsResource {
      * 
      * @param unitId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -108,7 +122,9 @@ public interface IUnitsResource {
     })
     IUnitsResource.PutUnitsByUnitIdResponse putUnitsByUnitId(
         @PathParam("unitId")
-        String unitId, Unit entity)
+        String unitId,
+        @QueryParam("accessToken")
+        String accessToken, Unit entity)
         throws Exception
     ;
 
@@ -118,6 +134,8 @@ public interface IUnitsResource {
      * 
      * @param unitId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{unitId}")
@@ -126,7 +144,9 @@ public interface IUnitsResource {
     })
     IUnitsResource.DeleteUnitsByUnitIdResponse deleteUnitsByUnitId(
         @PathParam("unitId")
-        String unitId)
+        String unitId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

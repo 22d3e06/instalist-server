@@ -30,6 +30,8 @@ public interface ICategoriesResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface ICategoriesResource {
     })
     ICategoriesResource.GetCategoriesResponse getCategories(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface ICategoriesResource {
      * Add a new category.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -61,7 +67,9 @@ public interface ICategoriesResource {
     @Produces({
         "application/json"
     })
-    ICategoriesResource.PostCategoriesResponse postCategories(Category entity)
+    ICategoriesResource.PostCategoriesResponse postCategories(
+        @QueryParam("accessToken")
+        String accessToken, Category entity)
         throws Exception
     ;
 
@@ -69,6 +77,8 @@ public interface ICategoriesResource {
      * Returns the category.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param categoryId
      *     
      */
@@ -79,7 +89,9 @@ public interface ICategoriesResource {
     })
     ICategoriesResource.GetCategoriesByCategoryIdResponse getCategoriesByCategoryId(
         @PathParam("categoryId")
-        String categoryId)
+        String categoryId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -87,6 +99,8 @@ public interface ICategoriesResource {
      * Updates the category.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param categoryId
      *     
      * @param entity
@@ -108,7 +122,9 @@ public interface ICategoriesResource {
     })
     ICategoriesResource.PutCategoriesByCategoryIdResponse putCategoriesByCategoryId(
         @PathParam("categoryId")
-        String categoryId, Category entity)
+        String categoryId,
+        @QueryParam("accessToken")
+        String accessToken, Category entity)
         throws Exception
     ;
 
@@ -116,6 +132,8 @@ public interface ICategoriesResource {
      * Deletes the category.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param categoryId
      *     
      */
@@ -126,7 +144,9 @@ public interface ICategoriesResource {
     })
     ICategoriesResource.DeleteCategoriesByCategoryIdResponse deleteCategoriesByCategoryId(
         @PathParam("categoryId")
-        String categoryId)
+        String categoryId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

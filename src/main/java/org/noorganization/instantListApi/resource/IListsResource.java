@@ -18,7 +18,7 @@ import org.noorganization.instantListApi.model.ShoppingList;
 
 /**
  * Collection of available lists.
- *
+ * 
  */
 @Path("lists")
 public interface IListsResource {
@@ -26,10 +26,12 @@ public interface IListsResource {
 
     /**
      * Get a list of lists.
-     *
-     *
+     * 
+     * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,14 +39,18 @@ public interface IListsResource {
     })
     IListsResource.GetListsResponse getLists(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
     /**
      * Add a new list.
-     *
-     *
+     * 
+     * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -56,23 +62,27 @@ public interface IListsResource {
 
      *     }
 
-     *
+     *     
      */
     @POST
     @Consumes("application/json")
     @Produces({
         "application/json"
     })
-    IListsResource.PostListsResponse postLists(ShoppingList entity)
+    IListsResource.PostListsResponse postLists(
+        @QueryParam("accessToken")
+        String accessToken, ShoppingList entity)
         throws Exception
     ;
 
     /**
      * Returns the list.
-     *
-     *
+     * 
+     * 
      * @param listId
-     *
+     *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{listId}")
@@ -81,16 +91,20 @@ public interface IListsResource {
     })
     IListsResource.GetListsByListIdResponse getListsByListId(
         @PathParam("listId")
-        String listId)
+        String listId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
     /**
      * Updates the list.
-     *
-     *
+     * 
+     * 
      * @param listId
-     *
+     *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -102,7 +116,7 @@ public interface IListsResource {
 
      *     }
 
-     *
+     *     
      */
     @PUT
     @Path("{listId}")
@@ -112,16 +126,20 @@ public interface IListsResource {
     })
     IListsResource.PutListsByListIdResponse putListsByListId(
         @PathParam("listId")
-        String listId, ShoppingList entity)
+        String listId,
+        @QueryParam("accessToken")
+        String accessToken, ShoppingList entity)
         throws Exception
     ;
 
     /**
      * Deletes the list.
-     *
-     *
+     * 
+     * 
      * @param listId
-     *
+     *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{listId}")
@@ -130,7 +148,9 @@ public interface IListsResource {
     })
     IListsResource.DeleteListsByListIdResponse deleteListsByListId(
         @PathParam("listId")
-        String listId)
+        String listId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -152,8 +172,8 @@ public interface IListsResource {
          *   "status" : 200,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -163,7 +183,7 @@ public interface IListsResource {
          *       "status" : 200,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.DeleteListsByListIdResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
@@ -180,8 +200,8 @@ public interface IListsResource {
          *   "status" : 400,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -191,7 +211,7 @@ public interface IListsResource {
          *       "status" : 400,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.DeleteListsByListIdResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
@@ -209,8 +229,8 @@ public interface IListsResource {
          *   "status" : 201,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -221,7 +241,7 @@ public interface IListsResource {
          *       "status" : 201,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.DeleteListsByListIdResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
@@ -238,8 +258,8 @@ public interface IListsResource {
          *   "status" : 202,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -249,7 +269,7 @@ public interface IListsResource {
          *       "status" : 202,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.DeleteListsByListIdResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
@@ -291,8 +311,8 @@ public interface IListsResource {
 
          * }
 
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
 
@@ -316,7 +336,7 @@ public interface IListsResource {
 
          *     }
 
-         *
+         *     
          */
         public static IListsResource.GetListsByListIdResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
@@ -333,8 +353,8 @@ public interface IListsResource {
          *   "status" : 400,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -344,7 +364,7 @@ public interface IListsResource {
          *       "status" : 400,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsByListIdResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
@@ -362,8 +382,8 @@ public interface IListsResource {
          *   "status" : 201,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -374,7 +394,7 @@ public interface IListsResource {
          *       "status" : 201,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsByListIdResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
@@ -391,8 +411,8 @@ public interface IListsResource {
          *   "status" : 202,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -402,7 +422,7 @@ public interface IListsResource {
          *       "status" : 202,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsByListIdResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
@@ -462,9 +482,9 @@ public interface IListsResource {
 
          * }
 
-         *
-         *
-         *
+         * 
+         * 
+         * 
          * @param entity
          *     {
 
@@ -506,8 +526,8 @@ public interface IListsResource {
 
          *     }
 
-         *
-         *
+         *     
+         *     
          */
         public static IListsResource.GetListsResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
@@ -524,8 +544,8 @@ public interface IListsResource {
          *   "status" : 400,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -535,7 +555,7 @@ public interface IListsResource {
          *       "status" : 400,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
@@ -553,8 +573,8 @@ public interface IListsResource {
          *   "status" : 201,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -565,7 +585,7 @@ public interface IListsResource {
          *       "status" : 201,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
@@ -582,8 +602,8 @@ public interface IListsResource {
          *   "status" : 202,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -593,7 +613,7 @@ public interface IListsResource {
          *       "status" : 202,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.GetListsResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
@@ -621,8 +641,8 @@ public interface IListsResource {
          *   "status" : 200,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -632,7 +652,7 @@ public interface IListsResource {
          *       "status" : 200,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.PostListsResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
@@ -649,8 +669,8 @@ public interface IListsResource {
          *   "status" : 400,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -660,7 +680,7 @@ public interface IListsResource {
          *       "status" : 400,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.PostListsResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
@@ -678,8 +698,8 @@ public interface IListsResource {
          *   "status" : 201,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -690,7 +710,7 @@ public interface IListsResource {
          *       "status" : 201,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.PostListsResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
@@ -707,8 +727,8 @@ public interface IListsResource {
          *   "status" : 202,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -718,7 +738,7 @@ public interface IListsResource {
          *       "status" : 202,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.PostListsResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
@@ -746,8 +766,8 @@ public interface IListsResource {
          *   "status" : 200,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -757,7 +777,7 @@ public interface IListsResource {
          *       "status" : 200,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.PutListsByListIdResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
@@ -774,8 +794,8 @@ public interface IListsResource {
          * "status" : 400,
          * "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *     "data" :
@@ -785,7 +805,7 @@ public interface IListsResource {
          *     "status" : 400,
          *     "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.PutListsByListIdResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
@@ -803,8 +823,8 @@ public interface IListsResource {
          *   "status" : 201,
          *   "success" : true
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -815,7 +835,7 @@ public interface IListsResource {
          *       "status" : 201,
          *       "success" : true
          *     }
-         *
+         *     
          */
         public static IListsResource.PutListsByListIdResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
@@ -832,8 +852,8 @@ public interface IListsResource {
          *   "status" : 202,
          *   "success" : false
          * }
-         *
-         *
+         * 
+         * 
          * @param entity
          *     {
          *       "data" :
@@ -843,7 +863,7 @@ public interface IListsResource {
          *       "status" : 202,
          *       "success" : false
          *     }
-         *
+         *     
          */
         public static IListsResource.PutListsByListIdResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");

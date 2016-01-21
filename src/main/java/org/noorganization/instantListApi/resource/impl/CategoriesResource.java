@@ -1,5 +1,6 @@
 package org.noorganization.instantListApi.resource.impl;
 
+import org.noorganization.instantListApi.model.Category;
 import org.noorganization.instantListApi.resource.ICategoriesResource;
 
 import javax.ws.rs.WebApplicationException;
@@ -8,6 +9,7 @@ import java.io.*;
 import java.util.Date;
 
 /**
+ * Implementation for the category REST api
  * Created by Lunero on 21.01.2016.
  */
 public class CategoriesResource implements ICategoriesResource {
@@ -37,6 +39,26 @@ public class CategoriesResource implements ICategoriesResource {
     }
 
     public DeleteCategoriesByCategoryIdResponse deleteCategoriesByCategoryId(String categoryId) throws Exception {
+        return null;
+    }
+
+    public GetCategoriesResponse getCategories(Date changedSince, String accessToken) throws Exception {
+        return null;
+    }
+
+    public PostCategoriesResponse postCategories(String accessToken, Category entity) throws Exception {
+        return null;
+    }
+
+    public GetCategoriesByCategoryIdResponse getCategoriesByCategoryId(String categoryId, String accessToken) throws Exception {
+        return null;
+    }
+
+    public PutCategoriesByCategoryIdResponse putCategoriesByCategoryId(String categoryId, String accessToken, Category entity) throws Exception {
+        return null;
+    }
+
+    public DeleteCategoriesByCategoryIdResponse deleteCategoriesByCategoryId(String categoryId, String accessToken) throws Exception {
         return null;
     }
 }

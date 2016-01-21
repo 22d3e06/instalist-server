@@ -30,6 +30,8 @@ public interface ITaggedProductsResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface ITaggedProductsResource {
     })
     ITaggedProductsResource.GetTaggedProductsResponse getTaggedProducts(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface ITaggedProductsResource {
      * Add a new taggedProduct.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -63,7 +69,9 @@ public interface ITaggedProductsResource {
     @Produces({
         "application/json"
     })
-    ITaggedProductsResource.PostTaggedProductsResponse postTaggedProducts(TaggedProduct entity)
+    ITaggedProductsResource.PostTaggedProductsResponse postTaggedProducts(
+        @QueryParam("accessToken")
+        String accessToken, TaggedProduct entity)
         throws Exception
     ;
 
@@ -71,6 +79,8 @@ public interface ITaggedProductsResource {
      * Returns the taggedProduct.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param taggedProductId
      *     
      */
@@ -81,7 +91,9 @@ public interface ITaggedProductsResource {
     })
     ITaggedProductsResource.GetTaggedProductsByTaggedProductIdResponse getTaggedProductsByTaggedProductId(
         @PathParam("taggedProductId")
-        String taggedProductId)
+        String taggedProductId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -89,6 +101,8 @@ public interface ITaggedProductsResource {
      * Updates the taggedProduct.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -112,7 +126,9 @@ public interface ITaggedProductsResource {
     })
     ITaggedProductsResource.PutTaggedProductsByTaggedProductIdResponse putTaggedProductsByTaggedProductId(
         @PathParam("taggedProductId")
-        String taggedProductId, TaggedProduct entity)
+        String taggedProductId,
+        @QueryParam("accessToken")
+        String accessToken, TaggedProduct entity)
         throws Exception
     ;
 
@@ -120,6 +136,8 @@ public interface ITaggedProductsResource {
      * Deletes the taggedProduct.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param taggedProductId
      *     
      */
@@ -130,7 +148,9 @@ public interface ITaggedProductsResource {
     })
     ITaggedProductsResource.DeleteTaggedProductsByTaggedProductIdResponse deleteTaggedProductsByTaggedProductId(
         @PathParam("taggedProductId")
-        String taggedProductId)
+        String taggedProductId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

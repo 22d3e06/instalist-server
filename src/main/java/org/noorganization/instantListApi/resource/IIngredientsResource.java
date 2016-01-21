@@ -30,6 +30,8 @@ public interface IIngredientsResource {
      * 
      * @param changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Produces({
@@ -37,7 +39,9 @@ public interface IIngredientsResource {
     })
     IIngredientsResource.GetIngredientsResponse getIngredients(
         @QueryParam("changedSince")
-        Date changedSince)
+        Date changedSince,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -45,6 +49,8 @@ public interface IIngredientsResource {
      * Add a new ingredient.
      * 
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -65,7 +71,9 @@ public interface IIngredientsResource {
     @Produces({
         "application/json"
     })
-    IIngredientsResource.PostIngredientsResponse postIngredients(Ingredient entity)
+    IIngredientsResource.PostIngredientsResponse postIngredients(
+        @QueryParam("accessToken")
+        String accessToken, Ingredient entity)
         throws Exception
     ;
 
@@ -75,6 +83,8 @@ public interface IIngredientsResource {
      * 
      * @param ingredientId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @GET
     @Path("{ingredientId}")
@@ -83,7 +93,9 @@ public interface IIngredientsResource {
     })
     IIngredientsResource.GetIngredientsByIngredientIdResponse getIngredientsByIngredientId(
         @PathParam("ingredientId")
-        String ingredientId)
+        String ingredientId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 
@@ -93,6 +105,8 @@ public interface IIngredientsResource {
      * 
      * @param ingredientId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
 
@@ -116,7 +130,9 @@ public interface IIngredientsResource {
     })
     IIngredientsResource.PutIngredientsByIngredientIdResponse putIngredientsByIngredientId(
         @PathParam("ingredientId")
-        String ingredientId, Ingredient entity)
+        String ingredientId,
+        @QueryParam("accessToken")
+        String accessToken, Ingredient entity)
         throws Exception
     ;
 
@@ -126,6 +142,8 @@ public interface IIngredientsResource {
      * 
      * @param ingredientId
      *     
+     * @param accessToken
+     *     An access token is required for secured routes
      */
     @DELETE
     @Path("{ingredientId}")
@@ -134,7 +152,9 @@ public interface IIngredientsResource {
     })
     IIngredientsResource.DeleteIngredientsByIngredientIdResponse deleteIngredientsByIngredientId(
         @PathParam("ingredientId")
-        String ingredientId)
+        String ingredientId,
+        @QueryParam("accessToken")
+        String accessToken)
         throws Exception
     ;
 

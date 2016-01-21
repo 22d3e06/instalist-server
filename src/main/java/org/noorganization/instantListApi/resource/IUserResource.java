@@ -37,6 +37,8 @@ public interface IUserResource {
     /**
      * The action to register an user.
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
      *       "eMail" : "HansWurst@nonesense.bit",
@@ -50,13 +52,17 @@ public interface IUserResource {
     @Produces({
         "application/json"
     })
-    IUserResource.PostUserRegisterResponse postUserRegister(Register entity)
+    IUserResource.PostUserRegisterResponse postUserRegister(
+        @QueryParam("accessToken")
+        String accessToken, Register entity)
         throws Exception
     ;
 
     /**
      * The action to login an user.
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
      *       "eMail" : "HansWurst@nonesense.bit",
@@ -70,13 +76,17 @@ public interface IUserResource {
     @Produces({
         "application/json"
     })
-    IUserResource.PostUserLoginResponse postUserLogin(Login entity)
+    IUserResource.PostUserLoginResponse postUserLogin(
+        @QueryParam("accessToken")
+        String accessToken, Login entity)
         throws Exception
     ;
 
     /**
      * The action to reset a password of a user.
      * 
+     * @param accessToken
+     *     An access token is required for secured routes
      * @param entity
      *      e.g. {
      *       "eMail" : "HansWurst@nonesense.bit"
@@ -89,7 +99,9 @@ public interface IUserResource {
     @Produces({
         "application/json"
     })
-    IUserResource.PostUserResetPasswordResponse postUserResetPassword(ResetPassword entity)
+    IUserResource.PostUserResetPasswordResponse postUserResetPassword(
+        @QueryParam("accessToken")
+        String accessToken, ResetPassword entity)
         throws Exception
     ;
 
