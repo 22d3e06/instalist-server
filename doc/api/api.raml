@@ -1,0 +1,561 @@
+#%RAML 0.8
+title: InstantList API
+version: v1
+baseUri: http://instantlist.noorganization.org/{version}
+mediaType: application/json
+protocols: [ HTTP, HTTPS ]
+
+schemas:
+  - category: !include schemas/category.schema
+  - ingredient: !include schemas/ingredient.schema
+  - listEntry: !include schemas/listEntry.schema
+  - product: !include schemas/product.schema
+  - recipe: !include schemas/recipe.schema
+  - shoppingList: !include schemas/shoppingList.schema
+  - tag: !include schemas/tag.schema
+  - taggedProduct: !include schemas/taggedProduct.schema
+  - unit: !include schemas/unit.schema
+  - resetPassword: !include schemas/resetPassword.schema
+  - login: !include schemas/login.schema
+  - register: !include schemas/register.schema
+
+securitySchemes:
+  - basic:
+      type: Basic Authentication
+
+traits:
+  - secured:
+      securedBy: [basic]
+      displayName: Secured
+      description: Request require authentication!
+      queryParameters:
+        accessToken:
+            displayName: AccessToken
+            description: An access token is required for secured routes
+            required: true
+      responses:
+        401:
+          description: Unauthorized
+
+  - responseTypes:
+      responses:
+        201:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "The element has been created.",
+                      "relativePath": "/recipes/someuuid"
+                    },
+                  "status" : 201,
+                  "success" : true
+                }
+        202:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Accepted by server. But processed later."
+                    },
+                  "status" : 202,
+                  "success" : false
+                }
+        204:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Successfull processed by server, no content."
+                    },
+                  "status" : 204,
+                  "success" : true
+                }
+        300:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Various changes, look into the location header fields"
+                    },
+                  "status" : 300,
+                  "success" : false
+                }
+        403:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "You have no rights to do this!"
+                    },
+                  "status" : 403,
+                  "success" : false
+                }
+        405:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "This method is not supported!"
+                    },
+                  "status" : 405,
+                  "success" : false
+                }
+        408:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "The request timed out, try again!"
+                    },
+                  "status" : 408,
+                  "success" : false
+                }
+        409:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "There is a conflict with data!"
+                    },
+                  "status" : 409,
+                  "success" : false
+                }
+        410:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "The resource is gone!"
+                    },
+                  "status" : 410,
+                  "success" : false
+                }
+        413:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "The sent entity was too large!"
+                    },
+                  "status" : 413,
+                  "success" : false
+                }
+        423:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "This resource is currently locked."
+                    },
+                  "status" : 423,
+                  "success" : false
+                }
+        429:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Too many requests. Calm down!"
+                    },
+                  "status" : 429,
+                  "success" : false
+                }
+        500:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Server error!"
+                    },
+                  "status" : 500,
+                  "success" : false
+                }
+      #queryParameters:
+      #  accessToken:
+      #    displayName: AccessToken
+      #    description: An access token is required for secured routes
+      #    required: true
+
+resourceTypes:
+  - collection:
+      description: Collection of available <<resourcePathName>>.
+      get:
+        is: [responseTypes]
+        description: |
+          Get a list of <<resourcePathName>>.
+        queryParameters:
+          changedSince:
+            displayName: Changed Since
+            type: date
+            description: Requests only the elements that changed since the given date. ISO 8601 time
+            example: 2016-01-19T11:54:07+01:00
+            required: false
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  <<exampleCollection>>
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Get with error"
+                      },
+                    "status" : 400,
+                    "success" : false
+                  }
+      post:
+        is: [responseTypes]
+        description: |
+          Add a new <<resourcePathName|!singularize>>.
+        body:
+          application/json:
+            schema: <<exampleSchema>>
+            example: <<exampleItem>>
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Creation without error"
+                      },
+                    "status" : 200,
+                    "success" : true
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Creation with error"
+                      },
+                    "status" : 400,
+                    "success" : false
+                  }
+  - collection-item:
+      description: Entity representing a <<resourcePathName|!singularize>>.
+      get:
+        is: [responseTypes]
+        description: |
+          Returns the <<resourcePathName|!singularize>>.
+        responses:
+          200:
+            body:
+              application/json:
+                example: <<exampleReturnItem>>
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Get with error."
+                      },
+                    "status" : 400,
+                    "success" : false
+                  }
+      put:
+        is: [responseTypes]
+        description: |
+          Updates the <<resourcePathName|!singularize>>.
+        body:
+          application/json:
+            schema: <<exampleSchema>>
+            example: <<exampleItem>>
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Update without error"
+                      },
+                    "status" : 200,
+                    "success" : true
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                  "data" :
+                    {
+                      "msg" : "Update with error"
+                    },
+                  "status" : 400,
+                  "success" : false
+                  }
+      delete:
+        is: [responseTypes]
+        description: |
+          Deletes the <<resourcePathName|!singularize>>.
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Deletion without error"
+                      },
+                    "status" : 200,
+                    "success" : true
+                  }
+          400:
+            body:
+              application/json:
+                example: |
+                  {
+                    "data" :
+                      {
+                        "msg" : "Update with error"
+                      },
+                    "status" : 400,
+                    "success" : false
+                  }
+
+/user:
+  /token:
+    is: [secured]
+    securedBy: [basic]
+    get:
+      is: [responseTypes]
+      description: Get the auth token
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "token" : "some token"
+                    },
+                  "status" : 200,
+                  "success" : true
+                }
+        400:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "There was an error with your get token."
+                    },
+                  "status" : 400,
+                  "success" : false
+                }
+  /register:
+    post:
+      is: [responseTypes]
+      description: The action to register an user.
+      body:
+        application/json:
+          schema: register
+          example: |
+            {
+              "eMail" : "HansWurst@nonesense.bit",
+              "password": "blabla"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Registration succeeded! We sent an E-Mail to your inbox."
+                    },
+                  "status" : 200,
+                  "success" : true
+                }
+        400:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "There was an error with your registration."
+                    },
+                  "status" : 400,
+                  "success" : false
+                }
+  /login:
+    post:
+      is: [responseTypes]
+      description: The action to login an user.
+      body:
+        application/json:
+          schema: login
+          example: |
+            {
+              "eMail" : "HansWurst@nonesense.bit",
+              "password": "blabla"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "Login succeeded!",
+                      "token" : "some token"
+                    },
+                  "status" : 200,
+                  "success" : true
+                }
+        400:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "There was an error with your login."
+                    },
+                  "status" : 400,
+                  "success" : false
+                }
+
+  /resetPassword:
+    post:
+      is: [responseTypes]
+      description: The action to reset a password of a user.
+      body:
+        application/json:
+          schema: resetPassword
+          example: |
+            {
+              "eMail" : "HansWurst@nonesense.bit"
+            }
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
+                    },
+                  "status" : 200,
+                  "success" : true
+                }
+        400:
+          body:
+            application/json:
+              example: |
+                {
+                  "data" :
+                    {
+                      "msg" : "There was an error with your E-Mail address."
+                    },
+                  "status" : 400,
+                  "success" : false
+                }
+
+/categories:
+  is: [secured]
+  type:  { collection: {exampleCollection : !include examples/categoryCollectionReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
+  /{categoryId}:
+    is: [secured]
+    type:  { collection-item: {exampleReturnItem : !include examples/categoryReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
+
+/products:
+  is: [secured]
+  type: {collection: {exampleCollection : !include examples/productCollectionReturn.example , exampleSchema : product, exampleItem : !include examples/product.example} }
+  /{productId}:
+    is: [secured]
+    type: {collection-item: {exampleReturnItem : !include examples/productReturn.example, exampleSchema : product, exampleItem : !include examples/product.example} }
+/lists:
+  is: [secured]
+  type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example , exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example} }
+  /{listId}:
+    type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
+
+/recipes:
+  is: [secured]
+  type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example} }
+  /{recipeId}:
+    type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
+  /ingredients:
+    is: [secured]
+    type:  { collection: {exampleCollection : !include examples/ingredientCollectionRecipeReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }
+
+/taggedProducts:
+  is: [secured]
+  type:  { collection: {exampleCollection : , exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
+  /{taggedProductId}:
+    is: [secured]
+    type:  { collection-item: {exampleReturnItem : , exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
+
+/tags:
+  is: [secured]
+  type:  { collection: {exampleCollection : , exampleSchema : tag, exampleItem : !include examples/tag.example} }
+  /{tagId}:
+    type:  { collection-item: {exampleReturnItem : , exampleSchema : tag, exampleItem : !include examples/tag.example } }
+
+/listEntries:
+  is: [secured]
+  type:  { collection: {exampleCollection : , exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
+  /{listEntryId}:
+    is: [secured]
+    type:  { collection-item: {exampleReturnItem : , exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
+
+/units:
+  is: [secured]
+  type:  { collection: {exampleCollection : !include examples/unitCollectionReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
+  /{unitId}:
+    is: [secured]
+    type:  { collection-item: {exampleReturnItem : !include examples/unitReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
+
+/ingredients:
+  is: [secured]
+  type:  { collection: {exampleCollection : !include examples/ingredientCollectionReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }
+  /{ingredientId}:
+    is: [secured]
+    type: {collection-item: {exampleReturnItem : !include examples/ingredientReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }

@@ -1,0 +1,31 @@
+{
+  "type" : "object",
+  "$schema" : "http://json-schema.org/draft-03/schema",
+  "description" : "A single product representation",
+  "properties": {
+    "id" : {
+      "type" : "string",
+      "required": true,
+      "minLength" : 36,
+      "maxLength" : 36
+    },
+    "unit_id" : {
+      "type" : "string",
+      "minLength" : 36,
+      "maxLength" : 36
+    },
+    "name": {
+      "type" : "string",
+      "required": true
+    },
+    "defaultAmount" : {
+      "type" : "number",
+      "required": true
+    },
+    "stepAmount" : {
+      "type" : "number",
+      "required": true
+    }
+  }
+
+}
