@@ -1,104 +1,141 @@
 
 package org.noorganization.instantListApi.resource;
 
+import java.util.Date;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-import org.noorganization.instantListApi.model.Login;
-import org.noorganization.instantListApi.model.Register;
-import org.noorganization.instantListApi.model.ResetPassword;
+import org.noorganization.instantListApi.model.Tag;
 
-@Path("user")
-public interface UserResource {
+
+/**
+ * Collection of available tags.
+ * 
+ */
+@Path("tags")
+public interface ITagsResource {
 
 
     /**
-     * Get the auth token
+     * Get a list of tags.
      * 
-     * @param accessToken
-     *     An access token is required for secured routes
+     * 
+     * @param changedSince
+     *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
-    @Path("token")
     @Produces({
         "application/json"
     })
-    UserResource.GetUserTokenResponse getUserToken(
-        @QueryParam("accessToken")
-        String accessToken)
+    ITagsResource.GetTagsResponse getTags(
+        @QueryParam("changedSince")
+        Date changedSince)
         throws Exception
     ;
 
     /**
-     * The action to register an user.
+     * Add a new tag.
+     * 
      * 
      * @param entity
      *      e.g. {
-     *       "eMail" : "HansWurst@nonesense.bit",
-     *       "password": "blabla"
+
+     *       "id" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
+
+     *       "name" : "test_tag1"
+
      *     }
+
      *     
      */
     @POST
-    @Path("register")
     @Consumes("application/json")
     @Produces({
         "application/json"
     })
-    UserResource.PostUserRegisterResponse postUserRegister(Register entity)
+    ITagsResource.PostTagsResponse postTags(Tag entity)
         throws Exception
     ;
 
     /**
-     * The action to login an user.
+     * Returns the tag.
      * 
-     * @param entity
-     *      e.g. {
-     *       "eMail" : "HansWurst@nonesense.bit",
-     *       "password": "blabla"
-     *     }
+     * 
+     * @param tagId
      *     
      */
-    @POST
-    @Path("login")
-    @Consumes("application/json")
+    @GET
+    @Path("{tagId}")
     @Produces({
         "application/json"
     })
-    UserResource.PostUserLoginResponse postUserLogin(Login entity)
+    ITagsResource.GetTagsByTagIdResponse getTagsByTagId(
+        @PathParam("tagId")
+        String tagId)
         throws Exception
     ;
 
     /**
-     * The action to reset a password of a user.
+     * Updates the tag.
      * 
+     * 
+     * @param tagId
+     *     
      * @param entity
      *      e.g. {
-     *       "eMail" : "HansWurst@nonesense.bit"
+
+     *       "id" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
+
+     *       "name" : "test_tag1"
+
      *     }
+
      *     
      */
-    @POST
-    @Path("resetPassword")
+    @PUT
+    @Path("{tagId}")
     @Consumes("application/json")
     @Produces({
         "application/json"
     })
-    UserResource.PostUserResetPasswordResponse postUserResetPassword(ResetPassword entity)
+    ITagsResource.PutTagsByTagIdResponse putTagsByTagId(
+        @PathParam("tagId")
+        String tagId, Tag entity)
         throws Exception
     ;
 
-    public class GetUserTokenResponse
+    /**
+     * Deletes the tag.
+     * 
+     * 
+     * @param tagId
+     *     
+     */
+    @DELETE
+    @Path("{tagId}")
+    @Produces({
+        "application/json"
+    })
+    ITagsResource.DeleteTagsByTagIdResponse deleteTagsByTagId(
+        @PathParam("tagId")
+        String tagId)
+        throws Exception
+    ;
+
+    public class DeleteTagsByTagIdResponse
         extends org.noorganization.instantListApi.resource.support.ResponseWrapper
     {
 
 
-        private GetUserTokenResponse(Response delegate) {
+        private DeleteTagsByTagIdResponse(Response delegate) {
             super(delegate);
         }
 
@@ -106,7 +143,7 @@ public interface UserResource {
          *  e.g. {
          *   "data" :
          *     {
-         *       "token" : "some token"
+         *       "msg" : "Deletion without error"
          *     },
          *   "status" : 200,
          *   "success" : true
@@ -117,24 +154,24 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "token" : "some token"
+         *           "msg" : "Deletion without error"
          *         },
          *       "status" : 200,
          *       "success" : true
          *     }
          *     
          */
-        public static UserResource.GetUserTokenResponse withJsonOK(StreamingOutput entity) {
+        public static ITagsResource.DeleteTagsByTagIdResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.GetUserTokenResponse(responseBuilder.build());
+            return new ITagsResource.DeleteTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
          *  e.g. {
          *   "data" :
          *     {
-         *       "msg" : "There was an error with your get token."
+         *       "msg" : "Update with error"
          *     },
          *   "status" : 400,
          *   "success" : false
@@ -145,17 +182,17 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "msg" : "There was an error with your get token."
+         *           "msg" : "Update with error"
          *         },
          *       "status" : 400,
          *       "success" : false
          *     }
          *     
          */
-        public static UserResource.GetUserTokenResponse withJsonBadRequest(StreamingOutput entity) {
+        public static ITagsResource.DeleteTagsByTagIdResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.GetUserTokenResponse(responseBuilder.build());
+            return new ITagsResource.DeleteTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
@@ -182,10 +219,10 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.GetUserTokenResponse withJsonCreated(StreamingOutput entity) {
+        public static ITagsResource.DeleteTagsByTagIdResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.GetUserTokenResponse(responseBuilder.build());
+            return new ITagsResource.DeleteTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
@@ -210,67 +247,39 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.GetUserTokenResponse withJsonAccepted(StreamingOutput entity) {
+        public static ITagsResource.DeleteTagsByTagIdResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.GetUserTokenResponse(responseBuilder.build());
-        }
-
-        /**
-         * Unauthorized
-         * 
-         */
-        public static UserResource.GetUserTokenResponse withUnauthorized() {
-            Response.ResponseBuilder responseBuilder = Response.status(401);
-            return new UserResource.GetUserTokenResponse(responseBuilder.build());
+            return new ITagsResource.DeleteTagsByTagIdResponse(responseBuilder.build());
         }
 
     }
 
-    public class PostUserLoginResponse
+    public class GetTagsByTagIdResponse
         extends org.noorganization.instantListApi.resource.support.ResponseWrapper
     {
 
 
-        private PostUserLoginResponse(Response delegate) {
+        private GetTagsByTagIdResponse(Response delegate) {
             super(delegate);
         }
 
         /**
-         *  e.g. {
-         *   "data" :
-         *     {
-         *       "msg" : "Login succeeded!",
-         *       "token" : "some token"
-         *     },
-         *   "status" : 200,
-         *   "success" : true
-         * }
-         * 
          * 
          * @param entity
-         *     {
-         *       "data" :
-         *         {
-         *           "msg" : "Login succeeded!",
-         *           "token" : "some token"
-         *         },
-         *       "status" : 200,
-         *       "success" : true
-         *     }
          *     
          */
-        public static UserResource.PostUserLoginResponse withJsonOK(StreamingOutput entity) {
+        public static ITagsResource.GetTagsByTagIdResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserLoginResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
          *  e.g. {
          *   "data" :
          *     {
-         *       "msg" : "There was an error with your login."
+         *       "msg" : "Get with error."
          *     },
          *   "status" : 400,
          *   "success" : false
@@ -281,17 +290,17 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "msg" : "There was an error with your login."
+         *           "msg" : "Get with error."
          *         },
          *       "status" : 400,
          *       "success" : false
          *     }
          *     
          */
-        public static UserResource.PostUserLoginResponse withJsonBadRequest(StreamingOutput entity) {
+        public static ITagsResource.GetTagsByTagIdResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserLoginResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
@@ -318,10 +327,10 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserLoginResponse withJsonCreated(StreamingOutput entity) {
+        public static ITagsResource.GetTagsByTagIdResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserLoginResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsByTagIdResponse(responseBuilder.build());
         }
 
         /**
@@ -346,56 +355,40 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserLoginResponse withJsonAccepted(StreamingOutput entity) {
+        public static ITagsResource.GetTagsByTagIdResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserLoginResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsByTagIdResponse(responseBuilder.build());
         }
 
     }
 
-    public class PostUserRegisterResponse
+    public class GetTagsResponse
         extends org.noorganization.instantListApi.resource.support.ResponseWrapper
     {
 
 
-        private PostUserRegisterResponse(Response delegate) {
+        private GetTagsResponse(Response delegate) {
             super(delegate);
         }
 
         /**
-         *  e.g. {
-         *   "data" :
-         *     {
-         *       "msg" : "Registration succeeded! We sent an E-Mail to your inbox."
-         *     },
-         *   "status" : 200,
-         *   "success" : true
-         * }
-         * 
          * 
          * @param entity
-         *     {
-         *       "data" :
-         *         {
-         *           "msg" : "Registration succeeded! We sent an E-Mail to your inbox."
-         *         },
-         *       "status" : 200,
-         *       "success" : true
-         *     }
+         *     
          *     
          */
-        public static UserResource.PostUserRegisterResponse withJsonOK(StreamingOutput entity) {
+        public static ITagsResource.GetTagsResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserRegisterResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsResponse(responseBuilder.build());
         }
 
         /**
          *  e.g. {
          *   "data" :
          *     {
-         *       "msg" : "There was an error with your registration."
+         *       "msg" : "Get with error"
          *     },
          *   "status" : 400,
          *   "success" : false
@@ -406,17 +399,17 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "msg" : "There was an error with your registration."
+         *           "msg" : "Get with error"
          *         },
          *       "status" : 400,
          *       "success" : false
          *     }
          *     
          */
-        public static UserResource.PostUserRegisterResponse withJsonBadRequest(StreamingOutput entity) {
+        public static ITagsResource.GetTagsResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserRegisterResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsResponse(responseBuilder.build());
         }
 
         /**
@@ -443,10 +436,10 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserRegisterResponse withJsonCreated(StreamingOutput entity) {
+        public static ITagsResource.GetTagsResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserRegisterResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsResponse(responseBuilder.build());
         }
 
         /**
@@ -471,20 +464,20 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserRegisterResponse withJsonAccepted(StreamingOutput entity) {
+        public static ITagsResource.GetTagsResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserRegisterResponse(responseBuilder.build());
+            return new ITagsResource.GetTagsResponse(responseBuilder.build());
         }
 
     }
 
-    public class PostUserResetPasswordResponse
+    public class PostTagsResponse
         extends org.noorganization.instantListApi.resource.support.ResponseWrapper
     {
 
 
-        private PostUserResetPasswordResponse(Response delegate) {
+        private PostTagsResponse(Response delegate) {
             super(delegate);
         }
 
@@ -492,7 +485,7 @@ public interface UserResource {
          *  e.g. {
          *   "data" :
          *     {
-         *       "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
+         *       "msg" : "Creation without error"
          *     },
          *   "status" : 200,
          *   "success" : true
@@ -503,24 +496,24 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
+         *           "msg" : "Creation without error"
          *         },
          *       "status" : 200,
          *       "success" : true
          *     }
          *     
          */
-        public static UserResource.PostUserResetPasswordResponse withJsonOK(StreamingOutput entity) {
+        public static ITagsResource.PostTagsResponse withJsonOK(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserResetPasswordResponse(responseBuilder.build());
+            return new ITagsResource.PostTagsResponse(responseBuilder.build());
         }
 
         /**
          *  e.g. {
          *   "data" :
          *     {
-         *       "msg" : "There was an error with your E-Mail address."
+         *       "msg" : "Creation with error"
          *     },
          *   "status" : 400,
          *   "success" : false
@@ -531,17 +524,17 @@ public interface UserResource {
          *     {
          *       "data" :
          *         {
-         *           "msg" : "There was an error with your E-Mail address."
+         *           "msg" : "Creation with error"
          *         },
          *       "status" : 400,
          *       "success" : false
          *     }
          *     
          */
-        public static UserResource.PostUserResetPasswordResponse withJsonBadRequest(StreamingOutput entity) {
+        public static ITagsResource.PostTagsResponse withJsonBadRequest(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserResetPasswordResponse(responseBuilder.build());
+            return new ITagsResource.PostTagsResponse(responseBuilder.build());
         }
 
         /**
@@ -568,10 +561,10 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserResetPasswordResponse withJsonCreated(StreamingOutput entity) {
+        public static ITagsResource.PostTagsResponse withJsonCreated(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserResetPasswordResponse(responseBuilder.build());
+            return new ITagsResource.PostTagsResponse(responseBuilder.build());
         }
 
         /**
@@ -596,10 +589,135 @@ public interface UserResource {
          *     }
          *     
          */
-        public static UserResource.PostUserResetPasswordResponse withJsonAccepted(StreamingOutput entity) {
+        public static ITagsResource.PostTagsResponse withJsonAccepted(StreamingOutput entity) {
             Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
             responseBuilder.entity(entity);
-            return new UserResource.PostUserResetPasswordResponse(responseBuilder.build());
+            return new ITagsResource.PostTagsResponse(responseBuilder.build());
+        }
+
+    }
+
+    public class PutTagsByTagIdResponse
+        extends org.noorganization.instantListApi.resource.support.ResponseWrapper
+    {
+
+
+        private PutTagsByTagIdResponse(Response delegate) {
+            super(delegate);
+        }
+
+        /**
+         *  e.g. {
+         *   "data" :
+         *     {
+         *       "msg" : "Update without error"
+         *     },
+         *   "status" : 200,
+         *   "success" : true
+         * }
+         * 
+         * 
+         * @param entity
+         *     {
+         *       "data" :
+         *         {
+         *           "msg" : "Update without error"
+         *         },
+         *       "status" : 200,
+         *       "success" : true
+         *     }
+         *     
+         */
+        public static ITagsResource.PutTagsByTagIdResponse withJsonOK(StreamingOutput entity) {
+            Response.ResponseBuilder responseBuilder = Response.status(200).header("Content-Type", "application/json");
+            responseBuilder.entity(entity);
+            return new ITagsResource.PutTagsByTagIdResponse(responseBuilder.build());
+        }
+
+        /**
+         *  e.g. {
+         * "data" :
+         *   {
+         *     "msg" : "Update with error"
+         *   },
+         * "status" : 400,
+         * "success" : false
+         * }
+         * 
+         * 
+         * @param entity
+         *     {
+         *     "data" :
+         *       {
+         *         "msg" : "Update with error"
+         *       },
+         *     "status" : 400,
+         *     "success" : false
+         *     }
+         *     
+         */
+        public static ITagsResource.PutTagsByTagIdResponse withJsonBadRequest(StreamingOutput entity) {
+            Response.ResponseBuilder responseBuilder = Response.status(400).header("Content-Type", "application/json");
+            responseBuilder.entity(entity);
+            return new ITagsResource.PutTagsByTagIdResponse(responseBuilder.build());
+        }
+
+        /**
+         *  e.g. {
+         *   "data" :
+         *     {
+         *       "msg" : "The element has been created.",
+         *       "relativePath": "/recipes/someuuid"
+         *     },
+         *   "status" : 201,
+         *   "success" : true
+         * }
+         * 
+         * 
+         * @param entity
+         *     {
+         *       "data" :
+         *         {
+         *           "msg" : "The element has been created.",
+         *           "relativePath": "/recipes/someuuid"
+         *         },
+         *       "status" : 201,
+         *       "success" : true
+         *     }
+         *     
+         */
+        public static ITagsResource.PutTagsByTagIdResponse withJsonCreated(StreamingOutput entity) {
+            Response.ResponseBuilder responseBuilder = Response.status(201).header("Content-Type", "application/json");
+            responseBuilder.entity(entity);
+            return new ITagsResource.PutTagsByTagIdResponse(responseBuilder.build());
+        }
+
+        /**
+         *  e.g. {
+         *   "data" :
+         *     {
+         *       "msg" : "Accepted by server. But processed later."
+         *     },
+         *   "status" : 202,
+         *   "success" : false
+         * }
+         * 
+         * 
+         * @param entity
+         *     {
+         *       "data" :
+         *         {
+         *           "msg" : "Accepted by server. But processed later."
+         *         },
+         *       "status" : 202,
+         *       "success" : false
+         *     }
+         *     
+         */
+        public static ITagsResource.PutTagsByTagIdResponse withJsonAccepted(StreamingOutput entity) {
+            Response.ResponseBuilder responseBuilder = Response.status(202).header("Content-Type", "application/json");
+            responseBuilder.entity(entity);
+            return new ITagsResource.PutTagsByTagIdResponse(responseBuilder.build());
         }
 
     }
