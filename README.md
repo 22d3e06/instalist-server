@@ -1,6 +1,6 @@
 # Einkaufsliste Server
 
-Die Serverseite für die [Einkaufsliste](https://bitbucket.org/fhnoorg/einkaufsliste). Dient vor allem zur 
+Die Serverseite für das Plugin [InstalistSync](https://bitbucket.org/fhnoorg/instalistsynch). Dient vor allem zur 
 Synchronisation zwischen mehreren Geräten. 
 
 ## Setup
