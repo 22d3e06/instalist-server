@@ -24,6 +24,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Category {
 
+    public Category() {
+        name = "No name";
+    }
+
     /**
      * 
      * (Required)

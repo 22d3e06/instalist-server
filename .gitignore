@@ -1,6 +1,10 @@
-/.idea/workspace.xml
+# built objects.
 /target
-/target/*
-/.idea/libraries/**
+
+# specific not usable IntelliJ-Files.
 /.idea/libraries
+/.idea/uiDesigner.xml
+/.idea/workspace.xml
+
+# Locks and backups.
 *~

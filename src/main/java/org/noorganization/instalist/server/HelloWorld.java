@@ -11,6 +11,8 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 /**
  * Created by damihe on 17.01.16.
@@ -63,6 +65,7 @@ public class HelloWorld {
     // The Java method will process HTTP GET requests
     @GET
     // The Java method will produce content identified by the MIME Media type "text/plain"
+    @Path("wtf")
     @Produces(MediaType.APPLICATION_JSON)
     public AJSON getClichedMessage() {
         // Return some cliched textual content
@@ -70,6 +73,15 @@ public class HelloWorld {
         rtn.setWhat("Hello World");
         rtn.setThe("Is there someone?");
         rtn.setFuck("World is strange.");
+        return rtn;
+    }
+
+    @GET
+    @Path("error")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getErrorMessage() {
+        // Return some cliched textual content
+        Response rtn = Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).entity("Nope.").build();
         return rtn;
     }
 

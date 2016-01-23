@@ -43,7 +43,18 @@ public class CategoriesResource implements ICategoriesResource {
     }
 
     public GetCategoriesResponse getCategories(Date changedSince, String accessToken) throws Exception {
-        return null;
+        Category[] rtn = new Category[1];
+        rtn[0] = new Category();
+        StreamingOutput rtnOut = new StreamingOutput() {
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                Writer w = new BufferedWriter(new OutputStreamWriter(outputStream));
+                w.write("{bla:\"blub\"}");
+                w.flush();
+            }
+        };
+
+
+        return GetCategoriesResponse.withJsonBadRequest(rtnOut);
     }
 
     public PostCategoriesResponse postCategories(String accessToken, Category entity) throws Exception {
