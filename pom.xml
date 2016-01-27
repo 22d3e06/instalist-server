@@ -47,10 +47,5 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-          <groupId>javax.ws.rs</groupId>
-          <artifactId>jsr311-api</artifactId>
-          <version>1.1.1</version>
-        </dependency>
     </dependencies>
 </project>
