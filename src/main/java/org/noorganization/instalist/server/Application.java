@@ -8,6 +8,6 @@ import org.noorganization.instantListApi.resource.impl.CategoriesResource;
  */
 public class Application extends ResourceConfig {
     public Application() {
-        registerClasses(CategoriesResource.class);
+        registerClasses(CategoriesResource.class, HelloWorld.class);
     }
 }
