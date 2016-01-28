@@ -1,20 +1,14 @@
-{
-"status" : 200,
-"success" : true,
-"count" : 2,
-"data" :
-  [
-    {
-      "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
-      "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
-      "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8",
-      "lastChanged": 2016-01-19T11:54:07+01:00
-    },
-    {
-      "id" : "54298435-6280-4995-a454-45657b32a4cb",
-      "tagId" : "d0a19e45-0f4a-47e0-9c0a-3b73d1748f6b",
-      "productId" :  "de14221d-6958-4cf1-b099-7c6a67b2125d",
-      "lastChanged": 2016-01-19T11:54:07+01:00
-    }
-  ]
-}
+[
+  {
+    "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
+    "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
+    "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8",
+    "lastChanged": "2016-01-19T11:54:07+01:00"
+  },
+  {
+    "id" : "54298435-6280-4995-a454-45657b32a4cb",
+    "tagId" : "d0a19e45-0f4a-47e0-9c0a-3b73d1748f6b",
+    "productId" :  "de14221d-6958-4cf1-b099-7c6a67b2125d",
+    "lastChanged": "2016-01-19T11:54:07+01:00"
+  }
+]

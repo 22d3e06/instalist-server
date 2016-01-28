@@ -18,25 +18,35 @@ schemas:
   - resetPassword: !include schemas/resetPassword.schema
   - login: !include schemas/login.schema
   - register: !include schemas/register.schema
+  - error: !include schemas/error.schema
 
 securitySchemes:
   - basic:
-      type: Basic Authentication
+      type: BasicSecurityScheme Authentication
+      describedBy:
+        headers:
+          - Authorization:
+              description: |
+                Authorization-header as defined per RFC 2617. Expects the server defined user-id as user and the client defined secret as password.
+  - token:
+      type: x-token
+      describedBy:
+        queryParameters:
+          - token:
+              description: |
+                A server-generated token-string.
+                can be obtained via /user/token.
+              example: 069e74d9-207f-4679-b652-36a32695135c
+              required: true
 
 traits:
   - secured:
-      securedBy: [basic]
+      securedBy: [token]
       displayName: Secured
       description: Request require authentication!
       responses:
         401:
           description: Unauthorized
-  - hasAuth:
-      queryParameters:
-        accessToken:
-          displayName: AccessToken
-          description: An access token is required for secured routes
-          required: true
             
   - responseTypes:
       responses:
@@ -209,7 +219,7 @@ resourceTypes:
   - collection:
       description: Collection of available <<resourcePathName>>.
       get:
-        is: [responseTypes, hasAuth]
+        is: [responseTypes, secured]
         description: |
           Get a list of <<resourcePathName>>.
         queryParameters:
@@ -228,52 +238,11 @@ resourceTypes:
           400:
             body:
               application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Get with error"
-                      },
-                    "status" : 400,
-                    "success" : false
-                  }
-      post:
-        is: [responseTypes, hasAuth]
-        description: |
-          Add a new <<resourcePathName|!singularize>>.
-        body:
-          application/json:
-            schema: <<exampleSchema>>
-            example: <<exampleItem>>
-        responses:
-          200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Creation without error"
-                      },
-                    "status" : 200,
-                    "success" : true
-                  }
-          400:
-            body:
-              application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Creation with error"
-                      },
-                    "status" : 400,
-                    "success" : false
-                  }
+                schema: error
   - collection-item:
       description: Entity representing a <<resourcePathName|!singularize>>.
       get:
-        is: [responseTypes, hasAuth]
+        is: [responseTypes, secured]
         description: |
           Returns the <<resourcePathName|!singularize>>.
         responses:
@@ -284,17 +253,9 @@ resourceTypes:
           400:
             body:
               application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Get with error."
-                      },
-                    "status" : 400,
-                    "success" : false
-                  }
+                schema: error
       put:
-        is: [responseTypes, hasAuth]
+        is: [responseTypes, secured]
         description: |
           Updates the <<resourcePathName|!singularize>>.
         body:
@@ -303,65 +264,28 @@ resourceTypes:
             example: <<exampleItem>>
         responses:
           200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Update without error"
-                      },
-                    "status" : 200,
-                    "success" : true
-                  }
+            description: Update was successful.
           400:
             body:
               application/json:
-                example: |
-                  {
-                  "data" :
-                    {
-                      "msg" : "Update with error"
-                    },
-                  "status" : 400,
-                  "success" : false
-                  }
+                schema: error
       delete:
-        is: [responseTypes, hasAuth]
+        is: [responseTypes, secured]
         description: |
           Deletes the <<resourcePathName|!singularize>>.
         responses:
           200:
-            body:
-              application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Deletion without error"
-                      },
-                    "status" : 200,
-                    "success" : true
-                  }
+            description: Deletion was successful.
           400:
             body:
               application/json:
-                example: |
-                  {
-                    "data" :
-                      {
-                        "msg" : "Update with error"
-                      },
-                    "status" : 400,
-                    "success" : false
-                  }
+                schema: error
 
 /user:
   /token:
-    is: [secured]
     securedBy: [basic]
     get:
-      is: [responseTypes, hasAuth]
+      is: [responseTypes]
       description: Get the auth token
       responses:
         200:
@@ -369,137 +293,119 @@ resourceTypes:
             application/json:
               example: |
                 {
-                  "data" :
-                    {
-                      "token" : "some token"
-                    },
-                  "status" : 200,
-                  "success" : true
+                  "token" : "fdskhbvvkddscddueFSNDFSAdnandk3229df-dFSJDKMds."
                 }
         400:
           body:
             application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "There was an error with your get token."
-                    },
-                  "status" : 400,
-                  "success" : false
-                }
-  /register:
+              schema: error
+  /register_device:
     post:
-      is: [responseTypes, hasAuth]
-      description: The action to register an user.
+      is: [responseTypes]
+      description: The action to connect a new device with a group.
       body:
         application/json:
-          schema: register
           example: |
             {
-              "eMail" : "HansWurst@nonesense.bit",
-              "password": "blabla"
+              "groupid" : "AB7Zbm",
+              "secret" : "dkjhfsdcbuiufien=--ihrienncdjXXCndjjFJJED"
             }
+      responses:
+        200:
+          description: This gets returned if registration with group was successful and login is now possible.
+          body:
+            application/json:
+              example: |
+                {
+                  "deviceid" : 1337
+                }
+  /register_group:
+    post:
+      is: [responseTypes]
+      description: The action to create a new group of devices sharing lists etc.
       responses:
         200:
           body:
             application/json:
               example: |
                 {
-                  "data" :
-                    {
-                      "msg" : "Registration succeeded! We sent an E-Mail to your inbox."
-                    },
-                  "status" : 200,
-                  "success" : true
+                  "groupid": "AB7Zbm"
                 }
-        400:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "There was an error with your registration."
-                    },
-                  "status" : 400,
-                  "success" : false
-                }
-  /login:
-    post:
-      is: [responseTypes, hasAuth]
-      description: The action to login an user.
-      body:
-        application/json:
-          schema: login
-          example: |
-            {
-              "eMail" : "HansWurst@nonesense.bit",
-              "password": "blabla"
-            }
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "Login succeeded!",
-                      "token" : "some token"
-                    },
-                  "status" : 200,
-                  "success" : true
-                }
-        400:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "There was an error with your login."
-                    },
-                  "status" : 400,
-                  "success" : false
-                }
+#  /login:
+#    post:
+#      is: [responseTypes, hasAuth]
+#      description: The action to login an user.
+#      body:
+#        application/json:
+#          schema: login
+##          example: |
+#            {
+#              "eMail" : "HansWurst@nonesense.bit",
+#              "password": "blabla"
+#            }
+#      responses:
+#        200:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "Login succeeded!",
+#                      "token" : "some token"
+#                    },
+#                  "status" : 200,
+#                  "success" : true
+#                }
+#        400:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "There was an error with your login."
+#                    },
+#                  "status" : 400,
+#                  "success" : false
+#                }
 
-  /resetPassword:
-    post:
-      is: [responseTypes, hasAuth]
-      description: The action to reset a password of a user.
-      body:
-        application/json:
-          schema: resetPassword
-          example: |
-            {
-              "eMail" : "HansWurst@nonesense.bit"
-            }
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
-                    },
-                  "status" : 200,
-                  "success" : true
-                }
-        400:
-          body:
-            application/json:
-              example: |
-                {
-                  "data" :
-                    {
-                      "msg" : "There was an error with your E-Mail address."
-                    },
-                  "status" : 400,
-                  "success" : false
-                }
+#/resetPassword:
+#  post:
+#    is: [responseTypes, hasAuth]
+#    description: The action to reset a password of a user.
+#    body:
+#      application/json:
+#        schema: resetPassword
+#        example: |
+#          {
+#            "eMail" : "HansWurst@nonesense.bit"
+#          }
+#    responses:
+#      200:
+#        body:
+#          application/json:
+#             example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
+#                    },
+#                  "status" : 200,
+#                  "success" : true
+#                }
+#        400:
+#          body:
+#            application/json:
+#              example: |
+#                {
+#                  "data" :
+#                    {
+#                      "msg" : "There was an error with your E-Mail address."
+#                    },
+#                  "status" : 400,
+#                  "success" : false
+#                }
 
 /categories:
   is: [secured]

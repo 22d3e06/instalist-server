@@ -1,16 +1,11 @@
-{
-"status" : 200,
-"success" : true,
-"count" : 2,
-"data" :
-  [
+[
   {
       "id" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
       "name" : "test_Product1",
       "unitId" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
       "defaultAmount" : 1.5,
       "stepAmount" : 0.5,
-      "lastChanged": 2016-01-19T11:54:07+01:00
+      "lastChanged": "2016-01-19T11:54:07+01:00"
   },
   {
       "id" : "de14221d-6958-4cf1-b099-7c6a67b2125d",
@@ -18,7 +13,6 @@
       "unitId" : "7359a706-3303-497e-b6bb-11f34e73e7c4",
       "defaultAmount" : 0.75,
       "stepAmount" : 0.5,
-      "lastChanged": 2016-01-19T11:54:07+01:00
+      "lastChanged": "2016-01-19T11:54:07+01:00"
   }
-  ]
-}
+]

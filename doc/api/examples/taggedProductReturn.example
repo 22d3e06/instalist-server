@@ -1,11 +1,6 @@
 {
-"status" : 200,
-"success" : true,
-"data" :
-  {
-    "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
-    "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
-    "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8",
-    "lastChanged": 2016-01-19T11:54:07+01:00
-  }
+  "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
+  "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
+  "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8",
+  "lastChanged": "2016-01-19T11:54:07+01:00"
 }

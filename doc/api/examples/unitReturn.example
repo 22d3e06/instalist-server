@@ -1,10 +1,5 @@
 {
-"status" : 200,
-"success" : true,
-"data" :
-  {
-    "id" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
-    "name" : "test_Unit1",
-    "lastChanged": 2016-01-19T11:54:07+01:00
-  }
+  "id" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
+  "name" : "test_Unit1",
+  "lastChanged": "2016-01-19T11:54:07+01:00"
 }

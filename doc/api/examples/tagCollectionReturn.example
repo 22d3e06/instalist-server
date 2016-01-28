@@ -1,18 +1,12 @@
-{
-"status" : 200,
-"success" : true,
-"count" : 2,
-"data" :
-  [
+[
   {
     "id" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
     "name" : "test_tag1",
-    "lastChanged": 2016-01-19T11:54:07+01:00
+    "lastChanged": "2016-01-19T11:54:07+01:00"
   },
   {
     "id" : "d0a19e45-0f4a-47e0-9c0a-3b73d1748f6b",
     "name" : "test_tag2",
-    "lastChanged": 2016-01-19T11:54:07+01:00
+    "lastChanged": "2016-01-19T11:54:07+01:00"
   }
-  ]
-}
+]
