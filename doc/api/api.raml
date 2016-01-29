@@ -333,6 +333,18 @@ resourceTypes:
                 {
                   "groupid": "AB7Zbm"
                 }
+  /group/access_key:
+    get:
+      is: [responseTypes, secured]
+      description: The action to get a temporary access key to a group.
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {
+                  "groupid": "AB7Zbm"
+                }
 #  /login:
 #    post:
 #      is: [responseTypes, hasAuth]
