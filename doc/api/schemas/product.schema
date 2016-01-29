@@ -1,31 +1,38 @@
 {
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single product representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "unit_id" : {
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
     "name": {
-      "type" : "string",
-      "required": true
+      "id": "name",
+      "type": "string"
     },
-    "defaultAmount" : {
-      "type" : "number",
-      "required": true
+    "unitId": {
+      "id": "unitId",
+      "type": "string"
     },
-    "stepAmount" : {
-      "type" : "number",
-      "required": true
+    "defaultAmount": {
+      "id": "defaultAmount",
+      "type": "number"
+    },
+    "stepAmount": {
+      "id": "stepAmount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-
+  },
+  "required": [
+    "id",
+    "name",
+    "unitId",
+    "defaultAmount",
+    "stepAmount"
+  ]
 }

@@ -219,23 +219,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="categories__categoryId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/categories</span>/{categoryId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the category.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#categories__categoryId__put_request" data-toggle="tab">Request</a></li><li><a href="#categories__categoryId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="categories__categoryId__put_request"><h3>URI Parameters</h3><ul><li><strong>categoryId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single category representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required" : true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
   "name" : "test_Category"
 }
@@ -253,23 +258,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="categories__categoryId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/categories</span>/{categoryId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the category.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#categories__categoryId__post_request" data-toggle="tab">Request</a></li><li><a href="#categories__categoryId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="categories__categoryId__post_request"><h3>URI Parameters</h3><ul><li><strong>categoryId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single category representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required" : true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
   "name" : "test_Category"
 }
@@ -339,7 +349,7 @@
   "unitId" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
   "defaultAmount" : 1.5,
   "stepAmount" : 0.5,
-  "lastChanged": 2016-01-19T11:54:07+01:00
+  "lastChanged": "2016-01-19T11:54:07+01:00"
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/202" target="_blank">202</a></h2><p>The change was accepted. Please look again later for results.</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "/",
@@ -354,37 +364,43 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="products__productId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/products</span>/{productId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the product.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#products__productId__put_request" data-toggle="tab">Request</a></li><li><a href="#products__productId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="products__productId__put_request"><h3>URI Parameters</h3><ul><li><strong>productId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single product representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "unit_id" : {
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
     "name": {
-      "type" : "string",
-      "required": true
+      "id": "name",
+      "type": "string"
     },
-    "defaultAmount" : {
-      "type" : "number",
-      "required": true
+    "unitId": {
+      "id": "unitId",
+      "type": "string"
     },
-    "stepAmount" : {
-      "type" : "number",
-      "required": true
+    "defaultAmount": {
+      "id": "defaultAmount",
+      "type": "number"
+    },
+    "stepAmount": {
+      "id": "stepAmount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name",
+    "unitId",
+    "defaultAmount",
+    "stepAmount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "id" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
     "name" : "test_Product1",
     "unitId" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
@@ -405,37 +421,43 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="products__productId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/products</span>/{productId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the product.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#products__productId__post_request" data-toggle="tab">Request</a></li><li><a href="#products__productId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="products__productId__post_request"><h3>URI Parameters</h3><ul><li><strong>productId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single product representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
-    },
-    "unit_id" : {
-      "type" : "string",
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
     "name": {
-      "type" : "string",
-      "required": true
+      "id": "name",
+      "type": "string"
     },
-    "defaultAmount" : {
-      "type" : "number",
-      "required": true
+    "unitId": {
+      "id": "unitId",
+      "type": "string"
     },
-    "stepAmount" : {
-      "type" : "number",
-      "required": true
+    "defaultAmount": {
+      "id": "defaultAmount",
+      "type": "number"
+    },
+    "stepAmount": {
+      "id": "stepAmount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name",
+    "unitId",
+    "defaultAmount",
+    "stepAmount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
     "id" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
     "name" : "test_Product1",
     "unitId" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
@@ -499,15 +521,10 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_lists__listId_"><span class="parent">/lists</span>/{listId}</a> <span class="methods"><a href="#lists__listId__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#lists__listId__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#lists__listId__post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#lists__listId__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_lists__listId_" class="panel-collapse collapse"><div class="panel-body"><div class="resource-description"><p>Entity representing a list.</p></div><div class="list-group"><div onclick="window.location.href = '#lists__listId__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Returns the list.</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#lists__listId__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Updates the list.</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#lists__listId__post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Creates the list.</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#lists__listId__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Deletes the list.</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="lists__listId__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/lists</span>/{listId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Returns the list.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#lists__listId__get_request" data-toggle="tab">Request</a></li><li><a href="#lists__listId__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="lists__listId__get_request"><h3>URI Parameters</h3><ul><li><strong>listId</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="lists__listId__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Example</strong>:</p><pre><code>{
-"status" : 200,
-"success" : true,
-"data" :
-  {
-    "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
-    "name" : "test_List1",
-    "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
-    "lastChanged": "2016-01-19T11:54:07+01:00"
-  }
+  "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
+  "name" : "test_List1",
+  "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
+  "lastChanged": "2016-01-19T11:54:07+01:00"
 }
 </code></pre><h2>HTTP status code <a href="http://httpstatus.es/202" target="_blank">202</a></h2><p>The change was accepted. Please look again later for results.</p><h2>HTTP status code <a href="http://httpstatus.es/400" target="_blank">400</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -523,29 +540,33 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="lists__listId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/lists</span>/{listId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the list.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#lists__listId__put_request" data-toggle="tab">Request</a></li><li><a href="#lists__listId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="lists__listId__put_request"><h3>URI Parameters</h3><ul><li><strong>listId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single shoppingList representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
     },
-    "categoryId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "categoryId": {
+      "id": "categoryId",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name",
+    "categoryId"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
   "name" : "test_List1",
   "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241"
@@ -564,29 +585,33 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="lists__listId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/lists</span>/{listId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the list.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#lists__listId__post_request" data-toggle="tab">Request</a></li><li><a href="#lists__listId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="lists__listId__post_request"><h3>URI Parameters</h3><ul><li><strong>listId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single shoppingList representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
     },
-    "categoryId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "categoryId": {
+      "id": "categoryId",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name",
+    "categoryId"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
   "name" : "test_List1",
   "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241"
@@ -665,23 +690,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="recipes__recipeId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/recipes</span>/{recipeId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the recipe.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#recipes__recipeId__put_request" data-toggle="tab">Request</a></li><li><a href="#recipes__recipeId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="recipes__recipeId__put_request"><h3>URI Parameters</h3><ul><li><strong>recipeId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single recipe representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
   "name" : "test_Recipe"
 }
@@ -699,23 +729,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="recipes__recipeId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/recipes</span>/{recipeId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the recipe.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#recipes__recipeId__post_request" data-toggle="tab">Request</a></li><li><a href="#recipes__recipeId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="recipes__recipeId__post_request"><h3>URI Parameters</h3><ul><li><strong>recipeId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single recipe representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
   "name" : "test_Recipe"
 }
@@ -816,31 +851,33 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="taggedProducts__taggedProductId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/taggedProducts</span>/{taggedProductId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the taggedProduct.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#taggedProducts__taggedProductId__put_request" data-toggle="tab">Request</a></li><li><a href="#taggedProducts__taggedProductId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="taggedProducts__taggedProductId__put_request"><h3>URI Parameters</h3><ul><li><strong>taggedProductId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single taggedProduct representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "tagId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "tagId": {
+      "id": "tagId",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "tagId",
+    "productId"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
   "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
   "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8"
@@ -859,31 +896,33 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="taggedProducts__taggedProductId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/taggedProducts</span>/{taggedProductId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the taggedProduct.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#taggedProducts__taggedProductId__post_request" data-toggle="tab">Request</a></li><li><a href="#taggedProducts__taggedProductId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="taggedProducts__taggedProductId__post_request"><h3>URI Parameters</h3><ul><li><strong>taggedProductId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single taggedProduct representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "tagId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "tagId": {
+      "id": "tagId",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "tagId",
+    "productId"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "e29c2231-b351-4907-ba42-4dd59f03ad76",
   "tagId" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
   "productId" :  "87c03314-8733-4e91-b356-0f1d37dd4eb8"
@@ -956,23 +995,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="tags__tagId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/tags</span>/{tagId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the tag.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#tags__tagId__put_request" data-toggle="tab">Request</a></li><li><a href="#tags__tagId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tags__tagId__put_request"><h3>URI Parameters</h3><ul><li><strong>tagId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single tag representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
   "name" : "test_tag1"
 }
@@ -990,23 +1034,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="tags__tagId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/tags</span>/{tagId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the tag.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#tags__tagId__post_request" data-toggle="tab">Request</a></li><li><a href="#tags__tagId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="tags__tagId__post_request"><h3>URI Parameters</h3><ul><li><strong>tagId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single tag representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "da91ab7d-886e-4183-8b90-2340ef5b806e",
   "name" : "test_tag1"
 }
@@ -1082,35 +1131,38 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="listEntries__listEntryId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/listEntries</span>/{listEntryId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the listEntry.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#listEntries__listEntryId__put_request" data-toggle="tab">Request</a></li><li><a href="#listEntries__listEntryId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="listEntries__listEntryId__put_request"><h3>URI Parameters</h3><ul><li><strong>listEntryId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single listEntry representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "shoppingListId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "shoppingListId": {
+      "id": "shoppingListId",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
     },
-    "amount" : {
-      "type" : "number",
-      "required" : true
+    "amount": {
+      "id": "amount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "shoppingListId",
+    "productId",
+    "amount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
   "name" : "test_List1",
   "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241"
@@ -1129,35 +1181,38 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="listEntries__listEntryId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/listEntries</span>/{listEntryId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the listEntry.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#listEntries__listEntryId__post_request" data-toggle="tab">Request</a></li><li><a href="#listEntries__listEntryId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="listEntries__listEntryId__post_request"><h3>URI Parameters</h3><ul><li><strong>listEntryId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single listEntry representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "shoppingListId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "shoppingListId": {
+      "id": "shoppingListId",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
     },
-    "amount" : {
-      "type" : "number",
-      "required" : true
+    "amount": {
+      "id": "amount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "shoppingListId",
+    "productId",
+    "amount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
   "name" : "test_List1",
   "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241"
@@ -1234,23 +1289,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="units__unitId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/units</span>/{unitId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the unit.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#units__unitId__put_request" data-toggle="tab">Request</a></li><li><a href="#units__unitId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="units__unitId__put_request"><h3>URI Parameters</h3><ul><li><strong>unitId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single unit representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
   "name" : "test_Unit1"
 }
@@ -1268,23 +1328,28 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="units__unitId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/units</span>/{unitId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the unit.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#units__unitId__post_request" data-toggle="tab">Request</a></li><li><a href="#units__unitId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="units__unitId__post_request"><h3>URI Parameters</h3><ul><li><strong>unitId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single unit representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "name"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
   "name" : "test_Unit1"
 }
@@ -1366,35 +1431,38 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="ingredients__ingredientId__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/ingredients</span>/{ingredientId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Updates the ingredient.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#ingredients__ingredientId__put_request" data-toggle="tab">Request</a></li><li><a href="#ingredients__ingredientId__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="ingredients__ingredientId__put_request"><h3>URI Parameters</h3><ul><li><strong>ingredientId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single ingredient representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
     },
-    "recipeId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "recipeId": {
+      "id": "recipeId",
+      "type": "string"
     },
-    "amount" : {
-      "type" : "number",
-      "required" : true
+    "amount": {
+      "id": "amount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "productId",
+    "recipeId",
+    "amount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "8b4343ba-273e-417c-b89d-b7abab780cb2",
   "productId" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
   "recipeId" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
@@ -1414,35 +1482,38 @@
     "message"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Unauthorized</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="ingredients__ingredientId__post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/ingredients</span>/{ingredientId}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Creates the ingredient.</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by token</div><ul class="nav nav-tabs"><li class="active"><a href="#ingredients__ingredientId__post_request" data-toggle="tab">Request</a></li><li><a href="#ingredients__ingredientId__post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="ingredients__ingredientId__post_request"><h3>URI Parameters</h3><ul><li><strong>ingredientId</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single ingredient representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
     },
-    "recipeId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "recipeId": {
+      "id": "recipeId",
+      "type": "string"
     },
-    "amount" : {
-      "type" : "number",
-      "required" : true
+    "amount": {
+      "id": "amount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
-}
-</code></pre><p><strong>Example</strong>:</p><pre><code>{
+  },
+  "required": [
+    "id",
+    "productId",
+    "recipeId",
+    "amount"
+  ]
+}</code></pre><p><strong>Example</strong>:</p><pre><code>{
   "id" : "8b4343ba-273e-417c-b89d-b7abab780cb2",
   "productId" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
   "recipeId" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",

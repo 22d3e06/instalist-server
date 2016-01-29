@@ -1,0 +1,75 @@
+package org.noorganization.instalist.server.apiOLD.resource.impl;
+
+import org.noorganization.instalist.server.apiOLD.model.Category;
+import org.noorganization.instalist.server.apiOLD.resource.ICategoriesResource;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.*;
+import java.util.Date;
+
+/**
+ * Implementation for the category REST apiOLD
+ * Created by Lunero on 21.01.2016.
+ */
+public class CategoriesResource implements ICategoriesResource {
+
+    public GetCategoriesResponse getCategories(Date changedSince) throws Exception {
+        StreamingOutput stream = new StreamingOutput() {
+
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+                writer.write("test");
+                writer.flush();
+            }
+        };
+        return GetCategoriesResponse.withJsonOK((StreamingOutput) GetCategoriesResponse.withJsonAccepted(stream));
+    }
+
+    public PostCategoriesResponse postCategories(org.noorganization.instalist.server.apiOLD.model.Category entity) throws Exception {
+        return null;
+    }
+
+    public GetCategoriesByCategoryIdResponse getCategoriesByCategoryId(String categoryId) throws Exception {
+        return null;
+    }
+
+    public PutCategoriesByCategoryIdResponse putCategoriesByCategoryId(String categoryId, org.noorganization.instalist.server.apiOLD.model.Category entity) throws Exception {
+        return null;
+    }
+
+    public DeleteCategoriesByCategoryIdResponse deleteCategoriesByCategoryId(String categoryId) throws Exception {
+        return null;
+    }
+
+    public GetCategoriesResponse getCategories(Date changedSince, String accessToken) throws Exception {
+        Category[] rtn = new Category[1];
+        rtn[0] = new Category();
+        StreamingOutput rtnOut = new StreamingOutput() {
+            public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+                Writer w = new BufferedWriter(new OutputStreamWriter(outputStream));
+                w.write("{bla:\"blub\"}");
+                w.flush();
+            }
+        };
+
+
+        return GetCategoriesResponse.withJsonBadRequest(rtnOut);
+    }
+
+    public PostCategoriesResponse postCategories(String accessToken, Category entity) throws Exception {
+        return null;
+    }
+
+    public GetCategoriesByCategoryIdResponse getCategoriesByCategoryId(String categoryId, String accessToken) throws Exception {
+        return null;
+    }
+
+    public PutCategoriesByCategoryIdResponse putCategoriesByCategoryId(String categoryId, String accessToken, Category entity) throws Exception {
+        return null;
+    }
+
+    public DeleteCategoriesByCategoryIdResponse deleteCategoriesByCategoryId(String categoryId, String accessToken) throws Exception {
+        return null;
+    }
+}

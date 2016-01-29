@@ -1,11 +1,6 @@
 {
-"status" : 200,
-"success" : true,
-"data" :
-  {
-    "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
-    "name" : "test_List1",
-    "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
-    "lastChanged": "2016-01-19T11:54:07+01:00"
-  }
+  "id" : "1634a3d5-e240-4039-b265-653d20b679e0",
+  "name" : "test_List1",
+  "categoryId" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
+  "lastChanged": "2016-01-19T11:54:07+01:00"
 }

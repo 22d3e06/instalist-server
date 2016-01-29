@@ -1,29 +1,33 @@
 {
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single ingredient representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
     },
-    "recipeId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "recipeId": {
+      "id": "recipeId",
+      "type": "string"
     },
-    "amount" : {
-      "type" : "number",
-      "required" : true
+    "amount": {
+      "id": "amount",
+      "type": "number"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
+  },
+  "required": [
+    "id",
+    "productId",
+    "recipeId",
+    "amount"
+  ]
 }

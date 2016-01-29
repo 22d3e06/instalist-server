@@ -1,25 +1,28 @@
 {
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single taggedProduct representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "tagId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "tagId": {
+      "id": "tagId",
+      "type": "string"
     },
-    "productId" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "productId": {
+      "id": "productId",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
+  },
+  "required": [
+    "id",
+    "tagId",
+    "productId"
+  ]
 }

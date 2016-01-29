@@ -1,17 +1,23 @@
 {
-  "type" : "object",
-  "$schema" : "http://json-schema.org/draft-03/schema",
-  "description" : "A single tag representation",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "object",
   "properties": {
-    "id" : {
-      "type" : "string",
-      "required": true,
-      "minLength" : 36,
-      "maxLength" : 36
+    "id": {
+      "id": "id",
+      "type": "string"
     },
-    "name" : {
-      "type" : "string",
-      "required": true
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "lastChanged": {
+      "id": "lastChanged",
+      "type": "string"
     }
-  }
+  },
+  "required": [
+    "id",
+    "name"
+  ]
 }
