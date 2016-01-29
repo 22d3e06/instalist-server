@@ -1,6 +1,6 @@
 package org.noorganization.instalist.server;
 /*import com.sun.net.httpserver.HttpServer;
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
+import com.sun.jersey.apiOLD.container.httpserver.HttpServerFactory;
 import java.io.IOException;*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,9 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
 /**
  * Created by damihe on 17.01.16.
@@ -70,7 +68,7 @@ public class HelloWorld {
     public AJSON getClichedMessage() {
         // Return some cliched textual content
         AJSON rtn = new AJSON();
-        rtn.setWhat("Hello World");
+        rtn.setWhat(ASingleton.getInstance().toString());
         rtn.setThe("Is there someone?");
         rtn.setFuck("World is strange.");
         return rtn;
@@ -79,9 +77,9 @@ public class HelloWorld {
     @GET
     @Path("error")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getErrorMessage() {
+    public Response getErrorMessage(@Context HttpHeaders _headers) {
         // Return some cliched textual content
-        Response rtn = Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).entity("Nope.").build();
+        Response rtn = Response.status(Response.Status.UNAUTHORIZED).type(MediaType.TEXT_PLAIN_TYPE).entity("Nope." + _headers.getHeaderString(HttpHeaders.ACCEPT)).build();
         return rtn;
     }
 
