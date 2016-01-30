@@ -54,7 +54,7 @@ public class DatabaseHelper {
 
         Connection dbConnection = null;
         try {
-            dbConnection = DriverManager.getConnection(mConfig.mDatabaseUrl);
+            dbConnection = DriverManager.getConnection(_config.mDatabaseUrl);
             int dbVersion = getDatabaseVersion(dbConnection);
             System.out.println("Database-version: " + dbVersion);
             if (dbVersion == 0) {
