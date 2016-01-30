@@ -1,12 +1,8 @@
-package org.noorganization.instalist.server.api.support;
-
-import org.noorganization.instalist.server.api.UserResource;
+package org.noorganization.instalist.server.support;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import java.net.URI;
 
 /**
  * Created by damihe on 29.01.16.
@@ -75,6 +71,21 @@ public class ResponseFactory {
      * @return The generated Response.
      */
     public static Response generateNotAuthorized(Object _entity) {
+        Response.ResponseBuilder builder = Response.status(Response.Status.UNAUTHORIZED);
+        if (_entity != null) {
+            builder.type(MediaType.APPLICATION_JSON_TYPE);
+            builder.entity(_entity);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Generates a resopnse with HTTP-Code Not Authorized. May be used for indicating that
+     * authorization is missing. This variant also send an Auth-Basic requirement.
+     * @param _entity Optional json-entity (body). If null, no body will be added to the response.
+     * @return The generated Response.
+     */
+    public static Response generateNotAuthorizedWAuth(Object _entity) {
         Response.ResponseBuilder builder = Response.status(Response.Status.UNAUTHORIZED);
         //builder.location(UriBuilder.fromMethod(UserResource.class, "getUserToken").build());
         builder.header(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=InstalistServer");

@@ -1,0 +1,4 @@
+{
+  "db_version": 1,
+  "db_jdbc_url": "jdbc:mariadb://localhost/instalist?user=instalist&password=FAaYuO8s92"
+}

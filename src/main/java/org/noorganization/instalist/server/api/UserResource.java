@@ -4,7 +4,7 @@ package org.noorganization.instalist.server.api;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.noorganization.instalist.server.api.support.ResponseFactory;
+import org.noorganization.instalist.server.support.ResponseFactory;
 import org.noorganization.instalist.server.model.DeviceRegistration;
 import org.noorganization.instalist.server.model.Error;
 
@@ -55,7 +55,9 @@ public class UserResource {
         if (authHeader == null) {
             Error message = new Error();
             message.setMessage("Authentication needed.");
-            return ResponseFactory.generateNotAuthorized(message);
+            return ResponseFactory.generateNotAuthorizedWAuth(message);
+        } else {
+
         }
         System.out.println("Authorization header: " + authHeader);
         MockingObject answerObject = new MockingObject();
