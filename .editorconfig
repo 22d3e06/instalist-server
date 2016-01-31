@@ -1,0 +1,13 @@
+# Do not search for editorconfig above this directory.
+root = true
+
+[*.java]
+charset            = utf-8
+max_line_length    = 100
+
+indent_style = space
+indent_size = 4
+indent_brace_style = K&R
+continuation_indent_size = 8
+
+
