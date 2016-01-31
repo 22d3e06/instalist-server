@@ -56,7 +56,6 @@ public class DatabaseHelper {
         try {
             dbConnection = DriverManager.getConnection(_config.mDatabaseUrl);
             int dbVersion = getDatabaseVersion(dbConnection);
-            System.out.println("Database-version: " + dbVersion);
             if (dbVersion == 0) {
                 createDatabaseStructures(dbConnection);
             } else if (dbVersion < _config.mDatabaseVersion) {
