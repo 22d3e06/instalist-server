@@ -103,7 +103,7 @@ public class ResponseFactory {
      * @return The generated Response.
      */
     public static Response generateNotFound(Object _entity) {
-        Response.ResponseBuilder builder = Response.status(Response.Status.FORBIDDEN);
+        Response.ResponseBuilder builder = Response.status(Response.Status.NOT_FOUND);
         if (_entity != null) {
             builder.entity(_entity);
         }
@@ -131,6 +131,20 @@ public class ResponseFactory {
      */
     public static Response generateGone(Object _entity) {
         Response.ResponseBuilder builder = Response.status(Response.Status.GONE);
+        if (_entity != null) {
+            builder.entity(_entity);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Generates a resopnse with HTTP-Code Internal Server Error. May be used when a strange error
+     * happens. Only use in unexpected situations.
+     * @param _entity Optional entity (body). If null, no body will be added to the response.
+     * @return The generated Response.
+     */
+    public static Response generateServerError(Object _entity) {
+        Response.ResponseBuilder builder = Response.status(Response.Status.INTERNAL_SERVER_ERROR);
         if (_entity != null) {
             builder.entity(_entity);
         }

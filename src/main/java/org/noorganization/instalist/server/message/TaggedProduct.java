@@ -1,5 +1,5 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,5 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +11,21 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
     "id",
-    "name",
+    "productId",
+    "recipeId",
+    "amount",
     "lastChanged"
 })
-public class Recipe {
+public class Ingredient {
 
     @JsonProperty("id")
     private String id;
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("productId")
+    private String productId;
+    @JsonProperty("recipeId")
+    private String recipeId;
+    @JsonProperty("amount")
+    private Double amount;
     @JsonProperty("lastChanged")
     private String lastChanged;
     @JsonIgnore
@@ -45,7 +51,7 @@ public class Recipe {
         this.id = id;
     }
 
-    public Recipe withId(String id) {
+    public Ingredient withId(String id) {
         this.id = id;
         return this;
     }
@@ -53,25 +59,75 @@ public class Recipe {
     /**
      * 
      * @return
-     *     The name
+     *     The productId
      */
-    @JsonProperty("name")
-    public String getName() {
-        return name;
+    @JsonProperty("productId")
+    public String getProductId() {
+        return productId;
     }
 
     /**
      * 
-     * @param name
-     *     The name
+     * @param productId
+     *     The productId
      */
-    @JsonProperty("name")
-    public void setName(String name) {
-        this.name = name;
+    @JsonProperty("productId")
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
-    public Recipe withName(String name) {
-        this.name = name;
+    public Ingredient withProductId(String productId) {
+        this.productId = productId;
+        return this;
+    }
+
+    /**
+     * 
+     * @return
+     *     The recipeId
+     */
+    @JsonProperty("recipeId")
+    public String getRecipeId() {
+        return recipeId;
+    }
+
+    /**
+     * 
+     * @param recipeId
+     *     The recipeId
+     */
+    @JsonProperty("recipeId")
+    public void setRecipeId(String recipeId) {
+        this.recipeId = recipeId;
+    }
+
+    public Ingredient withRecipeId(String recipeId) {
+        this.recipeId = recipeId;
+        return this;
+    }
+
+    /**
+     * 
+     * @return
+     *     The amount
+     */
+    @JsonProperty("amount")
+    public Double getAmount() {
+        return amount;
+    }
+
+    /**
+     * 
+     * @param amount
+     *     The amount
+     */
+    @JsonProperty("amount")
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public Ingredient withAmount(Double amount) {
+        this.amount = amount;
         return this;
     }
 
@@ -95,7 +151,7 @@ public class Recipe {
         this.lastChanged = lastChanged;
     }
 
-    public Recipe withLastChanged(String lastChanged) {
+    public Ingredient withLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
@@ -110,7 +166,7 @@ public class Recipe {
         this.additionalProperties.put(name, value);
     }
 
-    public Recipe withAdditionalProperty(String name, Object value) {
+    public Ingredient withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }

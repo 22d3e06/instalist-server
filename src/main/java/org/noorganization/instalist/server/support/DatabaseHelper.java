@@ -1,7 +1,7 @@
 package org.noorganization.instalist.server.support;
 
 import org.mariadb.jdbc.Driver;
-import org.noorganization.instalist.server.model.AppConfiguration;
+import org.noorganization.instalist.server.message.AppConfiguration;
 
 import java.io.BufferedReader;
 import java.io.IOException;

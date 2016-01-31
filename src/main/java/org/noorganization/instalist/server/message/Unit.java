@@ -1,11 +1,13 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
+
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Generated;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
@@ -14,7 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
     "name",
     "lastChanged"
 })
-public class Tag {
+public class Unit {
 
     @JsonProperty("id")
     private String id;
@@ -45,7 +47,7 @@ public class Tag {
         this.id = id;
     }
 
-    public Tag withId(String id) {
+    public Unit withId(String id) {
         this.id = id;
         return this;
     }
@@ -70,7 +72,7 @@ public class Tag {
         this.name = name;
     }
 
-    public Tag withName(String name) {
+    public Unit withName(String name) {
         this.name = name;
         return this;
     }
@@ -95,7 +97,7 @@ public class Tag {
         this.lastChanged = lastChanged;
     }
 
-    public Tag withLastChanged(String lastChanged) {
+    public Unit withLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
@@ -110,7 +112,7 @@ public class Tag {
         this.additionalProperties.put(name, value);
     }
 
-    public Tag withAdditionalProperty(String name, Object value) {
+    public Unit withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }

@@ -1,4 +1,4 @@
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

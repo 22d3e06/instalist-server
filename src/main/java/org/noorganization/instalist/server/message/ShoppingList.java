@@ -1,5 +1,5 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,21 +11,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
     "id",
-    "shoppingListId",
-    "productId",
-    "amount",
+    "name",
+    "categoryId",
     "lastChanged"
 })
-public class ListEntry {
+public class ShoppingList {
 
     @JsonProperty("id")
     private String id;
-    @JsonProperty("shoppingListId")
-    private String shoppingListId;
-    @JsonProperty("productId")
-    private String productId;
-    @JsonProperty("amount")
-    private Double amount;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("categoryId")
+    private String categoryId;
     @JsonProperty("lastChanged")
     private String lastChanged;
     @JsonIgnore
@@ -51,7 +48,7 @@ public class ListEntry {
         this.id = id;
     }
 
-    public ListEntry withId(String id) {
+    public ShoppingList withId(String id) {
         this.id = id;
         return this;
     }
@@ -59,75 +56,50 @@ public class ListEntry {
     /**
      * 
      * @return
-     *     The shoppingListId
+     *     The name
      */
-    @JsonProperty("shoppingListId")
-    public String getShoppingListId() {
-        return shoppingListId;
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
 
     /**
      * 
-     * @param shoppingListId
-     *     The shoppingListId
+     * @param name
+     *     The name
      */
-    @JsonProperty("shoppingListId")
-    public void setShoppingListId(String shoppingListId) {
-        this.shoppingListId = shoppingListId;
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public ListEntry withShoppingListId(String shoppingListId) {
-        this.shoppingListId = shoppingListId;
+    public ShoppingList withName(String name) {
+        this.name = name;
         return this;
     }
 
     /**
      * 
      * @return
-     *     The productId
+     *     The categoryId
      */
-    @JsonProperty("productId")
-    public String getProductId() {
-        return productId;
+    @JsonProperty("categoryId")
+    public String getCategoryId() {
+        return categoryId;
     }
 
     /**
      * 
-     * @param productId
-     *     The productId
+     * @param categoryId
+     *     The categoryId
      */
-    @JsonProperty("productId")
-    public void setProductId(String productId) {
-        this.productId = productId;
+    @JsonProperty("categoryId")
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public ListEntry withProductId(String productId) {
-        this.productId = productId;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The amount
-     */
-    @JsonProperty("amount")
-    public Double getAmount() {
-        return amount;
-    }
-
-    /**
-     * 
-     * @param amount
-     *     The amount
-     */
-    @JsonProperty("amount")
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public ListEntry withAmount(Double amount) {
-        this.amount = amount;
+    public ShoppingList withCategoryId(String categoryId) {
+        this.categoryId = categoryId;
         return this;
     }
 
@@ -151,7 +123,7 @@ public class ListEntry {
         this.lastChanged = lastChanged;
     }
 
-    public ListEntry withLastChanged(String lastChanged) {
+    public ShoppingList withLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
@@ -166,7 +138,7 @@ public class ListEntry {
         this.additionalProperties.put(name, value);
     }
 
-    public ListEntry withAdditionalProperty(String name, Object value) {
+    public ShoppingList withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }

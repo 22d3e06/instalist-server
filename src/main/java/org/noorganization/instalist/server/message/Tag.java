@@ -1,5 +1,5 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,23 +12,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonPropertyOrder({
     "id",
     "name",
-    "unitId",
-    "defaultAmount",
-    "stepAmount",
     "lastChanged"
 })
-public class Product {
+public class Tag {
 
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("unitId")
-    private String unitId;
-    @JsonProperty("defaultAmount")
-    private Double defaultAmount;
-    @JsonProperty("stepAmount")
-    private Double stepAmount;
     @JsonProperty("lastChanged")
     private String lastChanged;
     @JsonIgnore
@@ -54,7 +45,7 @@ public class Product {
         this.id = id;
     }
 
-    public Product withId(String id) {
+    public Tag withId(String id) {
         this.id = id;
         return this;
     }
@@ -79,83 +70,8 @@ public class Product {
         this.name = name;
     }
 
-    public Product withName(String name) {
+    public Tag withName(String name) {
         this.name = name;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The unitId
-     */
-    @JsonProperty("unitId")
-    public String getUnitId() {
-        return unitId;
-    }
-
-    /**
-     * 
-     * @param unitId
-     *     The unitId
-     */
-    @JsonProperty("unitId")
-    public void setUnitId(String unitId) {
-        this.unitId = unitId;
-    }
-
-    public Product withUnitId(String unitId) {
-        this.unitId = unitId;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The defaultAmount
-     */
-    @JsonProperty("defaultAmount")
-    public Double getDefaultAmount() {
-        return defaultAmount;
-    }
-
-    /**
-     * 
-     * @param defaultAmount
-     *     The defaultAmount
-     */
-    @JsonProperty("defaultAmount")
-    public void setDefaultAmount(Double defaultAmount) {
-        this.defaultAmount = defaultAmount;
-    }
-
-    public Product withDefaultAmount(Double defaultAmount) {
-        this.defaultAmount = defaultAmount;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The stepAmount
-     */
-    @JsonProperty("stepAmount")
-    public Double getStepAmount() {
-        return stepAmount;
-    }
-
-    /**
-     * 
-     * @param stepAmount
-     *     The stepAmount
-     */
-    @JsonProperty("stepAmount")
-    public void setStepAmount(Double stepAmount) {
-        this.stepAmount = stepAmount;
-    }
-
-    public Product withStepAmount(Double stepAmount) {
-        this.stepAmount = stepAmount;
         return this;
     }
 
@@ -179,7 +95,7 @@ public class Product {
         this.lastChanged = lastChanged;
     }
 
-    public Product withLastChanged(String lastChanged) {
+    public Tag withLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
@@ -194,7 +110,7 @@ public class Product {
         this.additionalProperties.put(name, value);
     }
 
-    public Product withAdditionalProperty(String name, Object value) {
+    public Tag withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }

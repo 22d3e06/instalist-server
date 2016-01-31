@@ -1,8 +1,6 @@
 
-package org.noorganization.instalist.server.model;
+package org.noorganization.instalist.server.message;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -12,21 +10,16 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonPropertyOrder({
     "id",
     "name",
-    "categoryId",
     "lastChanged"
 })
-public class ShoppingList {
+public class Category extends EntityObject {
 
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("categoryId")
-    private String categoryId;
     @JsonProperty("lastChanged")
     private String lastChanged;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
@@ -48,7 +41,7 @@ public class ShoppingList {
         this.id = id;
     }
 
-    public ShoppingList withId(String id) {
+    public Category withId(String id) {
         this.id = id;
         return this;
     }
@@ -73,33 +66,8 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public ShoppingList withName(String name) {
+    public Category withName(String name) {
         this.name = name;
-        return this;
-    }
-
-    /**
-     * 
-     * @return
-     *     The categoryId
-     */
-    @JsonProperty("categoryId")
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    /**
-     * 
-     * @param categoryId
-     *     The categoryId
-     */
-    @JsonProperty("categoryId")
-    public void setCategoryId(String categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public ShoppingList withCategoryId(String categoryId) {
-        this.categoryId = categoryId;
         return this;
     }
 
@@ -123,24 +91,8 @@ public class ShoppingList {
         this.lastChanged = lastChanged;
     }
 
-    public ShoppingList withLastChanged(String lastChanged) {
+    public Category withLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
         return this;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
-    public ShoppingList withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
-    }
-
 }

@@ -3,11 +3,10 @@ package org.noorganization.instalist.server;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.noorganization.instalist.server.api.UserResource;
-import org.noorganization.instalist.server.model.AppConfiguration;
+import org.noorganization.instalist.server.message.AppConfiguration;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by damihe on 23.01.16.

@@ -25,36 +25,26 @@ public class AuthHelper {
     HashMap<String, AuthInfo> mClients;
 
     /**
+     * Check whether authenticated device is authorized to group.
+     * @param _token The token for identifying authenticated device.
+     * @return Whether authorized or not. False, if token is invalid.
+     */
+    public boolean getIsAuthorizedToGroup(String _token) {
+        if (!mClients.containsKey(_token))
+            return false;
+        return mClients.get(_token).authorized;
+    }
+
+    /**
      * Searches a group by authenticated client.
-     * @param _db A database-connection to use for the search.
      * @param _token The token identifying the client.
      * @return Either a positive group id or a negative number, if no group was found for the
      * token.
      */
-    public int getGroupIdByToken(Connection _db, String _token) {
-        int deviceId = getDeviceIdByToken(_token);
-        if (deviceId < 0)
+    public int getGroupIdByToken(String _token) {
+        if (_token == null || !mClients.containsKey(_token))
             return -1;
-
-        int rtn = -1;
-        PreparedStatement groupFindStmt = null;
-        try {
-            groupFindStmt = _db.prepareStatement("SELECT devicegroup_id FROM devices WHERE id = ?");
-            groupFindStmt.setInt(1, deviceId);
-            ResultSet groupRS = groupFindStmt.executeQuery();
-            if (groupRS.next())
-                rtn = groupRS.getInt("devicegroup_id");
-            groupRS.close();
-        } catch (SQLException _e) {
-            _e.printStackTrace();
-        } finally {
-            if (groupFindStmt != null) {
-                try {
-                    groupFindStmt.close();
-                } catch (SQLException _e) {}
-            }
-        }
-        return rtn;
+        return mClients.get(_token).groupId;
     }
 
     /**
@@ -97,13 +87,14 @@ public class AuthHelper {
 
         PreparedStatement deviceInfo = null;
         try {
-            deviceInfo = _db.prepareStatement("SELECT autorizedtogroup, secret FROM " +
-                    "devices WHERE id = ?");
+            deviceInfo = _db.prepareStatement("SELECT autorizedtogroup, secret, devicegroup_id " +
+                    "FROM devices WHERE id = ?");
             deviceInfo.setInt(1, deviceId);
             ResultSet deviceResult = deviceInfo.executeQuery();
             if (deviceResult.next()) {
                 String savedSecret = deviceResult.getString("secret");
                 boolean isAuthorized = deviceResult.getBoolean("autorizedtogroup");
+                int deviceGroup = deviceResult.getInt("devicegroup_id");
                 deviceResult.close();
 
                 if (BCrypt.checkpw(secret, savedSecret)){
@@ -119,6 +110,7 @@ public class AuthHelper {
                     authenticated.deviceId = deviceId;
                     authenticated.authorized = isAuthorized;
                     authenticated.authenticated = new Date();
+                    authenticated.groupId = deviceGroup;
                     mClients.put(token, authenticated);
                     return token;
                 } else
@@ -170,5 +162,6 @@ public class AuthHelper {
         public int     deviceId;
         public boolean authorized;
         public Date    authenticated;
+        public int     groupId;
     }
 }
