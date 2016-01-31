@@ -21,17 +21,40 @@ public class AuthHelper {
     private static AuthHelper sInstance;
 
     private SecureRandom mRandom;
-    private HashMap<String, AuthInfo> mClients;
+
+    HashMap<String, AuthInfo> mClients;
 
     /**
      * Searches a group by authenticated client.
      * @param _db A database-connection to use for the search.
      * @param _token The token identifying the client.
-     * @return Either a prositive group id or a negative number, if no group was found for the
+     * @return Either a positive group id or a negative number, if no group was found for the
      * token.
      */
     public int getGroupIdByToken(Connection _db, String _token) {
-        return -1;
+        int deviceId = getDeviceIdByToken(_token);
+        if (deviceId < 0)
+            return -1;
+
+        int rtn = -1;
+        PreparedStatement groupFindStmt = null;
+        try {
+            groupFindStmt = _db.prepareStatement("SELECT devicegroup_id FROM devices WHERE id = ?");
+            groupFindStmt.setInt(1, deviceId);
+            ResultSet groupRS = groupFindStmt.executeQuery();
+            if (groupRS.next())
+                rtn = groupRS.getInt("devicegroup_id");
+            groupRS.close();
+        } catch (SQLException _e) {
+            _e.printStackTrace();
+        } finally {
+            if (groupFindStmt != null) {
+                try {
+                    groupFindStmt.close();
+                } catch (SQLException _e) {}
+            }
+        }
+        return rtn;
     }
 
     /**
@@ -40,7 +63,10 @@ public class AuthHelper {
      * @return Either a positive device id or a negative number, if no authentication was found.
      */
     public int getDeviceIdByToken(String _token) {
-        return -1;
+        if (_token == null || !mClients.containsKey(_token))
+            return -1;
+
+        return mClients.get(_token).deviceId;
     }
 
     /**
