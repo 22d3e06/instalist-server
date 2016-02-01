@@ -9,10 +9,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.noorganization.instalist.server.CommonData;
-import org.noorganization.instalist.server.message.DeviceRegistration;
-import org.noorganization.instalist.server.message.DeviceRegistrationAck;
-import org.noorganization.instalist.server.message.Group;
-import org.noorganization.instalist.server.message.Token;
+import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.support.AuthHelper;
 
 import javax.ws.rs.client.Entity;
@@ -234,9 +231,34 @@ public class UserResourceTest extends JerseyTest{
         assertTrue(newGroupCreated.after(new Date(System.currentTimeMillis() - 15000)));
     }
 
-    @Ignore("Not implemented yet.")
     @Test
     public void testGetUserGroupDevices() throws Exception {
+        final String url = "/user/group/devices";
+
+        Response noTokenResponse = target(url).request().get();
+        assertEquals(401, noTokenResponse.getStatus());
+        Response badTokenResponse = target(url).queryParam("token", "invalidtoken").request().get();
+        assertEquals(401, badTokenResponse.getStatus());
+
+        String token = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64
+                .encodeAsString(mDeviceWAuth + ":" + mData.sSecret));
+        Response okResponse = target(url).queryParam("token", token).request().get();
+        assertEquals(200, okResponse.getStatus());
+        DeviceInfo[] deviceInfos = okResponse.readEntity(DeviceInfo[].class);
+        assertEquals(2, deviceInfos.length);
+        for (DeviceInfo info : deviceInfos) {
+            if (info.getId() == null)
+                fail();
+            if (info.getId() == mDeviceWAuth) {
+                assertEquals("dev1", info.getName());
+                assertTrue(info.getAuthorized());
+            } else if(info.getId() == mDeviceWOAuth) {
+                assertEquals("dev2", info.getName());
+                assertFalse(info.getAuthorized());
+            } else {
+                fail("Unknown id.");
+            }
+        }
     }
 
     @Ignore("Not implemented yet.")

@@ -125,8 +125,8 @@ public class DatabaseHelper {
         int rtn = 0;
         Statement dbVersionCheckStmt = _db.createStatement();
         try {
-            ResultSet dbVersionResult = dbVersionCheckStmt.executeQuery(
-                    "SELECT value_int FROM application_preferences WHERE preference = 'dbversion'");
+            ResultSet dbVersionResult = dbVersionCheckStmt.executeQuery("SELECT value_int FROM " +
+                    "application_preferences WHERE preference = 'dbversion'");
             if (dbVersionResult.next()) {
                 rtn = dbVersionResult.getInt("value_int");
             }

@@ -15,6 +15,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.security.SecureRandom;
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("/user")
 public class UserResource {
@@ -142,7 +144,39 @@ public class UserResource {
     @Path("group/devices")
     @Produces({ "application/json" })
     public Response getUserGroupDevices(@QueryParam("token") String _token) throws Exception {
-        return null;
+        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+
+        int groupId = mAuthHelper.getGroupIdByToken(_token);
+
+        Connection db = DatabaseHelper.getInstance().getConnection();
+        PreparedStatement devicesStmt = db.prepareStatement("SELECT id, name, autorizedtogroup FROM " +
+                "devices WHERE devicegroup_id = ?");
+        devicesStmt.setInt(1, groupId);
+        ResultSet devicesRS = devicesStmt.executeQuery();
+        if (!devicesRS.first()) {
+            devicesRS.close();
+            devicesStmt.close();
+            db.close();
+
+            System.err.println("Found group without devices. Something is wrong with database!");
+            return ResponseFactory.generateServerError(new Error().withMessage("Could not " +
+                    "retrieve devices for group."));
+        }
+
+        List<DeviceInfo> devices = new LinkedList<DeviceInfo>();
+        do {
+            DeviceInfo currentInfo = new DeviceInfo();
+            currentInfo.setId(devicesRS.getInt("id"));
+            currentInfo.setName(devicesRS.getString("name"));
+            currentInfo.setAuthorized(devicesRS.getBoolean("autorizedtogroup"));
+            devices.add(currentInfo);
+        } while (devicesRS.next());
+
+        devicesRS.close();
+        devicesStmt.close();
+        db.close();
+        return ResponseFactory.generateOK(devices);
     }
 
     @PUT
