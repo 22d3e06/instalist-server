@@ -19,6 +19,7 @@ schemas:
   - login: !include schemas/login.schema
   - register: !include schemas/register.schema
   - error: !include schemas/error.schema
+  - deviceinfo: !include schemas/deviceinfo.schema
 
 securitySchemes:
   - basic:
@@ -46,21 +47,25 @@ traits:
       description: Request require authentication!
       responses:
         401:
-          description: Unauthorized
-            
-  - responseTypes:
+          description: Unauthorized           
+  - accepted:
       responses:
         202:
           description: The change was accepted. Please look again later for results.
   - added:
       responses:
         201:
-          description: The element was correctly added.
+          description: The element was correctly added. The Answer depends on type of data. Usually a JSON with either id or uuid.
+  - badrequest:
+      responses:
+        400:
+          description: Sent data was incomplete or wrong.
           body:
             application/json:
+              schema: error
               example: |
                 {
-                  "uuid": "522353e8-fd6d-465a-bca9-862d7633078e"
+                  "message": "sent data was incomplete."
                 }
 #        204:
 #          body:
@@ -206,7 +211,7 @@ resourceTypes:
   - collection:
       description: Collection of available <<resourcePathName>>.
       get:
-        is: [responseTypes, secured]
+        is: [secured]
         description: |
           Get a list of <<resourcePathName>>.
         queryParameters:
@@ -229,7 +234,7 @@ resourceTypes:
   - collection-item:
       description: Entity representing a <<resourcePathName|!singularize>>.
       get:
-        is: [responseTypes, secured]
+        is: [secured]
         description: |
           Returns the <<resourcePathName|!singularize>>.
         responses:
@@ -242,7 +247,7 @@ resourceTypes:
               application/json:
                 schema: error
       put:
-        is: [responseTypes, secured]
+        is: [secured, badrequest]
         description: |
           Updates the <<resourcePathName|!singularize>>.
         body:
@@ -257,7 +262,7 @@ resourceTypes:
               application/json:
                 schema: error
       post:
-        is: [responseTypes, secured, added]
+        is: [secured, added, badrequest]
         description: |
           Creates the <<resourcePathName|!singularize>>.
         body:
@@ -272,7 +277,7 @@ resourceTypes:
               application/json:
                 schema: error
       delete:
-        is: [responseTypes, secured]
+        is: [secured, badrequest]
         description: |
           Deletes the <<resourcePathName|!singularize>>.
         responses:
@@ -287,7 +292,6 @@ resourceTypes:
   /token:
     securedBy: [basic]
     get:
-      is: [responseTypes]
       description: Get the auth token
       responses:
         200:
@@ -297,13 +301,17 @@ resourceTypes:
                 {
                   "token" : "fdskhbvvkddscddueFSNDFSAdnandk3229df-dFSJDKMds."
                 }
-        400:
+        401:
           body:
             application/json:
               schema: error
+              example: |
+                {
+                  "message": "Login failed"
+                }
   /register_device:
     post:
-      is: [responseTypes, added]
+      is: [added, accepted, badrequest]
       description: The action to connect a new device with a group.
       body:
         application/json:
@@ -323,7 +331,6 @@ resourceTypes:
                 }
   /register_group:
     post:
-      is: [responseTypes]
       description: The action to create a new group of devices sharing lists etc.
       responses:
         200:
@@ -333,9 +340,53 @@ resourceTypes:
                 {
                   "groupid": "AB7Zbm"
                 }
+  /group/devices:
+    get:
+      is: [secured]
+      description: Get a list of all devices in group.
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                [
+                  {
+                    "id": 5,
+                    "name": "dev1",
+                    "authorized": true
+                  },
+                  {
+                    "id": 4229,
+                    "name": "homephone",
+                    "authorized": false
+                  }
+                ]
+              schema: deviceinfo
+    put:
+      is: [secured, badrequest]
+      description: Modify devices. Not all attributes need to be set.
+      body:
+        application/json:
+          schema: deviceinfo
+      responses:
+        200:
+          description: All changes were applied. No data.
+    delete:
+      is: [secured, badrequest]
+      description: Delete devices.
+      body:
+        application/json:
+          example: |
+            [5, 4229]
+      responses:
+        200:
+          description: All requested devices were deleted. No data.
+        404:
+          description: One or more devices were not found. No data.
+        
   /group/access_key:
     get:
-      is: [responseTypes, secured]
+      is: [secured]
       description: The action to get a temporary access key to a group.
       responses:
         200:
@@ -345,81 +396,6 @@ resourceTypes:
                 {
                   "groupid": "AB7Zbm"
                 }
-#  /login:
-#    post:
-#      is: [responseTypes, hasAuth]
-#      description: The action to login an user.
-#      body:
-#        application/json:
-#          schema: login
-##          example: |
-#            {
-#              "eMail" : "HansWurst@nonesense.bit",
-#              "password": "blabla"
-#            }
-#      responses:
-#        200:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "Login succeeded!",
-#                      "token" : "some token"
-#                    },
-#                  "status" : 200,
-#                  "success" : true
-#                }
-#        400:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "There was an error with your login."
-#                    },
-#                  "status" : 400,
-#                  "success" : false
-#                }
-
-#/resetPassword:
-#  post:
-#    is: [responseTypes, hasAuth]
-#    description: The action to reset a password of a user.
-#    body:
-#      application/json:
-#        schema: resetPassword
-#        example: |
-#          {
-#            "eMail" : "HansWurst@nonesense.bit"
-#          }
-#    responses:
-#      200:
-#        body:
-#          application/json:
-#             example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "E-Mail was sent to your inbox. Click the link to reset the password!"
-#                    },
-#                  "status" : 200,
-#                  "success" : true
-#                }
-#        400:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "There was an error with your E-Mail address."
-#                    },
-#                  "status" : 400,
-#                  "success" : false
-#                }
 
 /categories:
   is: [secured]

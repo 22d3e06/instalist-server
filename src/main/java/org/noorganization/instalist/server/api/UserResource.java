@@ -138,6 +138,29 @@ public class UserResource {
             return ResponseFactory.generateCreated(rtnEntity);
     }
 
+    @GET
+    @Path("group/devices")
+    @Produces({ "application/json" })
+    public Response getUserGroupDevices(@QueryParam("token") String _token) throws Exception {
+        return null;
+    }
+
+    @PUT
+    @Path("group/devices")
+    @Produces({ "application/json" })
+    public Response putUserGroupDevices(@QueryParam("token") String _token, DeviceInfo[]
+            _devicesToUpdate) throws Exception {
+        return null;
+    }
+
+    @DELETE
+    @Path("group/devices")
+    @Produces({ "application/json" })
+    public Response deleteUserGroupDevices(@QueryParam("token") String _token, int[]
+            _devicesToDelete) throws Exception {
+        return null;
+    }
+
     /**
      * The action to get a temporary access key to a group.
      * 

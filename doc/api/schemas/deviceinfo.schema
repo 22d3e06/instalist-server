@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "/",
+  "type": "array",
+  "items": {
+    "id": "1",
+    "type": "object",
+    "properties": {
+      "id": {
+        "id": "id",
+        "type": "integer"
+      },
+      "name": {
+        "id": "name",
+        "type": "string"
+      },
+      "authorized": {
+        "id": "authorized",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id"
+    ]
+  },
+  "required": [
+    "1"
+  ]
+} 

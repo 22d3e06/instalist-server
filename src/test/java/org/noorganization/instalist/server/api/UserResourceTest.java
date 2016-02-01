@@ -6,6 +6,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.message.DeviceRegistration;
@@ -231,5 +232,20 @@ public class UserResourceTest extends JerseyTest{
         cleanUpStmt.executeUpdate();
         cleanUpStmt.close();
         assertTrue(newGroupCreated.after(new Date(System.currentTimeMillis() - 15000)));
+    }
+
+    @Ignore("Not implemented yet.")
+    @Test
+    public void testGetUserGroupDevices() throws Exception {
+    }
+
+    @Ignore("Not implemented yet.")
+    @Test
+    public void testPutUserGroupDevices() throws Exception {
+    }
+
+    @Ignore("Not implemented yet.")
+    @Test
+    public void testDeleteUserGroupDevices() throws Exception {
     }
 }
