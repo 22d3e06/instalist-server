@@ -261,13 +261,82 @@ public class UserResourceTest extends JerseyTest{
         }
     }
 
-    @Ignore("Not implemented yet.")
     @Test
     public void testPutUserGroupDevices() throws Exception {
+        final String url = "/user/group/devices";
+
+        Response noTokenResponse = target(url).request().put(Entity.json(new DeviceInfo[0]));
+        assertEquals(401, noTokenResponse.getStatus());
+        Response badTokenResponse = target(url).queryParam("token", "invalidtoken").request().
+                put(Entity.json(new DeviceInfo[0]));
+        assertEquals(401, badTokenResponse.getStatus());
+
+        String token = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64
+                .encodeAsString(mDeviceWAuth + ":" + mData.sSecret));
+        Response noDataResponse = target(url).queryParam("token", token).request().
+                put(Entity.json(new DeviceInfo[0]));
+        assertEquals(400, noDataResponse.getStatus());
+
+        Response wrongDataResponse = target(url).queryParam("token", token).request().put(
+                Entity.json(new DeviceInfo[]{
+                        new DeviceInfo().withAuthorization(true).withName("none")}));
+        assertEquals(400, wrongDataResponse.getStatus());
+
+        Response okResponse = target(url).queryParam("token", token).request().put(
+                Entity.json(new DeviceInfo[]{
+                        new DeviceInfo().withId(mDeviceWOAuth).withAuthorization(true)
+                }));
+        assertEquals(200, okResponse.getStatus());
+        PreparedStatement checkChangedDev2Stmt = mData.mDb.prepareStatement("SELECT name, " +
+                "devicegroup_id, autorizedtogroup, secret FROM devices WHERE id = ?");
+        checkChangedDev2Stmt.setInt(1, mDeviceWOAuth);
+        ResultSet checkChangedDev2RS = checkChangedDev2Stmt.executeQuery();
+        assertTrue(checkChangedDev2RS.first());
+        assertEquals("dev2", checkChangedDev2RS.getString("name"));
+        assertEquals(mGroup, checkChangedDev2RS.getInt("devicegroup_id"));
+        assertTrue(checkChangedDev2RS.getBoolean("autorizedtogroup"));
+        assertEquals(mData.sEncryptedSecret, checkChangedDev2RS.getString("secret"));
+        checkChangedDev2RS.close();
+        checkChangedDev2Stmt.close();
     }
 
-    @Ignore("Not implemented yet.")
     @Test
     public void testDeleteUserGroupDevices() throws Exception {
+        final String url = "/user/group/devices";
+
+        Response noTokenResponse = target(url).queryParam("deviceid", 0).request().delete();
+        assertEquals(401, noTokenResponse.getStatus());
+        Response badTokenResponse = target(url).queryParam("token", "invalidtoken").
+                queryParam("deviceid", 0).request().delete();
+        assertEquals(401, badTokenResponse.getStatus());
+
+        String token = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
+                encodeAsString(mDeviceWAuth + ":" + mData.sSecret));
+        Response noDataResponse = target(url).queryParam("token", token).request().delete();
+        assertEquals(400, noDataResponse.getStatus());
+
+        Response okResponse = target(url).queryParam("token", token).
+                queryParam("deviceid", mDeviceWOAuth).request().delete();
+        assertEquals(200, okResponse.getStatus());
+        PreparedStatement checkRemovedDev2Stmt = mData.mDb.prepareStatement("SELECT COUNT(id) " +
+                "FROM devices WHERE id = ?");
+        checkRemovedDev2Stmt.setInt(1, mDeviceWOAuth);
+        ResultSet checkRemovedDev2RS = checkRemovedDev2Stmt.executeQuery();
+        checkRemovedDev2RS.first();
+        assertEquals(0, checkRemovedDev2RS.getInt(1));
+        checkRemovedDev2RS.close();
+        checkRemovedDev2Stmt.close();
+
+        Response okResponse2 = target(url).queryParam("token", token).
+                queryParam("deviceid", mDeviceWAuth).request().delete();
+        assertEquals(200, okResponse2.getStatus());
+        PreparedStatement checkRemovedGroupStmt = mData.mDb.prepareStatement("SELECT COUNT(id) " +
+                "FROM devicegroups WHERE id = ?");
+        checkRemovedGroupStmt.setInt(1, mGroup);
+        ResultSet checkRemovedGroupRS = checkRemovedGroupStmt.executeQuery();
+        checkRemovedGroupRS.first();
+        assertEquals(0, checkRemovedGroupRS.getInt(1));
+        checkRemovedGroupRS.close();
+        checkRemovedGroupStmt.close();
     }
 }
