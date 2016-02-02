@@ -2,6 +2,7 @@ package org.noorganization.instalist.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.noorganization.instalist.server.api.CategoriesResource;
 import org.noorganization.instalist.server.api.UserResource;
 import org.noorganization.instalist.server.message.AppConfiguration;
 import org.noorganization.instalist.server.support.DatabaseHelper;
@@ -15,6 +16,7 @@ public class Application extends ResourceConfig {
 
     public Application() {
         register(UserResource.class);
+        register(CategoriesResource.class);
         register(HelloWorld.class);
 
         ObjectMapper jsonMapper = new ObjectMapper();

@@ -4,95 +4,91 @@ package org.noorganization.instalist.server.message;
 import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.noorganization.instalist.server.support.DateHelper;
+
+import java.util.Date;
 
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @Generated("org.jsonschema2pojo")
 @JsonPropertyOrder({
-    "id",
+    "uuid",
     "name",
-    "lastChanged"
+    "lastchanged",
+    "deleted"
 })
 public class Category extends EntityObject {
 
-    @JsonProperty("id")
-    private String id;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("lastChanged")
-    private String lastChanged;
+    private String mUUID;
+    private String mName;
+    private String mLastChanged;
+    private Boolean mDeleted;
 
-    /**
-     * 
-     * @return
-     *     The id
-     */
-    @JsonProperty("id")
-    public String getId() {
-        return id;
+    @JsonProperty("uuid")
+    public String getUUID() {
+        return mUUID;
     }
 
-    /**
-     * 
-     * @param id
-     *     The id
-     */
-    @JsonProperty("id")
-    public void setId(String id) {
-        this.id = id;
+    @JsonProperty("uuid")
+    public void setUUID(String id) {
+        this.mUUID = id;
     }
 
     public Category withId(String id) {
-        this.id = id;
+        this.mUUID = id;
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The name
-     */
     @JsonProperty("name")
     public String getName() {
-        return name;
+        return mName;
     }
 
-    /**
-     * 
-     * @param name
-     *     The name
-     */
     @JsonProperty("name")
     public void setName(String name) {
-        this.name = name;
+        this.mName = name;
     }
 
     public Category withName(String name) {
-        this.name = name;
+        this.mName = name;
         return this;
     }
 
-    /**
-     * 
-     * @return
-     *     The lastChanged
-     */
-    @JsonProperty("lastChanged")
+    @JsonProperty("lastchanged")
     public String getLastChanged() {
-        return lastChanged;
+        return mLastChanged;
     }
 
-    /**
-     * 
-     * @param lastChanged
-     *     The lastChanged
-     */
-    @JsonProperty("lastChanged")
+    @JsonProperty("lastchanged")
     public void setLastChanged(String lastChanged) {
-        this.lastChanged = lastChanged;
+        this.mLastChanged = lastChanged;
+    }
+
+    public void setLastChanged(Date _lastChanged) {
+        this.mLastChanged = DateHelper.writeDate(_lastChanged);
     }
 
     public Category withLastChanged(String lastChanged) {
-        this.lastChanged = lastChanged;
+        this.mLastChanged = lastChanged;
+        return this;
+    }
+
+    public Category withLastChanged(Date _lastChanged) {
+        this.mLastChanged = DateHelper.writeDate(_lastChanged);
+        return this;
+    }
+
+    @JsonProperty("deleted")
+    public Boolean getDeleted() {
+        return mDeleted;
+    }
+
+    @JsonProperty("deleted")
+    public void setDeleted(Boolean _deleted) {
+        mDeleted = _deleted;
+    }
+
+    public Category withDeleted(Boolean _deleted) {
+        mDeleted = _deleted;
         return this;
     }
 }
