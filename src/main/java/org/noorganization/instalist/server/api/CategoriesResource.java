@@ -20,73 +20,63 @@ import org.noorganization.instalist.server.message.Category;
  * 
  */
 @Path("categories")
-public interface CategoriesResource {
+public class CategoriesResource {
 
 
     /**
      * Get a list of categories.
-     * 
-     * 
-     * @param changedSince
-     *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     *
+     * @param _categoryId Optional. The uuid of the category.
+     * @param _token Authorization-token for the current user.
+     * @param _changedSince Optional. Requests only the elements that changed since the given date.
+     *                      ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
     @Produces({ "application/json" })
-    Response getCategories(@QueryParam("changedSince") Date changedSince) throws Exception;
-
-    /**
-     * Returns the category.
-     * 
-     * 
-     * @param categoryId
-     *     
-     */
-    @GET
-    @Path("{categoryId}")
-    @Produces({ "application/json" })
-    Response getCategoryById(@PathParam("categoryId") String categoryId) throws Exception;
+    Response getCategories(@QueryParam("token") String _token, @QueryParam("changedsince") Date
+            _changedSince, @QueryParam("categoryid") String  _categoryId) throws Exception {
+        return null;
+    }
 
     /**
      * Updates the category.
-     * 
-     * 
-     * @param categoryId
-     *     
-     * @param entity
-     *      e.g. examples/category.example
+     * @param _token Authorization-token for the current user.
+     * @param _entity A category with updated information.
      */
     @PUT
-    @Path("{categoryId}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putCategoryById(@PathParam("categoryId") String categoryId, Category entity)
-            throws Exception;
+    Response putCategoryById(@QueryParam("token") String _token, Category _entity) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Creates the category.
-     * 
-     * 
-     * @param categoryId
-     *     
-     * @param entity
+     * @param _token Authorization-token for the current user.
+     * @param _entity Information for the new category.
      *      e.g. examples/category.example
      */
     @POST
-    @Path("{categoryId}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postCategoryById(@PathParam("categoryId") String categoryId, Category entity)
-        throws Exception;
+    Response postCategoryById(@QueryParam("token") String _token, Category _entity) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Deletes the category.
      * 
      * 
-     * @param categoryId
+     * @param _categoryId The uuid of the category to delete.
+     * @param _token
      *     
      */
     @DELETE
-    @Path("{categoryId}")
     @Produces({ "application/json" })
-    Response deleteCategoryById(@PathParam("categoryId") String categoryId) throws Exception;
+    Response deleteCategoryById(@QueryParam("token") String _token, @QueryParam("categoryid")
+    String _categoryId) throws Exception {
+        return null;
+    }
 }

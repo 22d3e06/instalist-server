@@ -211,7 +211,7 @@ resourceTypes:
   - collection:
       description: Collection of available <<resourcePathName>>.
       get:
-        is: [secured]
+        is: [secured, badrequest]
         description: |
           Get a list of <<resourcePathName>>.
         queryParameters:
@@ -221,72 +221,155 @@ resourceTypes:
             description: Requests only the elements that changed since the given date. ISO 8601 time
             example: 2016-01-19T11:54:07+01:00
             required: false
+          uuid:
+            displayName: Universal Unique Identifier
+            type: string
+            description: Identificator for the <<resourcePathName|!singularize>>.
+            example: 920b63a4-40e9-4a15-b45f-c728d9225fb5
+            required: false
         responses:
           200:
             body:
               application/json:
                 example: |
                   <<exampleCollection>>
-          400:
-            body:
-              application/json:
-                schema: error
-  - collection-item:
-      description: Entity representing a <<resourcePathName|!singularize>>.
-      get:
-        is: [secured]
+      post:
+        is: [secured, badrequest]
         description: |
-          Returns the <<resourcePathName|!singularize>>.
+          Creates a list of <<resourcePathName>>.
+        body:
+          application/json:
+            schema: <<exampleSchema>>
+            example: <<exampleItem>>
         responses:
-          200:
-            body:
-              application/json:
-                example: <<exampleReturnItem>>
-          400:
+          201:
+            description: All <<resourcePathName>> were added successfully. No data.
+          409:
+            description: One or more <<resourcePathName>> would get in conflict with current database. No changes made.
             body:
               application/json:
                 schema: error
+                example: |
+                  {
+                    "message": "The sent objects would collide."
+                  }
       put:
         is: [secured, badrequest]
         description: |
-          Updates the <<resourcePathName|!singularize>>.
+          Updates a list of <<resourcePathName>>.
         body:
           application/json:
             schema: <<exampleSchema>>
             example: <<exampleItem>>
         responses:
           200:
-            description: Update was successful.
-          400:
+            description: All <<resourcePathName>> were updated successfully. No data.
+          409:
+            description: One or more <<resourcePathName>> would get in conflict with current database. No changes made.
             body:
               application/json:
                 schema: error
-      post:
-        is: [secured, added, badrequest]
-        description: |
-          Creates the <<resourcePathName|!singularize>>.
-        body:
-          application/json:
-            schema: <<exampleSchema>>
-            example: <<exampleItem>>
-        responses:
-          200:
-            description: Update was successful.
-          400:
+                example: |
+                  {
+                    "message": "The sent objects would collide."
+                  }
+          410:
+            description: Minimum one sent <<resourcePathName>> updates a deleted <<resourcePathName|!singularize>>. No changes made.
             body:
               application/json:
                 schema: error
+                example: |
+                  {
+                    "message": "Updating deleted objects is not possible."
+                  }  
       delete:
         is: [secured, badrequest]
         description: |
-          Deletes the <<resourcePathName|!singularize>>.
+          Updates a list of <<resourcePathName>>.
+        queryParameters:
+          uuid:
+            displayName: Universal Unique Identifier
+            type: string
+            description: Identificator for the <<resourcePathName|!singularize>>.
+            example: 920b63a4-40e9-4a15-b45f-c728d9225fb5
+            required: true
         responses:
           200:
-            description: Deletion was successful.
-          400:
+            description: All <<resourcePathName>> were updated successfully. No data.
+          404:
+            description: A <<resourcePathName|!singularize>> with given uuid was not found.
             body:
               application/json:
                 schema: error
+                example: |
+                  {
+                    "message": "Object for deletion was not found."
+                  }
+          410:
+            description: A <<resourcePathName|!singularize>> with given uuid has been already deleted before.
+            body:
+              application/json:
+                schema: error
+                example: |
+                  {
+                    "message": "Object for deletion is already deleted."
+                  }
+#  - collection-item:
+#      description: Entity representing a <<resourcePathName|!singularize>>.
+#      get:
+#        is: [secured]
+#        description: |
+#          Returns the <<resourcePathName|!singularize>>.
+#        responses:
+#          200:
+#            body:
+#              application/json:
+#                example: <<exampleReturnItem>>
+#          400:
+#            body:
+#              application/json:
+#                schema: error
+#      put:
+#        is: [secured, badrequest]
+#        description: |
+#          Updates the <<resourcePathName|!singularize>>.
+#        body:
+#          application/json:
+#            schema: <<exampleSchema>>
+#            example: <<exampleItem>>
+#        responses:
+#          200:
+#            description: Update was successful.
+#          400:
+#            body:
+#              application/json:
+#                schema: error
+#      post:
+#        is: [secured, added, badrequest]
+#        description: |
+#          Creates the <<resourcePathName|!singularize>>.
+#        body:
+#          application/json:
+#            schema: <<exampleSchema>>
+#            example: <<exampleItem>>
+#        responses:
+#          200:
+#            description: Update was successful.
+#          400:
+#            body:
+#              application/json:
+#                schema: error
+#      delete:
+#        is: [secured, badrequest]
+#        description: |
+#          Deletes the <<resourcePathName|!singularize>>.
+#        responses:
+#          200:
+#            description: Deletion was successful.
+#          400:
+#            body:
+#              application/json:
+#                schema: error
 
 /user:
   /token:
@@ -399,65 +482,65 @@ resourceTypes:
 
 /categories:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/categoryCollectionReturn.example } }
-  /{categoryId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : !include examples/categoryReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
+  type:  { collection: {exampleCollection : !include examples/categoryCollectionReturn.example, exampleSchema : category, exampleItem : !include examples/category.example } }    
+#  /{categoryId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : !include examples/categoryReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
 
 /products:
   is: [secured]
-  type: {collection: {exampleCollection : !include examples/productCollectionReturn.example } }
-  /{productId}:
-    is: [secured]
-    type: {collection-item: {exampleReturnItem : !include examples/productReturn.example, exampleSchema : product, exampleItem : !include examples/product.example} }
+  type: {collection: {exampleCollection : !include examples/productCollectionReturn.example, exampleSchema : product, exampleItem : !include examples/product.example } }
+#  /{productId}:
+#    is: [secured]
+#    type: {collection-item: {exampleReturnItem : !include examples/productReturn.example, exampleSchema : product, exampleItem : !include examples/product.example} }
 /lists:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example } }
-  /{listId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
+  type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
+#  /{listId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example } }
 
 /recipes:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example } }
-  /{recipeId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
+  type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
+#  /{recipeId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example } }
   /ingredients:
     is: [secured]
-    type:  { collection: {exampleCollection : !include examples/ingredientCollectionRecipeReturn.example } }
+    type:  { collection: {exampleCollection : !include examples/ingredientCollectionRecipeReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example } }
 
 /taggedProducts:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/taggedProductCollectionReturn.example } }
-  /{taggedProductId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
+  type:  { collection: {exampleCollection : !include examples/taggedProductCollectionReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
+#  /{taggedProductId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example } }
 
 /tags:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/tagCollectionReturn.example } }
-  /{tagId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : , exampleSchema : tag, exampleItem : !include examples/tag.example } }
+  type:  { collection: {exampleCollection : !include examples/tagCollectionReturn.example, exampleSchema : tag, exampleItem : !include examples/tag.example } }
+#  /{tagId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem :  } }
 
 /listEntries:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/listEntryCollectionReturn.example } }
-  /{listEntryId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : , exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
+  type:  { collection: {exampleCollection : !include examples/listEntryCollectionReturn.example, exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
+#  /{listEntryId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : , exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
 
 /units:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/unitCollectionReturn.example } }
-  /{unitId}:
-    is: [secured]
-    type:  { collection-item: {exampleReturnItem : !include examples/unitReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
+  type:  { collection: {exampleCollection : !include examples/unitCollectionReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example } }
+#  /{unitId}:
+#    is: [secured]
+#    type:  { collection-item: {exampleReturnItem : !include examples/unitReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
 
 /ingredients:
   is: [secured]
-  type:  { collection: {exampleCollection : !include examples/ingredientCollectionReturn.example } }
-  /{ingredientId}:
-    is: [secured]
-    type: {collection-item: {exampleReturnItem : !include examples/ingredientReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }
+  type:  { collection: {exampleCollection : !include examples/ingredientCollectionReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example } }
+#  /{ingredientId}:
+#    is: [secured]
+#    type: {collection-item: {exampleReturnItem : !include examples/ingredientReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }

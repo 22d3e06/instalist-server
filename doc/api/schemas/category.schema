@@ -14,10 +14,13 @@
     "lastChanged": {
       "id": "lastChanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "name"
+    "id"
   ]
 }
