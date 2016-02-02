@@ -457,10 +457,12 @@ resourceTypes:
     delete:
       is: [secured, badrequest]
       description: Delete devices.
-      body:
-        application/json:
-          example: |
-            [5, 4229]
+      queryParameters:
+        deviceid:
+            description: The device-id to delete.
+            example: |
+              1337
+            required: true
       responses:
         200:
           description: All requested devices were deleted. No data.

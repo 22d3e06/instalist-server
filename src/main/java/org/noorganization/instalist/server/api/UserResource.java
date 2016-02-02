@@ -15,6 +15,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.security.SecureRandom;
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("/user")
 public class UserResource {
@@ -142,23 +144,170 @@ public class UserResource {
     @Path("group/devices")
     @Produces({ "application/json" })
     public Response getUserGroupDevices(@QueryParam("token") String _token) throws Exception {
-        return null;
+        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+
+        int groupId = mAuthHelper.getGroupIdByToken(_token);
+
+        Connection db = DatabaseHelper.getInstance().getConnection();
+        PreparedStatement devicesStmt = db.prepareStatement("SELECT id, name, autorizedtogroup FROM " +
+                "devices WHERE devicegroup_id = ?");
+        devicesStmt.setInt(1, groupId);
+        ResultSet devicesRS = devicesStmt.executeQuery();
+        if (!devicesRS.first()) {
+            devicesRS.close();
+            devicesStmt.close();
+            db.close();
+
+            System.err.println("Found group without devices. Something is wrong with database!");
+            return ResponseFactory.generateServerError(new Error().withMessage("Could not " +
+                    "retrieve devices for group."));
+        }
+
+        List<DeviceInfo> devices = new LinkedList<DeviceInfo>();
+        do {
+            DeviceInfo currentInfo = new DeviceInfo();
+            currentInfo.setId(devicesRS.getInt("id"));
+            currentInfo.setName(devicesRS.getString("name"));
+            currentInfo.setAuthorized(devicesRS.getBoolean("autorizedtogroup"));
+            devices.add(currentInfo);
+        } while (devicesRS.next());
+
+        devicesRS.close();
+        devicesStmt.close();
+        db.close();
+        return ResponseFactory.generateOK(devices);
     }
 
     @PUT
     @Path("group/devices")
+    @Consumes({ "application/json" })
     @Produces({ "application/json" })
     public Response putUserGroupDevices(@QueryParam("token") String _token, DeviceInfo[]
             _devicesToUpdate) throws Exception {
-        return null;
+        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+
+        if (_devicesToUpdate == null || _devicesToUpdate.length == 0)
+            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+
+        int groupId = mAuthHelper.getGroupIdByToken(_token);
+        Connection db = DatabaseHelper.getInstance().getConnection();
+        db.setAutoCommit(false);
+        PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
+                "devices WHERE devicegroup_id = ? AND id = ?");
+        checkDeviceInGroupStmt.setInt(1, groupId);
+        boolean error = false;
+        for (DeviceInfo currentInfo : _devicesToUpdate) {
+            Integer deviceId = currentInfo.getId();
+            if (deviceId == null) {
+                error = true;
+                break;
+            }
+
+            checkDeviceInGroupStmt.setInt(2, deviceId);
+            ResultSet checkDeviceInGroupRS = checkDeviceInGroupStmt.executeQuery();
+            checkDeviceInGroupRS.first();
+            if (checkDeviceInGroupRS.getInt(1) != 1) {
+                checkDeviceInGroupRS.close();
+                error = true;
+                break;
+            }
+            checkDeviceInGroupRS.close();
+
+            PreparedStatement updateDeviceStmt;
+            if (currentInfo.getName() != null && currentInfo.getAuthorized() != null) {
+                updateDeviceStmt = db.prepareStatement("UPDATE devices SET name = ?, " +
+                        "autorizedtogroup = ? WHERE id = ?");
+                updateDeviceStmt.setString(1, currentInfo.getName());
+                updateDeviceStmt.setBoolean(2, currentInfo.getAuthorized());
+                updateDeviceStmt.setInt(3, currentInfo.getId());
+            } else if (currentInfo.getName() != null) {
+                updateDeviceStmt = db.prepareStatement("UPDATE devices SET name = ? WHERE id = ?");
+                updateDeviceStmt.setString(1, currentInfo.getName());
+                updateDeviceStmt.setInt(2, currentInfo.getId());
+            } else if (currentInfo.getAuthorized() != null) {
+                updateDeviceStmt = db.prepareStatement("UPDATE devices SET autorizedtogroup = ? " +
+                        "WHERE id = ?");
+                updateDeviceStmt.setBoolean(1, currentInfo.getAuthorized());
+                updateDeviceStmt.setInt(2, currentInfo.getId());
+            } else {
+                error = true;
+                break;
+            }
+            updateDeviceStmt.executeUpdate();
+            updateDeviceStmt.close();
+        }
+        checkDeviceInGroupStmt.close();
+        if (error) {
+            db.rollback();
+            db.close();
+
+            return ResponseFactory.generateBadRequest(new Error().withMessage("Invalid data for " +
+                    "device-changes provided."));
+        }
+        db.commit();
+        db.close();
+
+        return ResponseFactory.generateOK(null);
     }
 
     @DELETE
     @Path("group/devices")
     @Produces({ "application/json" })
-    public Response deleteUserGroupDevices(@QueryParam("token") String _token, int[]
-            _devicesToDelete) throws Exception {
-        return null;
+    public Response deleteUserGroupDevices(@QueryParam("token") String _token,
+                                           @QueryParam("deviceid") Integer _deviceToDelete)
+            throws Exception {
+        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+
+        if (_deviceToDelete == null)
+            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+
+
+
+        Connection db = DatabaseHelper.getInstance().getConnection();
+        PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
+                "devices WHERE devicegroup_id = ? AND id = ?");
+        int groupId = mAuthHelper.getGroupIdByToken(_token);
+        checkDeviceInGroupStmt.setInt(1, groupId);
+        checkDeviceInGroupStmt.setInt(2, _deviceToDelete);
+        ResultSet checkDeviceInGroupRS = checkDeviceInGroupStmt.executeQuery();
+        checkDeviceInGroupRS.first();
+        if (checkDeviceInGroupRS.getInt(1) != 1) {
+            checkDeviceInGroupRS.close();
+            checkDeviceInGroupStmt.close();
+            db.close();
+
+            return ResponseFactory.generateNotFound(new Error().withMessage("Device not found or " +
+                    "not in same group."));
+        }
+        checkDeviceInGroupRS.close();
+        checkDeviceInGroupStmt.close();
+
+        PreparedStatement deleteDeviceStmt = db.prepareStatement("DELETE FROM devices WHERE " +
+                "id = ?");
+        deleteDeviceStmt.setInt(1, _deviceToDelete);
+        deleteDeviceStmt.executeUpdate();
+        deleteDeviceStmt.close();
+
+        PreparedStatement checkEmptyGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
+                "devices WHERE devicegroup_id = ?");
+        checkEmptyGroupStmt.setInt(1, groupId);
+        ResultSet checkEmptyGroupRS = checkEmptyGroupStmt.executeQuery();
+        checkEmptyGroupRS.first();
+        if (checkEmptyGroupRS.getInt(1) == 0) {
+            PreparedStatement deleteGroupStmt = db.prepareStatement("DELETE FROM devicegroups " +
+                    "WHERE id = ?");
+            deleteGroupStmt.setInt(1, groupId);
+            deleteGroupStmt.executeUpdate();
+            deleteGroupStmt.close();
+        }
+        checkEmptyGroupRS.close();
+        checkEmptyGroupStmt.close();
+        db.close();
+
+        return ResponseFactory.generateOK(null);
     }
 
     /**
