@@ -1,6 +1,6 @@
 {
-  "id" : "9ff5d776-627d-4bac-8410-3fffcb352418",
-  "shoppingListId" : "1634a3d5-e240-4039-b265-653d20b679e0",
-  "productId" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
+  "uuid" : "9ff5d776-627d-4bac-8410-3fffcb352418",
+  "shoppingListuuid" : "1634a3d5-e240-4039-b265-653d20b679e0",
+  "productuuid" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
   "amount" : 0.5
 }

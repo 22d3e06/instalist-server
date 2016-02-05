@@ -1,11 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "/",
-  "type": "array",
-  "items": {
-    "id": "1",
-    "type": "object",
-    "properties": {
+  "type": "object",
+  "properties": {
       "id": {
         "id": "id",
         "type": "integer"
@@ -18,12 +15,8 @@
         "id": "authorized",
         "type": "boolean"
       }
-    },
-    "required": [
-      "id"
-    ]
   },
   "required": [
-    "1"
+    "id"
   ]
 } 

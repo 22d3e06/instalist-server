@@ -3,36 +3,36 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
     "name": {
       "id": "name",
       "type": "string"
     },
-    "unitId": {
-      "id": "unitId",
+    "unituuid": {
+      "id": "unituuid",
       "type": "string"
     },
-    "defaultAmount": {
-      "id": "defaultAmount",
+    "defaultamount": {
+      "id": "defaultamount",
       "type": "number"
     },
-    "stepAmount": {
-      "id": "stepAmount",
+    "stepamount": {
+      "id": "stepamount",
       "type": "number"
     },
-    "lastChanged": {
-      "id": "lastChanged",
+    "lastchanged": {
+      "id": "lastchanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "name",
-    "unitId",
-    "defaultAmount",
-    "stepAmount"
+    "uuid"
   ]
 }

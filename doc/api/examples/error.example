@@ -1,6 +1,6 @@
 {
   "message": {
-  "id": "message?",
+  "uuid": "message?",
   "type": "Bad request."
   }
 }

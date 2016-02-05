@@ -1,5 +1,5 @@
 #%RAML 0.8
-title: InstantList API
+title: InstaList
 version: v1
 baseUri: http://instantlist.noorganization.org/{version}
 mediaType: application/json
@@ -15,9 +15,6 @@ schemas:
   - tag: !include schemas/tag.schema
   - taggedProduct: !include schemas/taggedProduct.schema
   - unit: !include schemas/unit.schema
-  - resetPassword: !include schemas/resetPassword.schema
-  - login: !include schemas/login.schema
-  - register: !include schemas/register.schema
   - error: !include schemas/error.schema
   - deviceinfo: !include schemas/deviceinfo.schema
 
@@ -27,18 +24,20 @@ securitySchemes:
       describedBy:
         headers:
           Authorization:
-              description: |
-                Authorization-header as defined per RFC 2617. Expects the server defined user-id as user and the client defined secret as password.
+            description: |
+              Authorization-header as defined per RFC 2617. Expects the server defined user-id as user and the client defined secret as password.
+            required: true
   - token:
       type: x-token
       describedBy:
-        queryParameters:
-          token:
-              description: |
-                A server-generated token-string.
-                can be obtained via /user/token.
-              example: 069e74d9-207f-4679-b652-36a32695135c
-              required: true
+        headers:
+          Authorization:
+            description: |
+              Authorization with Token. The Contents of the header are
+              "X-Token <token>" (without quotes). Since the token is based on
+              ASCII-Characters, no encoding like UTF-8 should be performed.
+            example: Authorization X-Token aadc7ade3ac84f0e98268d1b9eaae2bf
+            required: true
 
 traits:
   - secured:
@@ -47,7 +46,7 @@ traits:
       description: Request require authentication!
       responses:
         401:
-          description: Unauthorized           
+          description: Unauthorized
   - accepted:
       responses:
         202:
@@ -67,139 +66,40 @@ traits:
                 {
                   "message": "sent data was incomplete."
                 }
-#        204:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "Successfull processed by server, no content."
-#                    },
-#                  "status" : 204,
-#                  "success" : true
-#                }
-#       300:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "Various changes, look into the location header fields"
-#                    },
-#                  "status" : 300,
-#                  "success" : false
-#                }
-#
-#        403:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "You have no rights to do this!"
-#                    },
-#                  "status" : 403,
-#                  "success" : false
-#                }
-#        405:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "This method is not supported!"
-#                    },
-#                  "status" : 405,
-#                  "success" : false
-#                }
-#        408:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "The request timed out, try again!"
-#                    },
-#                  "status" : 408,
-#                  "success" : false
-#                }
-#        409:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "There is a conflict with data!"
-#                    },
-#                  "status" : 409,
-#                  "success" : false
-#                }
-#        410:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "The resource is gone!"
-#                    },
-#                  "status" : 410,
-#                  "success" : false
-#                }
-#        413:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "The sent entity was too large!"
-#                    },
-#                  "status" : 413,
-#                  "success" : false
-#                }
-#        423:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "This resource is currently locked."
-#                    },
-#                  "status" : 423,
-#                  "success" : false
-#                }
-#        429:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "Too many requests. Calm down!"
-#                    },
-#                  "status" : 429,
-#                  "success" : false
-#                }
-#        500:
-#          body:
-#            application/json:
-#              example: |
-#                {
-#                  "data" :
-#                    {
-#                      "msg" : "Server error!"
-#                    },
-#                  "status" : 500,
-#                  "success" : false
-#                }
+  - gone:
+      responses:
+        410:
+          description: A <<resourcePathName|!singularize>> with given uuid has been already deleted before.
+          body:
+            application/json:
+              schema: error
+              example: |
+                {
+                  "message": "Object has been already deleted."
+                }
+
+  - notfound:
+      responses:
+        404:
+          description: The <<resourcePathName|!singularize>> with given uuid was not found.
+          body:
+            application/json:
+              schema: error
+              example: |
+                {
+                  "message": "Object was not found."
+                }
+  - conflict:
+      responses:
+        409:
+          description: The <<resourcePathName|!singularize>> would conflict with existing data.
+          body:
+            application/json:
+              schema: error
+              example: |
+                {
+                  "message": "Object has a conflict with database data."
+                }
 
       #queryParameters:
       #  accessToken:
@@ -215,205 +115,75 @@ resourceTypes:
         description: |
           Get a list of <<resourcePathName>>.
         queryParameters:
-          changedSince:
-            displayName: Changed Since
-            type: date
-            description: Requests only the elements that changed since the given date. ISO 8601 time
-            example: 2016-01-19T11:54:07+01:00
-            required: false
-          uuid:
-            displayName: Universal Unique Identifier
+          changedsince:
             type: string
-            description: Identificator for the <<resourcePathName|!singularize>>.
-            example: 920b63a4-40e9-4a15-b45f-c728d9225fb5
+            description: |
+              Requests only the elements that changed since the given date.
+              ISO 8601 time-format, where Java-Time format must be
+              "yyyy-MM-dd'T'HH:mm:ss.SSSXXX".
+            example: "2016-01-19T11:54:07+01:00"
             required: false
         responses:
           200:
             body:
               application/json:
-                example: |
-                  <<exampleCollection>>
+                example: <<exampleCollection>>
       post:
-        is: [secured, badrequest]
+        is: [secured, badrequest,conflict]
         description: |
-          Creates a list of <<resourcePathName>>.
+          Creates a <<resourcePathName|!singularize>>.
         body:
           application/json:
             schema: <<exampleSchema>>
             example: <<exampleItem>>
         responses:
           201:
-            description: All <<resourcePathName>> were added successfully. No data.
-          409:
-            description: One or more <<resourcePathName>> would get in conflict with current database. No changes made.
+            description: The <<resourcePathName|!singularize>> was added successfully. No data.
+
+#uuid:
+##  displayName: Universal Unique Identifier
+##  type: string
+##  description: Identificator for the <<resourcePathName|!singularize>>.
+##  example: 920b63a4-40e9-4a15-b45f-c728d9225fb5
+##  required: false
+  - collection-item:
+      description: Entity representing a <<resourcePathName|!singularize>>.
+      uriParameters:
+        uuid:
+          description: UUID of the <<resourcePathName|!singularize>>.
+          type: string
+          example: 3ee1dca9-ebda-4adb-90ce-8220e8c7fe99
+      get:
+        is: [secured, gone, notfound]
+        description: Returns the <<resourcePathName|!singularize>>.
+        responses:
+          200:
             body:
               application/json:
-                schema: error
-                example: |
-                  {
-                    "message": "The sent objects would collide."
-                  }
+                example: <<exampleReturnItem>>
+                schema: <<exampleSchema>>
       put:
-        is: [secured, badrequest]
+        is: [secured, badrequest, gone, notfound, conflict]
         description: |
-          Updates a list of <<resourcePathName>>.
+          Updates a <<resourcePathName|!singularize>> item.
         body:
           application/json:
             schema: <<exampleSchema>>
             example: <<exampleItem>>
         responses:
           200:
-            description: All <<resourcePathName>> were updated successfully. No data.
-          409:
-            description: One or more <<resourcePathName>> would get in conflict with current database. No changes made.
-            body:
-              application/json:
-                schema: error
-                example: |
-                  {
-                    "message": "The sent objects would collide."
-                  }
-          410:
-            description: Minimum one sent <<resourcePathName>> updates a deleted <<resourcePathName|!singularize>>. No changes made.
-            body:
-              application/json:
-                schema: error
-                example: |
-                  {
-                    "message": "Updating deleted objects is not possible."
-                  }  
+            description: The <<resourcePathName|!singularize>> was updated successfully. No data.
+
       delete:
-        is: [secured, badrequest]
+        is: [secured, gone, notfound]
         description: |
-          Updates a list of <<resourcePathName>>.
-        queryParameters:
-          uuid:
-            displayName: Universal Unique Identifier
-            type: string
-            description: Identificator for the <<resourcePathName|!singularize>>.
-            example: 920b63a4-40e9-4a15-b45f-c728d9225fb5
-            required: true
+          Deletes the <<resourcePathName|!singularize>>.
         responses:
           200:
-            description: All <<resourcePathName>> were updated successfully. No data.
-          404:
-            description: A <<resourcePathName|!singularize>> with given uuid was not found.
-            body:
-              application/json:
-                schema: error
-                example: |
-                  {
-                    "message": "Object for deletion was not found."
-                  }
-          410:
-            description: A <<resourcePathName|!singularize>> with given uuid has been already deleted before.
-            body:
-              application/json:
-                schema: error
-                example: |
-                  {
-                    "message": "Object for deletion is already deleted."
-                  }
-#  - collection-item:
-#      description: Entity representing a <<resourcePathName|!singularize>>.
-#      get:
-#        is: [secured]
-#        description: |
-#          Returns the <<resourcePathName|!singularize>>.
-#        responses:
-#          200:
-#            body:
-#              application/json:
-#                example: <<exampleReturnItem>>
-#          400:
-#            body:
-#              application/json:
-#                schema: error
-#      put:
-#        is: [secured, badrequest]
-#        description: |
-#          Updates the <<resourcePathName|!singularize>>.
-#        body:
-#          application/json:
-#            schema: <<exampleSchema>>
-#            example: <<exampleItem>>
-#        responses:
-#          200:
-#            description: Update was successful.
-#          400:
-#            body:
-#              application/json:
-#                schema: error
-#      post:
-#        is: [secured, added, badrequest]
-#        description: |
-#          Creates the <<resourcePathName|!singularize>>.
-#        body:
-#          application/json:
-#            schema: <<exampleSchema>>
-#            example: <<exampleItem>>
-#        responses:
-#          200:
-#            description: Update was successful.
-#          400:
-#            body:
-#              application/json:
-#                schema: error
-#      delete:
-#        is: [secured, badrequest]
-#        description: |
-#          Deletes the <<resourcePathName|!singularize>>.
-#        responses:
-#          200:
-#            description: Deletion was successful.
-#          400:
-#            body:
-#              application/json:
-#                schema: error
+            description: Deletion was successful.
 
-/user:
-  /token:
-    securedBy: [basic]
-    get:
-      description: Get the auth token
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                {
-                  "token" : "fdskhbvvkddscddueFSNDFSAdnandk3229df-dFSJDKMds."
-                }
-        401:
-          body:
-            application/json:
-              schema: error
-              example: |
-                {
-                  "message": "Login failed"
-                }
-  /register_device:
-    post:
-      is: [added, accepted, badrequest]
-      description: The action to connect a new device with a group.
-      body:
-        application/json:
-          example: |
-            {
-              "groupid" : "AB7Zbm",
-              "secret" : "dkjhfsdcbuiufien=--ihrienncdjXXCndjjFJJED"
-            }
-      responses:
-        200:
-          description: This gets returned if registration with group was successful and login is now possible.
-          body:
-            application/json:
-              example: |
-                {
-                  "deviceid" : 1337
-                }
-  /register_group:
-    post:
+/groups:
+  post:
       description: The action to create a new group of devices sharing lists etc.
       responses:
         200:
@@ -421,128 +191,162 @@ resourceTypes:
             application/json:
               example: |
                 {
-                  "groupid": "AB7Zbm"
+                  "accesskey": "AB7Zbm",
+                  "id" : 12345
                 }
-  /group/devices:
-    get:
-      is: [secured]
-      description: Get a list of all devices in group.
-      responses:
-        200:
-          body:
-            application/json:
-              example: |
-                [
-                  {
-                    "id": 5,
-                    "name": "dev1",
-                    "authorized": true
-                  },
-                  {
-                    "id": 4229,
-                    "name": "homephone",
-                    "authorized": false
-                  }
-                ]
-              schema: deviceinfo
-    put:
-      is: [secured, badrequest]
-      description: Modify devices. Not all attributes need to be set.
-      body:
-        application/json:
-          schema: deviceinfo
-      responses:
-        200:
-          description: All changes were applied. No data.
-    delete:
-      is: [secured, badrequest]
-      description: Delete devices.
-      queryParameters:
-        deviceid:
-            description: The device-id to delete.
+  /{id}:
+    uriParameters:
+      id:
+        description: The id of the group.
+        type: integer
+    /devices:
+      get:
+        is: [secured]
+        description: Get a list of all devices in group.
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  [
+                    {
+                      "id": 5,
+                      "name": "dev1",
+                      "authorized": true
+                    },
+                    {
+                      "id": 4229,
+                      "name": "homephone",
+                      "authorized": false
+                    }
+                  ]
+      post:
+        is: [added, accepted, badrequest]
+        description: The action to connect a new device with a group.
+        body:
+          application/json:
             example: |
-              1337
-            required: true
-      responses:
-        200:
-          description: All requested devices were deleted. No data.
-        404:
-          description: One or more devices were not found. No data.
-        
-  /group/access_key:
-    get:
-      is: [secured]
-      description: The action to get a temporary access key to a group.
-      responses:
-        200:
+              {
+                "groupid" : "AB7Zbm",
+                "secret" : "dkjhfsdcbuiufien=--ihrienncdjXXCndjjFJJED"
+              }
+        responses:
+          200:
+            description: This gets returned if registration with group was successful and login is now possible.
+            body:
+              application/json:
+                example: |
+                  {
+                    "deviceid" : 1337
+                  }
+      /{deviceid}:
+        uriParameters:
+          deviceid:
+            description: The id of the device in the group.
+        get:
+          is: [secured, notfound]
+          description: Get info about a devcice.
+          responses:
+            200:
+              body:
+                application/json:
+                  example: |
+                    {
+                      "id": 5,
+                      "name": "dev1",
+                      "authorized": true
+                    }
+                  schema: deviceinfo
+        put:
+          is: [secured, badrequest, notfound]
+          description: Modify devices. Not all attributes need to be set.
           body:
             application/json:
-              example: |
-                {
-                  "groupid": "AB7Zbm"
-                }
+              schema: deviceinfo
+          responses:
+            200:
+              description: All changes were applied. No data.
+        delete:
+          is: [secured, notfound]
+          description: Delete devices.
+          responses:
+            200:
+              description: Requested device was deleted. No data.
+      /token:
+        securedBy: [basic]
+        get:
+          description: Get the auth token
+          responses:
+            200:
+              body:
+                application/json:
+                  example: |
+                    {
+                      "token" : "fdskhbvvkddscddueFSNDFSAdnandk3229df-dFSJDKMds."
+                    }
+            401:
+              body:
+                application/json:
+                  schema: error
+                  example: |
+                    {
+                      "message": "Login failed"
+                    }
 
-/categories:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/categoryCollectionReturn.example, exampleSchema : category, exampleItem : !include examples/category.example } }    
-#  /{categoryId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : !include examples/categoryReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
 
-/products:
-  is: [secured]
-  type: {collection: {exampleCollection : !include examples/productCollectionReturn.example, exampleSchema : product, exampleItem : !include examples/product.example } }
-#  /{productId}:
-#    is: [secured]
-#    type: {collection-item: {exampleReturnItem : !include examples/productReturn.example, exampleSchema : product, exampleItem : !include examples/product.example} }
-/lists:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
-#  /{listId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example } }
+    /access_key:
+      get:
+        is: [secured]
+        description: The action to get a temporary access key to a group.
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  {
+                    "groupid": "AB7Zbm"
+                  }
 
-/recipes:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
-#  /{recipeId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example } }
-  /ingredients:
-    is: [secured]
-    type:  { collection: {exampleCollection : !include examples/ingredientCollectionRecipeReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example } }
+    /categories:
+      type:  { collection: {exampleCollection : !include examples/categoryCollectionReturn.example, exampleSchema : category, exampleItem : !include examples/category.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/categoryReturn.example, exampleSchema : category, exampleItem : !include examples/category.example} }
 
-/taggedProducts:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/taggedProductCollectionReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
-#  /{taggedProductId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example } }
+    /products:
+      type: {collection: {exampleCollection : !include examples/productCollectionReturn.example, exampleSchema : product, exampleItem : !include examples/product.example } }
+      /{uuid}:
+        type: {collection-item: {exampleReturnItem : !include examples/productReturn.example, exampleSchema : product, exampleItem : !include examples/product.example} }
+    /lists:
+      type:  { collection: {exampleCollection : !include examples/shoppingListCollectionReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/shoppingListReturn.example, exampleSchema : shoppingList, exampleItem : !include examples/shoppingList.example } }
 
-/tags:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/tagCollectionReturn.example, exampleSchema : tag, exampleItem : !include examples/tag.example } }
-#  /{tagId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem :  } }
+    /recipes:
+      type:  { collection: {exampleCollection : !include examples/recipeCollectionReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
 
-/listEntries:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/listEntryCollectionReturn.example, exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
-#  /{listEntryId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : , exampleSchema : listEntry, exampleItem : !include examples/shoppingList.example } }
+    /taggedProducts:
+      type:  { collection: {exampleCollection : !include examples/taggedProductCollectionReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
 
-/units:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/unitCollectionReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example } }
-#  /{unitId}:
-#    is: [secured]
-#    type:  { collection-item: {exampleReturnItem : !include examples/unitReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
+    /tags:
+      type:  { collection: {exampleCollection : !include examples/tagCollectionReturn.example, exampleSchema : tag, exampleItem : !include examples/tag.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example, exampleSchema : tag, exampleItem : !include examples/tag.example } }
 
-/ingredients:
-  is: [secured]
-  type:  { collection: {exampleCollection : !include examples/ingredientCollectionReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example } }
-#  /{ingredientId}:
-#    is: [secured]
-#    type: {collection-item: {exampleReturnItem : !include examples/ingredientReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }
+    /listEntries:
+      type:  { collection: {exampleCollection : !include examples/listEntryCollectionReturn.example, exampleSchema : listEntry, exampleItem : !include examples/listEntry.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/listEntryReturn.example, exampleSchema : listEntry, exampleItem : !include examples/listEntry.example } }
+
+    /units:
+      type:  { collection: {exampleCollection : !include examples/unitCollectionReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example } }
+      /{uuid}:
+        type:  { collection-item: {exampleReturnItem : !include examples/unitReturn.example, exampleSchema : unit, exampleItem : !include examples/unit.example} }
+
+    /ingredients:
+      type:  { collection: {exampleCollection : !include examples/ingredientCollectionReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example } }
+      /{uuid}:
+        type: {collection-item: {exampleReturnItem : !include examples/ingredientReturn.example, exampleSchema : ingredient, exampleItem : !include examples/ingredient.example} }

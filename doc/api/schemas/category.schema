@@ -3,8 +3,8 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
     "name": {
@@ -21,6 +21,6 @@
     }
   },
   "required": [
-    "id"
+    "uuid"
   ]
 }
