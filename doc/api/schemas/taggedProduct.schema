@@ -3,26 +3,28 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
-    "tagId": {
-      "id": "tagId",
+    "taguuid": {
+      "id": "taguuid",
       "type": "string"
     },
-    "productId": {
-      "id": "productId",
+    "productuuid": {
+      "id": "productuuid",
       "type": "string"
     },
-    "lastChanged": {
-      "id": "lastChanged",
+    "lastchanged": {
+      "id": "lastchanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "tagId",
-    "productId"
+    "uuid"
   ]
 }

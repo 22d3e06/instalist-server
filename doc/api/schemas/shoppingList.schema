@@ -3,26 +3,28 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
     "name": {
       "id": "name",
       "type": "string"
     },
-    "categoryId": {
-      "id": "categoryId",
+    "categoryuuid": {
+      "id": "categoryuuid",
       "type": "string"
     },
-    "lastChanged": {
-      "id": "lastChanged",
+    "lastchanged": {
+      "id": "lastchanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "name",
-    "categoryId"
+    "uuid"
   ]
 }

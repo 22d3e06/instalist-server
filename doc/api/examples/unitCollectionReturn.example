@@ -1,12 +1,12 @@
 [
   {
-    "id" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
+    "uuid" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
     "name" : "test_Unit1",
-    "lastChanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+01:00"
   },
   {
-    "id" : "7359a706-3303-497e-b6bb-11f34e73e7c4",
+    "uuid" : "7359a706-3303-497e-b6bb-11f34e73e7c4",
     "name" : "test_Unit2",
-    "lastChanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+01:00"
   }
 ]

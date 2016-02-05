@@ -7,6 +7,7 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.model.Device;

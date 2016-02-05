@@ -22,11 +22,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="EinkaufslisteServer" />
+        <module name="instalist-comm" />
+        <module name="instalist-server-webservice" />
+        <module name="webservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="EinkaufslisteServer" target="1.5" />
+      <module name="instalist-comm" target="1.5" />
+      <module name="instalist-server-meta" target="1.5" />
+      <module name="instalist-server-webservice" target="1.5" />
+      <module name="webservice" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

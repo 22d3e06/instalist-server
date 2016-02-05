@@ -3,31 +3,32 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
-    "productId": {
-      "id": "productId",
+    "productuuid": {
+      "id": "productuuid",
       "type": "string"
     },
     "recipeId": {
-      "id": "recipeId",
+      "id": "recipeuuid",
       "type": "string"
     },
     "amount": {
       "id": "amount",
       "type": "number"
     },
-    "lastChanged": {
-      "id": "lastChanged",
+    "lastchanged": {
+      "id": "lastchanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "productId",
-    "recipeId",
-    "amount"
+    "uuid"
   ]
 }

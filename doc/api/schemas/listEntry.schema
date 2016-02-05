@@ -3,31 +3,32 @@
   "id": "/",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "id",
+    "uuid": {
+      "id": "uuid",
       "type": "string"
     },
-    "shoppingListId": {
-      "id": "shoppingListId",
+    "listuuid": {
+      "id": "listuuid",
       "type": "string"
     },
-    "productId": {
-      "id": "productId",
+    "productuuid": {
+      "id": "productuuid",
       "type": "string"
     },
     "amount": {
       "id": "amount",
       "type": "number"
     },
-    "lastChanged": {
-      "id": "lastChanged",
+    "lastchanged": {
+      "id": "lastchanged",
       "type": "string"
+    },
+    "deleted": {
+      "id": "deleted",
+      "type": "boolean"
     }
   },
   "required": [
-    "id",
-    "shoppingListId",
-    "productId",
-    "amount"
+    "uuid"
   ]
 }
