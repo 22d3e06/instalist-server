@@ -49,56 +49,56 @@ public class CategoriesResourceTest extends JerseyTest {
 
         mData = new CommonData();
 
-        PreparedStatement groupStmt = mData.mDb.prepareStatement("INSERT INTO devicegroups " +
-                "(readableid) VALUES (NULL)", Statement.RETURN_GENERATED_KEYS);
-        groupStmt.executeUpdate();
-        ResultSet groupRS = groupStmt.getGeneratedKeys();
-        groupRS.first();
-        mGroup = groupRS.getInt(1);
-        groupRS.close();
-        groupStmt.close();
-
-        PreparedStatement deviceStmt = mData.mDb.prepareStatement("INSERT INTO devices (name, " +
-                "autorizedtogroup, secret, devicegroup_id) VALUES ('dev1', TRUE, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS);
-        deviceStmt.setString(1, mData.sEncryptedSecret);
-        deviceStmt.setInt(2, mGroup);
-        deviceStmt.executeUpdate();
-        ResultSet deviceRS = deviceStmt.getGeneratedKeys();
-        deviceRS.first();
-        int deviceId = deviceRS.getInt(1);
-        deviceRS.close();
-        deviceStmt.close();
-
-        mToken = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
-                encodeAsString(deviceId + ":" + mData.sSecret));
-        assertNotNull(mToken);
-
-        mCategoryUUID = UUID.randomUUID().toString();
-        PreparedStatement category1Stmt = mData.mDb.prepareStatement("INSERT INTO categories " +
-                "(uuid, name, devicegroup_id) VALUES (?, 'cat1', ?)");
-        category1Stmt.setString(1, mCategoryUUID);
-        category1Stmt.setInt(2, mGroup);
-        assertEquals(1, category1Stmt.executeUpdate());
-        category1Stmt.close();
-
-        mDeletedCategoryUUID = UUID.randomUUID().toString();
-        PreparedStatement category2Stmt = mData.mDb.prepareStatement("INSERT INTO deletion_log " +
-                "(uuid, type, devicegroup_id) VALUES (?, 'category', ?)");
-        category2Stmt.setString(1, mDeletedCategoryUUID);
-        category2Stmt.setInt(2, mGroup);
-        assertEquals(1, category2Stmt.executeUpdate());
-        category2Stmt.close();
+//        PreparedStatement groupStmt = mData.mDb.prepareStatement("INSERT INTO devicegroups " +
+//                "(readableid) VALUES (NULL)", Statement.RETURN_GENERATED_KEYS);
+//        groupStmt.executeUpdate();
+//        ResultSet groupRS = groupStmt.getGeneratedKeys();
+//        groupRS.first();
+//        mGroup = groupRS.getInt(1);
+//        groupRS.close();
+//        groupStmt.close();
+//
+//        PreparedStatement deviceStmt = mData.mDb.prepareStatement("INSERT INTO devices (name, " +
+//                "autorizedtogroup, secret, devicegroup_id) VALUES ('dev1', TRUE, ?, ?)",
+//                Statement.RETURN_GENERATED_KEYS);
+//        deviceStmt.setString(1, mData.mEncryptedSecret);
+//        deviceStmt.setInt(2, mGroup);
+//        deviceStmt.executeUpdate();
+//        ResultSet deviceRS = deviceStmt.getGeneratedKeys();
+//        deviceRS.first();
+//        int deviceId = deviceRS.getInt(1);
+//        deviceRS.close();
+//        deviceStmt.close();
+//
+//        mToken = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
+//                encodeAsString(deviceId + ":" + mData.mSecret));
+//        assertNotNull(mToken);
+//
+//        mCategoryUUID = UUID.randomUUID().toString();
+//        PreparedStatement category1Stmt = mData.mDb.prepareStatement("INSERT INTO categories " +
+//                "(uuid, name, devicegroup_id) VALUES (?, 'cat1', ?)");
+//        category1Stmt.setString(1, mCategoryUUID);
+//        category1Stmt.setInt(2, mGroup);
+//        assertEquals(1, category1Stmt.executeUpdate());
+//        category1Stmt.close();
+//
+//        mDeletedCategoryUUID = UUID.randomUUID().toString();
+//        PreparedStatement category2Stmt = mData.mDb.prepareStatement("INSERT INTO deletion_log " +
+//                "(uuid, type, devicegroup_id) VALUES (?, 'category', ?)");
+//        category2Stmt.setString(1, mDeletedCategoryUUID);
+//        category2Stmt.setInt(2, mGroup);
+//        assertEquals(1, category2Stmt.executeUpdate());
+//        category2Stmt.close();
     }
 
     @After
     public void tearDown() throws Exception {
-        PreparedStatement groupCleanUpStmt = mData.mDb.prepareStatement("DELETE FROM devicegroups " +
-                "WHERE id = ?");
-        groupCleanUpStmt.setInt(1, mGroup);
-        groupCleanUpStmt.executeUpdate();
-        groupCleanUpStmt.close();
-        mData.mDb.close();
+//        PreparedStatement groupCleanUpStmt = mData.mDb.prepareStatement("DELETE FROM devicegroups " +
+//                "WHERE id = ?");
+//        groupCleanUpStmt.setInt(1, mGroup);
+//        groupCleanUpStmt.executeUpdate();
+//        groupCleanUpStmt.close();
+//        mData.mDb.close();
         super.tearDown();
     }
 

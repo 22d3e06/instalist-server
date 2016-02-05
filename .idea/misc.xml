@@ -5,6 +5,7 @@
   </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
+    <type id="hibernate" />
   </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">

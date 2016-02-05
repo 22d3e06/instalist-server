@@ -1,9 +1,12 @@
 package org.noorganization.instalist.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.mindrot.jbcrypt.BCrypt;
 import org.noorganization.instalist.server.message.AppConfiguration;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.io.IOException;
 import java.sql.Connection;
 
@@ -12,21 +15,15 @@ import java.sql.Connection;
  */
 public class CommonData {
 
-    public Connection mDb;
+    public EntityManagerFactory mEntities;
 
-    public static final String sSecret = "justATest";
-    public static final String sEncryptedSecret =
-            "$2a$10$qzC73lPz3oz3mDvAbesbDeOhrjU1zFov8.fjrDZiyhPHkIl3XdGZW";
-
-    public ObjectMapper mJsonMapper;
+    public String mSecret;
+    public String mEncryptedSecret;
 
     public CommonData() throws IOException {
-        mJsonMapper = new ObjectMapper();
-        AppConfiguration config = mJsonMapper.readValue(getClass().getClassLoader().
-                getResourceAsStream("database/config.json"), AppConfiguration.class);
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.initialize(config);
+        mSecret = "justATest";
+        mEncryptedSecret = BCrypt.hashpw(mSecret, BCrypt.gensalt(10));
 
-        mDb = dbHelper.getConnection();
+        mEntities = Persistence.createEntityManagerFactory( "org.noorganization.instalist.server.test" );
     }
 }
