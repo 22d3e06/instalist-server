@@ -17,7 +17,6 @@ public class Application extends ResourceConfig {
     public Application() {
         register(UserResource.class);
         register(CategoriesResource.class);
-        register(HelloWorld.class);
 
         ObjectMapper jsonMapper = new ObjectMapper();
 

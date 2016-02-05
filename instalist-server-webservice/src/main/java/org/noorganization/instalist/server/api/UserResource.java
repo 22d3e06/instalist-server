@@ -1,9 +1,10 @@
 
 package org.noorganization.instalist.server.api;
 
+import org.noorganization.instalist.comm.message.DeviceInfo;
+import org.noorganization.instalist.server.message.*;
 import org.mindrot.jbcrypt.BCrypt;
 import org.noorganization.instalist.server.CommonEntity;
-import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.message.Error;
 import org.noorganization.instalist.server.support.AuthHelper;
 import org.noorganization.instalist.server.support.DatabaseHelper;

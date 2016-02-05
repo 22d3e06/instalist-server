@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" name="EinkaufslisteServer:war">
     <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="EinkaufslisteServer-0.1-SNAPSHOT.war">
+    <root id="archive" name="instalist-server-meta-0.1-SNAPSHOT.war">
       <element id="artifact" artifact-name="EinkaufslisteServer:war exploded" />
     </root>
   </artifact>

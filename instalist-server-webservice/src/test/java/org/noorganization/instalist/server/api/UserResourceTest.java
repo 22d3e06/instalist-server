@@ -6,8 +6,8 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.support.AuthHelper;
@@ -279,12 +279,12 @@ public class UserResourceTest extends JerseyTest{
 
         Response wrongDataResponse = target(url).queryParam("token", token).request().put(
                 Entity.json(new DeviceInfo[]{
-                        new DeviceInfo().withAuthorization(true).withName("none")}));
+                        new DeviceInfo().withAuthorized(true).withName("none")}));
         assertEquals(400, wrongDataResponse.getStatus());
 
         Response okResponse = target(url).queryParam("token", token).request().put(
                 Entity.json(new DeviceInfo[]{
-                        new DeviceInfo().withId(mDeviceWOAuth).withAuthorization(true)
+                        new DeviceInfo().withId(mDeviceWOAuth).withAuthorized(true)
                 }));
         assertEquals(200, okResponse.getStatus());
         PreparedStatement checkChangedDev2Stmt = mData.mDb.prepareStatement("SELECT name, " +

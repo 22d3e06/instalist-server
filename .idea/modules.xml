@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EinkaufslisteServer.iml" filepath="$PROJECT_DIR$/EinkaufslisteServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/instalist-comm/instalist-comm.iml" filepath="$PROJECT_DIR$/instalist-comm/instalist-comm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/instalist-server-webservice/instalist-server-webservice.iml" filepath="$PROJECT_DIR$/instalist-server-webservice/instalist-server-webservice.iml" />
     </modules>
   </component>
 </project>
