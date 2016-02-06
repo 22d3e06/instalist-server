@@ -1,6 +1,5 @@
 package org.noorganization.instalist.server.api;
 
-import org.glassfish.jersey.internal.util.Base64;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -10,17 +9,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.message.Category;
-import org.noorganization.instalist.server.support.AuthHelper;
 import org.noorganization.instalist.server.support.DateHelper;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Date;
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -70,7 +64,7 @@ public class CategoriesResourceTest extends JerseyTest {
 //        deviceRS.close();
 //        deviceStmt.close();
 //
-//        mToken = AuthHelper.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
+//        mToken = AuthController.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
 //                encodeAsString(deviceId + ":" + mData.mSecret));
 //        assertNotNull(mToken);
 //

@@ -1,32 +1,17 @@
 
 package org.noorganization.instalist.server.api;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.message.Category;
-import org.noorganization.instalist.server.message.Error;
-import org.noorganization.instalist.server.support.AuthHelper;
-import org.noorganization.instalist.server.support.DatabaseHelper;
-import org.noorganization.instalist.server.support.DateHelper;
-import org.noorganization.instalist.server.support.ResponseFactory;
 
 
 /**
@@ -36,7 +21,6 @@ import org.noorganization.instalist.server.support.ResponseFactory;
 @Path("/categories")
 public class CategoriesResource {
 
-    private AuthHelper mAuthHelper;
 
     /**
      * Get a list of categories.
@@ -51,8 +35,8 @@ public class CategoriesResource {
     public Response getCategories(@QueryParam("token") String _token,
                                   @QueryParam("changedsince") String _changedSince,
                                   @QueryParam("uuid") String  _categoryId) throws Exception {
-        int groupId;
-        if (_token == null || (groupId = mAuthHelper.getGroupIdByToken(_token)) < 0)
+        /*int groupId;
+        if (_token == null || (groupId = mAuthController.getDeviceGroupByToken(_token)) < 0)
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
 
@@ -121,7 +105,8 @@ public class CategoriesResource {
         categoriesStmt.close();
         db.close();
 
-        return ResponseFactory.generateOK(categoriesResult);
+        return ResponseFactory.generateOK(categoriesResult);*/
+        return null;
     }
 
     /**
@@ -135,7 +120,7 @@ public class CategoriesResource {
     public Response putCategoryById(@QueryParam("token") String _token, Category _entity) throws
             Exception {
 //        int groupId;
-//        if (_token == null || (groupId = mAuthHelper.getGroupIdByToken(_token)) < 0)
+//        if (_token == null || (groupId = mAuthController.getGroupIdByToken(_token)) < 0)
 //            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
         return null;
@@ -170,7 +155,4 @@ public class CategoriesResource {
         return null;
     }
 
-    public CategoriesResource() {
-        mAuthHelper = AuthHelper.getInstance();
-    }
 }

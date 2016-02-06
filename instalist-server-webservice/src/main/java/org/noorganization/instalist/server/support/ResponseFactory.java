@@ -87,7 +87,7 @@ public class ResponseFactory {
      */
     public static Response generateNotAuthorizedWAuth(Object _entity) {
         Response.ResponseBuilder builder = Response.status(Response.Status.UNAUTHORIZED);
-        //builder.location(UriBuilder.fromMethod(UserResource.class, "getUserToken").build());
+        //builder.location(UriBuilder.fromMethod(GroupsResource.class, "getUserToken").build());
         builder.header(HttpHeaders.WWW_AUTHENTICATE, "Basic realm=InstalistServer");
         if (_entity != null) {
             builder.type(MediaType.APPLICATION_JSON_TYPE);

@@ -10,6 +10,7 @@
 
         <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeviceGroup</class>
+        <class>org.noorganization.instalist.server.model.Device</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
@@ -21,7 +22,8 @@
 
             <!--<property name="hibernate.show_sql" value="true" />!-->
 
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <!-- switch to "verify" for real production !-->
+            <property name="hibernate.hbm2ddl.auto" value="update" />
         </properties>
 
     </persistence-unit>
@@ -32,16 +34,17 @@
         <class>org.noorganization.instalist.server.model.Device</class>
 
         <properties>
-            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:;DB_CLOSE_DELAY=-1" />
-            <property name="javax.persistence.jdbc.user" value="sa" />
-            <property name="javax.persistence.jdbc.password" value="" />
+            <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
+            <property name="javax.persistence.jdbc.url"
+                      value="jdbc:mariadb://localhost/instalist_test" />
+            <property name="javax.persistence.jdbc.user" value="instalist_test" />
+            <property name="javax.persistence.jdbc.password" value="Bdv7v8Uu0O" />
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 
-            <!--<property name="hibernate.show_sql" value="true" />!-->
+            <!-- <property name="hibernate.show_sql" value="true" /> !-->
 
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
         </properties>
 
     </persistence-unit>

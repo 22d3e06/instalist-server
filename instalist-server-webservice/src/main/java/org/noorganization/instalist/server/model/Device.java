@@ -48,7 +48,8 @@ public class Device {
 
     @Temporal(TemporalType.TIMESTAMP)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "created")
+    @Column(name = "created", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable
+            = false, updatable = false)
     public Date getCreated() {
         return mCreated;
     }
@@ -62,7 +63,7 @@ public class Device {
         return this;
     }
 
-    @Column(name = "authorized", nullable = false)
+    @Column(name = "authorized", columnDefinition = "BOOLEAN", nullable = false)
     public boolean getAuthorized() {
         return mAuthorized;
     }
@@ -102,5 +103,46 @@ public class Device {
     public Device withGroup(DeviceGroup _group) {
         setGroup(_group);
         return this;
+    }
+
+    @Override
+    public boolean equals(Object _o) {
+        if (this == _o)
+            return true;
+        if (_o == null || getClass() != _o.getClass())
+            return false;
+
+        Device device = (Device) _o;
+
+        if (mId != device.mId)
+            return false;
+        if (mAuthorized != device.mAuthorized)
+            return false;
+        if (mName != null ? !mName.equals(device.mName) : device.mName != null)
+            return false;
+        if (mCreated != null ? !mCreated.equals(device.mCreated) : device.mCreated != null)
+            return false;
+        if (mSecret != null ? !mSecret.equals(device.mSecret) : device.mSecret != null)
+            return false;
+        return mGroup != null ?
+                (device.mGroup !=  null && mGroup.getId() == device.mGroup.getId()) :
+                device.mGroup == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mId;
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "mId=" + mId +
+                ", mName='" + mName + '\'' +
+                ", mCreated=" + mCreated +
+                ", mAuthorized=" + mAuthorized +
+                ", mSecret='" + mSecret + '\'' +
+                ", mGroup=" + mGroup +
+                '}';
     }
 }

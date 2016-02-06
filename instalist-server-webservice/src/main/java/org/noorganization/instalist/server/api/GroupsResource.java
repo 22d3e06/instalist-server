@@ -1,28 +1,27 @@
 
 package org.noorganization.instalist.server.api;
 
+import org.glassfish.jersey.internal.util.Base64;
 import org.noorganization.instalist.comm.message.DeviceInfo;
+import org.noorganization.instalist.comm.message.GroupInfo;
+import org.noorganization.instalist.server.controller.IAuthController;
+import org.noorganization.instalist.server.controller.IGroupController;
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.message.*;
-import org.mindrot.jbcrypt.BCrypt;
-import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.message.Error;
-import org.noorganization.instalist.server.support.AuthHelper;
+import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
+import javax.persistence.EntityManager;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import java.security.SecureRandom;
 import java.sql.*;
-import java.util.LinkedList;
-import java.util.List;
 
-@Path("/user")
-public class UserResource {
-
-    private AuthHelper mAuthHelper;
+@Path("/groups")
+public class GroupsResource {
 
     /**
      * Get the auth token.
@@ -30,32 +29,52 @@ public class UserResource {
      * client. For Encoding-method view RFC 2617
      */
     @GET
-    @Path("token")
+    @Path("{groupid}/devices/token")
     @Produces({ "application/json" })
-    public Response getUserToken(@Context HttpHeaders _headers) throws Exception {
+    public Response getDeviceToken(@Context HttpHeaders _headers,
+                                   @PathParam("groupid") int _groupId) throws Exception {
         String authHeader = _headers.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
             Error message = new Error();
             message.setMessage("Authentication needed.");
             return ResponseFactory.generateNotAuthorizedWAuth(message);
         } else {
-            Connection db = DatabaseHelper.getInstance().getConnection();
-            String token = mAuthHelper.getTokenByHttpAuth(db, authHeader);
-            db.close();
-            if (token == null) {
-                Error message = new Error();
-                message.setMessage("Authentication wrong.");
-                return ResponseFactory.generateNotAuthorizedWAuth(message);
-            } else if (!mAuthHelper.getIsAuthorizedToGroup(token)) {
-                Error message = new Error();
-                message.setMessage("Not authorized to group.");
-                return ResponseFactory.generateAccepted(message);
-            } else {
-                Token message = new Token();
-                message.setToken(token);
-                return ResponseFactory.generateOK(message);
-            }
+//            if (!_authHeader.matches("Basic\\s+[^\\s]+"))
+//                return null;
+//            String authInfo = _authHeader.replaceFirst("Basic\\s+", "");
+//            authInfo = Base64.decodeAsString(authInfo);
+//
+//            int colonPos = authInfo.indexOf(":");
+//            if (colonPos < 1)
+//                return null;
+//            int deviceId;
+//            try {
+//                deviceId = Integer.parseInt(authInfo.substring(0, colonPos));
+//            } catch (NumberFormatException e) {
+//                return null;
+//            }
+//            String secret = authInfo.substring(colonPos + 1);
+//            if (secret.length() == 0)
+//                return null;
+//            mAuthController.getTokenByHttpAuth()
+//            Connection db = DatabaseHelper.getInstance().getConnection();
+//            String token = mAuthController.getTokenByHttpAuth(db, authHeader);
+//            db.close();
+//            if (token == null) {
+//                Error message = new Error();
+//                message.setMessage("Authentication wrong.");
+//                return ResponseFactory.generateNotAuthorizedWAuth(message);
+//            } else if (!mAuthController.getIsAuthorizedToGroup(token)) {
+//                Error message = new Error();
+//                message.setMessage("Not authorized to group.");
+//                return ResponseFactory.generateAccepted(message);
+//            } else {
+//                TokenInfo message = new TokenInfo();
+//                message.setToken(token);
+//                return ResponseFactory.generateOK(message);
+//            }
         }
+        return null;
     }
 
     /**
@@ -69,17 +88,19 @@ public class UserResource {
      *     
      */
     @POST
-    @Path("register_device")
+    @Path("{groupid}/devices")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    public Response postUserRegisterDevice(DeviceRegistration _registration) throws Exception {
-        if (_registration == null || _registration.getGroupReadableId() == null || _registration
+    public Response postDevice(@PathParam("groupid") int groupId,
+                               DeviceRegistration _registration) throws Exception {
+
+        /*if (_registration == null || _registration.getGroupReadableId() == null || _registration
                 .getGroupReadableId().length() != 6 || _registration.getSecret() == null ||
                 _registration.getSecret().length() == 0 || _registration.getName() == null)
             return ResponseFactory.generateBadRequest(new Error().withMessage("Sent data was " +
                     "incomplete."));
 
-        Connection db = DatabaseHelper.getInstance().getConnection();
+        Connection db = DatabaseHelper.getInstance().getManager();
         db.setAutoCommit(false);
         PreparedStatement groupIdStmt = db.prepareStatement("SELECT devicegroups.id AS dgid, " +
                 "devices.id AS did FROM devicegroups LEFT JOIN devices ON devicegroups.id = " +
@@ -138,17 +159,18 @@ public class UserResource {
         if (firstDev)
             return ResponseFactory.generateOK(rtnEntity);
         else
-            return ResponseFactory.generateCreated(rtnEntity);
+            return ResponseFactory.generateCreated(rtnEntity);*/
+        return null;
     }
 
     @GET
-    @Path("group/devices")
+    @Path("{groupid}/devices")
     @Produces({ "application/json" })
-    public Response getUserGroupDevices(@QueryParam("token") String _token) throws Exception {
-        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+    public Response getDevices(@PathParam("groupid") int _groupId) throws Exception {
+        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
-        int groupId = mAuthHelper.getGroupIdByToken(_token);
+        int groupId = mAuthController.getDeviceGroupByToken(_token);
 
         Connection db = DatabaseHelper.getInstance().getConnection();
         PreparedStatement devicesStmt = db.prepareStatement("SELECT id, name, autorizedtogroup FROM " +
@@ -177,22 +199,32 @@ public class UserResource {
         devicesRS.close();
         devicesStmt.close();
         db.close();
-        return ResponseFactory.generateOK(devices);
+        return ResponseFactory.generateOK(devices);*/
+        return null;
+    }
+
+    @GET
+    @Path("{groupid}/devices/{deviceid}")
+    @Produces({ "application/json" })
+    public Response getDevice(@PathParam("groupid") int _groupId,
+                              @PathParam("deviceid") int _deviceId) throws Exception {
+        return null;
     }
 
     @PUT
-    @Path("group/devices")
+    @Path("{groupid}/devices/{deviceid}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    public Response putUserGroupDevices(@QueryParam("token") String _token, DeviceInfo[]
-            _devicesToUpdate) throws Exception {
-        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+    public Response putDevice(@PathParam("groupid") int _groupId,
+                              @PathParam("deviceid") int _deviceId,
+                              DeviceInfo _deviceToUpdate) throws Exception {
+        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
         if (_devicesToUpdate == null || _devicesToUpdate.length == 0)
             return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
 
-        int groupId = mAuthHelper.getGroupIdByToken(_token);
+        int groupId = mAuthController.getDeviceGroupByToken(_token);
         Connection db = DatabaseHelper.getInstance().getConnection();
         db.setAutoCommit(false);
         PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
@@ -250,16 +282,18 @@ public class UserResource {
         db.commit();
         db.close();
 
-        return ResponseFactory.generateOK(null);
+        return ResponseFactory.generateOK(null);*/
+        return null;
     }
 
     @DELETE
-    @Path("group/devices")
+    @Path("{groupid}/devices/{deviceid}")
     @Produces({ "application/json" })
-    public Response deleteUserGroupDevices(@QueryParam("token") String _token,
-                                           @QueryParam("deviceid") Integer _deviceToDelete)
+    public Response deleteDevice(@PathParam("groupid") int _groupId,
+                                 @PathParam("deviceid") int _deviceId,
+                                 @QueryParam("deviceid") Integer _deviceToDelete)
             throws Exception {
-        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
         if (_deviceToDelete == null)
@@ -270,7 +304,7 @@ public class UserResource {
         Connection db = DatabaseHelper.getInstance().getConnection();
         PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
                 "devices WHERE devicegroup_id = ? AND id = ?");
-        int groupId = mAuthHelper.getGroupIdByToken(_token);
+        int groupId = mAuthController.getDeviceGroupByToken(_token);
         checkDeviceInGroupStmt.setInt(1, groupId);
         checkDeviceInGroupStmt.setInt(2, _deviceToDelete);
         ResultSet checkDeviceInGroupRS = checkDeviceInGroupStmt.executeQuery();
@@ -308,7 +342,8 @@ public class UserResource {
         checkEmptyGroupStmt.close();
         db.close();
 
-        return ResponseFactory.generateOK(null);
+        return ResponseFactory.generateOK(null);*/
+        return null;
     }
 
     /**
@@ -316,10 +351,10 @@ public class UserResource {
      * 
      */
     @GET
-    @Path("group/access_key")
+    @Path("{groupid}/access_key")
     @Produces({ "application/json" })
-    public Response getUserGroupAccessKey(@QueryParam("token") String _token) throws Exception {
-        if (_token == null || !mAuthHelper.getIsAuthorizedToGroup(_token))
+    public Response getAccessKey(@PathParam("groupid") int _groupId) throws Exception {
+        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
         Connection db = DatabaseHelper.getInstance().getConnection();
@@ -327,8 +362,8 @@ public class UserResource {
         PreparedStatement updateGroupStmt = db.prepareStatement("UPDATE devicegroups SET " +
                 "readableid = ? WHERE id = ?");
         updateGroupStmt.setString(1, newReadableId);
-        int group = mAuthHelper.getGroupIdByToken(_token);
-        updateGroupStmt.setInt(2, mAuthHelper.getGroupIdByToken(_token));
+        int group = mAuthController.getDeviceGroupByToken(_token);
+        updateGroupStmt.setInt(2, mAuthController.getDeviceGroupByToken(_token));
         if (updateGroupStmt.executeUpdate() != 1) {
             updateGroupStmt.close();
             db.close();
@@ -339,7 +374,8 @@ public class UserResource {
         }
         updateGroupStmt.close();
         db.close();
-        return ResponseFactory.generateOK(new Group().withReadableId(newReadableId));
+        return ResponseFactory.generateOK(new GroupInfo().withReadableId(newReadableId));*/
+        return null;
     }
 
     /**
@@ -347,53 +383,20 @@ public class UserResource {
      * 
      */
     @POST
-    @Path("register_group")
     @Produces({ "application/json" })
-    public Response postUserRegisterGroup() throws Exception {
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        String newGroupReadableId = getNewGroupReadableId(db);
-        PreparedStatement createGroupStmt = db.prepareStatement("INSERT INTO devicegroups " +
-                "(readableid) VALUES (?)");
-        createGroupStmt.setString(1, newGroupReadableId);
-        if(createGroupStmt.executeUpdate() != 1) {
-            createGroupStmt.close();
-            db.close();
-            System.err.println("Could not insert new group.");
-            return ResponseFactory.generateServerError(new Error().withMessage("Creating new " +
-                    "group failed."));
-        }
-        createGroupStmt.close();
-        db.close();
-        return ResponseFactory.generateOK(new Group().withReadableId(newGroupReadableId));
+    public Response postGroups() throws Exception {
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IGroupController groupController = ControllerFactory.getGroupController(manager);
+
+        DeviceGroup newDeviceGroup = groupController.addGroup();
+        GroupInfo answer = new GroupInfo().withId(newDeviceGroup.getId()).
+                withReadableId(newDeviceGroup.getReadableId());
+        manager.close();
+
+        return ResponseFactory.generateOK(answer);
     }
 
-    public UserResource() {
-        mAuthHelper = AuthHelper.getInstance();
+    public GroupsResource() {
     }
 
-    private String getNewGroupReadableId(Connection _db) throws SQLException {
-        final char[] acceptableChars =
-                new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-                        'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3',
-                        '4', '5', '6', '7', '8', '9'};
-        SecureRandom random = new SecureRandom();
-        StringBuilder idBuilder = new StringBuilder(6);
-        PreparedStatement checkStmt = _db.prepareStatement("SELECT COUNT(id) FROM devicegroups " +
-                "WHERE readableid = ?");
-        while (true) {
-            idBuilder.setLength(0);
-            while (idBuilder.length() < 6)
-                idBuilder.append(acceptableChars[random.nextInt(acceptableChars.length)]);
-            checkStmt.setString(1, idBuilder.toString());
-            ResultSet checkRS = checkStmt.executeQuery();
-            checkRS.first();
-            int result = checkRS.getInt(1);
-            checkRS.close();
-            if (result == 0)
-                break;
-        }
-        checkStmt.close();
-
-        return idBuilder.toString();
-    }
 }

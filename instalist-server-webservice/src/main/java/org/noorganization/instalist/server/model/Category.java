@@ -66,4 +66,29 @@ public class Category {
     public void setUpdated(Date _updated) {
         mUpdated = _updated;
     }
+
+    @Override
+    public boolean equals(Object _o) {
+        if (this == _o)
+            return true;
+        if (_o == null || getClass() != _o.getClass())
+            return false;
+
+        Category category = (Category) _o;
+
+        if (mId != category.mId)
+            return false;
+        if (mUuid != null ? !mUuid.equals(category.mUuid) : category.mUuid != null)
+            return false;
+        if (mGroup != null ? !mGroup.equals(category.mGroup) : category.mGroup != null)
+            return false;
+        if (mName != null ? !mName.equals(category.mName) : category.mName != null)
+            return false;
+        return mUpdated != null ? mUpdated.equals(category.mUpdated) : category.mUpdated == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return mId;
+    }
 }

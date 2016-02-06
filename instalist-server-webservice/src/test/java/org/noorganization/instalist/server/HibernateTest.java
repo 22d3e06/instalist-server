@@ -23,7 +23,8 @@ public class HibernateTest extends TestCase {
     protected void setUp() throws Exception {
         // like discussed with regards to SessionFactory, an EntityManagerFactory is set up once for an application
         // 		IMPORTANT: notice how the name here matches the name we gave the persistence-unit in persistence.xml!
-        mEntityManagerFactory = Persistence.createEntityManagerFactory( "org.noorganization.instalist.server" );
+        mEntityManagerFactory = Persistence.createEntityManagerFactory( "org.noorganization" +
+                ".instalist.server.test" );
     }
 
     @After
