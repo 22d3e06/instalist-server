@@ -4,6 +4,7 @@ package org.noorganization.instalist.server.api;
 import org.glassfish.jersey.internal.util.Base64;
 import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.comm.message.GroupInfo;
+import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
@@ -164,6 +165,7 @@ public class GroupsResource {
     }
 
     @GET
+    @TokenSecured
     @Path("{groupid}/devices")
     @Produces({ "application/json" })
     public Response getDevices(@PathParam("groupid") int _groupId) throws Exception {
@@ -212,6 +214,7 @@ public class GroupsResource {
     }
 
     @PUT
+    @TokenSecured
     @Path("{groupid}/devices/{deviceid}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
@@ -287,6 +290,7 @@ public class GroupsResource {
     }
 
     @DELETE
+    @TokenSecured
     @Path("{groupid}/devices/{deviceid}")
     @Produces({ "application/json" })
     public Response deleteDevice(@PathParam("groupid") int _groupId,
@@ -351,6 +355,7 @@ public class GroupsResource {
      * 
      */
     @GET
+    @TokenSecured
     @Path("{groupid}/access_key")
     @Produces({ "application/json" })
     public Response getAccessKey(@PathParam("groupid") int _groupId) throws Exception {

@@ -24,8 +24,6 @@ class AuthController implements IAuthController {
     private static SecureRandom sRandom;
     private static HashMap<String, AuthInfo> sClients;
 
-    private EntityManager mManager;
-
     /**
      * Check whether authenticated device is authorized to group.
      * @param _token The token for identifying authenticated device.
@@ -61,15 +59,8 @@ class AuthController implements IAuthController {
         return sClients.get(_token).device;
     }
 
-    /**
-     * Generates a token if authentication data is correct.
-     * @param _manager A EntityManager for searching in the database.
-     * @param _authHeader The String from the HTTP-header. Looks like
-     *                    "Basic 76fhAdskjDSFsfgjsdDE9Rd==".
-     * @return Either a token-string or null if authentication data was incorrect.
-     */
-    public String getTokenByHttpAuth(int _device, String _secret) {
-        TypedQuery<Device> deviceQuery = mManager.createQuery("select d from Device d where d.id " +
+    public String getTokenByHttpAuth(EntityManager _manager, int _device, String _secret) {
+        TypedQuery<Device> deviceQuery = _manager.createQuery("select d from Device d where d.id " +
                 "= :id", Device.class);
         deviceQuery.setParameter("id", _device);
         List<Device> foundDevices = deviceQuery.getResultList();
@@ -95,12 +86,11 @@ class AuthController implements IAuthController {
             return null;
     }
 
-    AuthController(EntityManager _manager) {
+    AuthController() {
         if (sRandom == null)
             sRandom = new SecureRandom();
         if (sClients == null)
             sClients = new HashMap<String, AuthInfo>();
-        mManager = _manager;
     }
 
     private String generateToken() {

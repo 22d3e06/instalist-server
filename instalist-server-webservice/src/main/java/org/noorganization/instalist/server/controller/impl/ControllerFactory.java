@@ -10,8 +10,8 @@ import javax.persistence.EntityManager;
  */
 public class ControllerFactory {
 
-    public static IAuthController getAuthController(EntityManager _manager) {
-        return new AuthController(_manager);
+    public static IAuthController getAuthController() {
+        return new AuthController();
     }
 
     public static IGroupController getGroupController(EntityManager _manager) {

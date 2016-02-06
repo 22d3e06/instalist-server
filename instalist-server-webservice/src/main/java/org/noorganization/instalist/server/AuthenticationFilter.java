@@ -1,8 +1,12 @@
 package org.noorganization.instalist.server;
 
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
+import org.noorganization.instalist.server.model.Device;
+import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
 import javax.annotation.Priority;
+import javax.persistence.EntityManager;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -14,10 +18,9 @@ import java.io.IOException;
 
 /**
  * Authentication as filter. Inspired by
- *
  * <a href="http://stackoverflow.com/questions/26777083/best-practice-for-rest-token-based">Stackoverflow</a>.
- *
- * -authentication-with-jax-rs-and-jersey}
+ * Thanks to the special IAuthControlle, there is no db-connection needed, with should improve
+ * performance for refusing clients with wrong authorization.
  * Created by damihe on 05.02.16.
  */
 @TokenSecured
@@ -26,32 +29,18 @@ import java.io.IOException;
 public class AuthenticationFilter implements ContainerRequestFilter {
 
     public void filter(ContainerRequestContext requestContext) throws IOException {
-
-        // Get the HTTP Authorization header from the request
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
-        // Check if the HTTP Authorization header is present and formatted correctly
-        if (authorizationHeader == null || !authorizationHeader.startsWith("X-Token ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
-        }
-
-        // Extract the token from the HTTP Authorization header
-        String token = authorizationHeader.substring("X-Token".length()).trim();
-
-        try {
-
-            // Validate the token
-            validateToken(token);
-
-        } catch (Exception e) {
-            requestContext.abortWith(ResponseFactory.
+        if (authorizationHeader == null || !authorizationHeader.startsWith("X-Token "))
+            throw new NotAuthorizedException(ResponseFactory.
                     generateNotAuthorized(CommonEntity.sNotAuthorized));
-        }
-    }
 
-    private void validateToken(String token) throws Exception {
-        // Check if it was issued by the server and if it's not expired
-        // Throw an Exception if the token is invalid
-        throw new Exception();
+        String token = authorizationHeader.substring("X-Token ".length()).trim();
+
+        Device authenticatedDev = ControllerFactory.getAuthController().
+                getDeviceByToken(token);
+        if (authenticatedDev == null || !authenticatedDev.getAuthorized())
+            throw new NotAuthorizedException(ResponseFactory.
+                    generateNotAuthorized(CommonEntity.sNotAuthorized));
     }
 }

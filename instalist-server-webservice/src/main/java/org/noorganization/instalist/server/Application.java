@@ -15,18 +15,12 @@ import java.io.IOException;
 public class Application extends ResourceConfig {
 
     public Application() {
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance();
+        dbHelper.initialize("org.noorganization.instalist.server");
+
         register(GroupsResource.class);
         register(CategoriesResource.class);
 
-        ObjectMapper jsonMapper = new ObjectMapper();
-
-        try {
-            AppConfiguration config = jsonMapper.readValue(getClassLoader().getResourceAsStream("database/config.json"), AppConfiguration.class);
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-            dbHelper.initialize("org.noorganization.instalist.server");
-        } catch (IOException e) {
-            System.err.println("Database config-file could not be read. Exception-trace:");
-            e.printStackTrace();
-        }
+        register(AuthenticationFilter.class);
     }
 }

@@ -11,6 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.comm.message.TokenInfo;
+import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
@@ -42,7 +43,9 @@ public class GroupsResourceTest extends JerseyTest{
     protected Application configure() {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
-        return new ResourceConfig(GroupsResource.class);
+        ResourceConfig rc = new ResourceConfig(GroupsResource.class);
+        rc.register(AuthenticationFilter.class);
+        return rc;
     }
 
     @Before
@@ -154,8 +157,8 @@ public class GroupsResourceTest extends JerseyTest{
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
-        IAuthController authController = ControllerFactory.getAuthController(mManager);
-        String invalidToken = authController.getTokenByHttpAuth(mDeviceWOAuth.getId(),
+        IAuthController authController = ControllerFactory.getAuthController();
+        String invalidToken = authController.getTokenByHttpAuth(mManager, mDeviceWOAuth.getId(),
                 mData.mSecret);
         Response rightAuthNeededResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + invalidToken).get();
@@ -163,7 +166,7 @@ public class GroupsResourceTest extends JerseyTest{
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
-        String validToken = authController.getTokenByHttpAuth(mDeviceWAuth.getId(),
+        String validToken = authController.getTokenByHttpAuth(mManager, mDeviceWAuth.getId(),
                 mData.mSecret);
         Response okResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + validToken).get();
@@ -205,8 +208,8 @@ public class GroupsResourceTest extends JerseyTest{
                 header(HttpHeaders.AUTHORIZATION, "X-Token invalidtoken").get();
         assertEquals(401, badTokenResponse.getStatus());
 
-        String token = ControllerFactory.getAuthController(mManager).
-                getTokenByHttpAuth(mDeviceWAuth.getId(), mData.mSecret);
+        String token = ControllerFactory.getAuthController().
+                getTokenByHttpAuth(mManager, mDeviceWAuth.getId(), mData.mSecret);
         Response okResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + token).get();
         assertEquals(200, okResponse.getStatus());
@@ -239,8 +242,9 @@ public class GroupsResourceTest extends JerseyTest{
                 put(Entity.json(new DeviceInfo()));
         assertEquals(401, badTokenResponse.getStatus());
 
-        IAuthController authController = ControllerFactory.getAuthController(mManager);
-        String token = authController.getTokenByHttpAuth(mDeviceWAuth.getId(), mData.mSecret);
+        IAuthController authController = ControllerFactory.getAuthController();
+        String token = authController.getTokenByHttpAuth(mManager, mDeviceWAuth.getId(),
+                mData.mSecret);
 
         Response noDataResponse = target(String.format(url, mGroup.getId(), mDeviceWOAuth.getId()))
                 .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).
@@ -273,8 +277,8 @@ public class GroupsResourceTest extends JerseyTest{
                 "invalid").delete();
         assertEquals(401, badTokenResponse.getStatus());
 
-        String token = ControllerFactory.getAuthController(mManager).
-                getTokenByHttpAuth(mDeviceWAuth.getId(), mData.mSecret);
+        String token = ControllerFactory.getAuthController().
+                getTokenByHttpAuth(mManager, mDeviceWAuth.getId(), mData.mSecret);
         Response okResponse = target(String.format(url, mGroup.getId(), mDeviceWOAuth.getId())).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).delete();
         assertEquals(200, okResponse.getStatus());
