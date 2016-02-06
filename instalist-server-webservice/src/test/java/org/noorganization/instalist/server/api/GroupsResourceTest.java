@@ -112,17 +112,20 @@ public class GroupsResourceTest extends JerseyTest{
         assertEquals(400, groupReadableIdNeeded.getStatus());
 
         Response secretNeeded = target(String.format(url, mGroup.getId())).request().post(
-                Entity.json(new DeviceRegistration().withGroupId("123456")));
+                Entity.json(new DeviceRegistration().withGroupAuth("123456")));
         assertEquals(400, secretNeeded.getStatus());
 
         Response validDevice = target(String.format(url, mGroup.getId())).request().
-                post(Entity.json(new DeviceRegistration().withGroupId("123456").
+                post(Entity.json(new DeviceRegistration().withGroupAuth("123456").
                         withSecret(mData.mSecret).withName("dev3")));
         assertEquals(201, validDevice.getStatus());
-        DeviceRegistrationAck dev3Ack = validDevice.readEntity(DeviceRegistrationAck.class);
+        DeviceInfo dev3Ack = validDevice.readEntity(DeviceInfo.class);
 
-        mData.flushEntityManager(mManager);
-        Device savedDev3 = mManager.find(Device.class, dev3Ack.getDeviceId());
+        //mData.flushEntityManager(mManager);
+        mManager.getTransaction().begin();
+        mManager.flush();
+        mManager.getTransaction().commit();
+        Device savedDev3 = mManager.find(Device.class, dev3Ack.getId());
         assertNotNull(savedDev3);
         assertEquals(mGroup, savedDev3.getGroup());
         assertFalse(savedDev3.getAuthorized());
@@ -135,13 +138,14 @@ public class GroupsResourceTest extends JerseyTest{
         mManager.persist(newDevGroup);
         mManager.getTransaction().commit();
         mManager.refresh(newDevGroup);
-        Response validDevice2 = target(url).request().post(Entity.json(new DeviceRegistration().
-                withGroupId("123456").withSecret(mData.mSecret).withName("dev4")));
+        Response validDevice2 = target(String.format(url, newDevGroup.getId())).request().
+                post(Entity.json(new DeviceRegistration().withGroupAuth("123456").
+                        withSecret(mData.mSecret).withName("dev4")));
         assertEquals(200, validDevice2.getStatus());
-        DeviceRegistrationAck dev4Ack = validDevice2.readEntity(DeviceRegistrationAck.class);
+        DeviceInfo dev4Ack = validDevice2.readEntity(DeviceInfo.class);
 
         mData.flushEntityManager(mManager);
-        Device savedDev4 = mManager.find(Device.class, dev4Ack.getDeviceId());
+        Device savedDev4 = mManager.find(Device.class, dev4Ack.getId());
         assertNotNull(savedDev4);
         assertEquals(newDevGroup, savedDev4.getGroup());
         assertTrue(savedDev4.getAuthorized());

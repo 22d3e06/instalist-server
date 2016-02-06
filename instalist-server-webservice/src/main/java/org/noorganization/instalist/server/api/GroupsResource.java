@@ -4,12 +4,14 @@ package org.noorganization.instalist.server.api;
 import org.glassfish.jersey.internal.util.Base64;
 import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.comm.message.GroupInfo;
+import org.noorganization.instalist.comm.message.TokenInfo;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
@@ -19,7 +21,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
-import java.sql.*;
 
 @Path("/groups")
 public class GroupsResource {
@@ -40,42 +41,49 @@ public class GroupsResource {
             message.setMessage("Authentication needed.");
             return ResponseFactory.generateNotAuthorizedWAuth(message);
         } else {
-//            if (!_authHeader.matches("Basic\\s+[^\\s]+"))
-//                return null;
-//            String authInfo = _authHeader.replaceFirst("Basic\\s+", "");
-//            authInfo = Base64.decodeAsString(authInfo);
-//
-//            int colonPos = authInfo.indexOf(":");
-//            if (colonPos < 1)
-//                return null;
-//            int deviceId;
-//            try {
-//                deviceId = Integer.parseInt(authInfo.substring(0, colonPos));
-//            } catch (NumberFormatException e) {
-//                return null;
-//            }
-//            String secret = authInfo.substring(colonPos + 1);
-//            if (secret.length() == 0)
-//                return null;
-//            mAuthController.getTokenByHttpAuth()
-//            Connection db = DatabaseHelper.getInstance().getConnection();
-//            String token = mAuthController.getTokenByHttpAuth(db, authHeader);
-//            db.close();
-//            if (token == null) {
-//                Error message = new Error();
-//                message.setMessage("Authentication wrong.");
-//                return ResponseFactory.generateNotAuthorizedWAuth(message);
-//            } else if (!mAuthController.getIsAuthorizedToGroup(token)) {
-//                Error message = new Error();
-//                message.setMessage("Not authorized to group.");
-//                return ResponseFactory.generateAccepted(message);
-//            } else {
-//                TokenInfo message = new TokenInfo();
-//                message.setToken(token);
-//                return ResponseFactory.generateOK(message);
-//            }
+            if (!authHeader.matches("Basic\\s+[^\\s]+")) {
+                Error message = new Error();
+                message.setMessage("Authorization has wrong format.");
+                return ResponseFactory.generateNotAuthorizedWAuth(message);
+            }
+            String encodedAuthInfo = authHeader.substring("Basic".length() + 1).trim();
+            String decodedAuthInfo = Base64.decodeAsString(encodedAuthInfo);
+
+            int colonPos = decodedAuthInfo.indexOf(":");
+            if (colonPos < 1) {
+                Error message = new Error();
+                message.setMessage("Authorization has wrong format.");
+                return ResponseFactory.generateNotAuthorizedWAuth(message);
+            }
+            int deviceId;
+            try {
+                deviceId = Integer.parseInt(decodedAuthInfo.substring(0, colonPos));
+            } catch (NumberFormatException e) {
+                Error message = new Error();
+                message.setMessage("Authorization has wrong format.");
+                return ResponseFactory.generateNotAuthorizedWAuth(message);
+            }
+            String secret = decodedAuthInfo.substring(colonPos + 1);
+            if (secret.length() == 0){
+                Error message = new Error();
+                message.setMessage("Authorization has wrong format.");
+                return ResponseFactory.generateNotAuthorizedWAuth(message);
+            }
+            EntityManager manager = DatabaseHelper.getInstance().getManager();
+            IAuthController authController = ControllerFactory.getAuthController();
+            String token = authController.getTokenByHttpAuth(manager,
+                    deviceId, secret);
+            manager.close();
+            if (token == null)
+                return ResponseFactory.generateNotAuthorizedWAuth(new Error().withMessage("Login " +
+                        "failed"));
+            else {
+                if (authController.getDeviceByToken(token).getAuthorized())
+                    return ResponseFactory.generateOK(new TokenInfo().withToken(token));
+                else
+                    return ResponseFactory.generateAccepted(new TokenInfo().withToken(token));
+            }
         }
-        return null;
     }
 
     /**
@@ -94,74 +102,30 @@ public class GroupsResource {
     @Produces({ "application/json" })
     public Response postDevice(@PathParam("groupid") int groupId,
                                DeviceRegistration _registration) throws Exception {
-
-        /*if (_registration == null || _registration.getGroupReadableId() == null || _registration
-                .getGroupReadableId().length() != 6 || _registration.getSecret() == null ||
+        if (_registration == null || _registration.getGroupAuth() == null || _registration
+                .getGroupAuth().length() != 6 || _registration.getSecret() == null ||
                 _registration.getSecret().length() == 0 || _registration.getName() == null)
             return ResponseFactory.generateBadRequest(new Error().withMessage("Sent data was " +
                     "incomplete."));
 
-        Connection db = DatabaseHelper.getInstance().getManager();
-        db.setAutoCommit(false);
-        PreparedStatement groupIdStmt = db.prepareStatement("SELECT devicegroups.id AS dgid, " +
-                "devices.id AS did FROM devicegroups LEFT JOIN devices ON devicegroups.id = " +
-                "devices.devicegroup_id WHERE devicegroups.readableid = ?;");
-        groupIdStmt.setString(1, _registration.getGroupReadableId());
-        ResultSet groupIdRS = groupIdStmt.executeQuery();
-        if (!groupIdRS.first()) {
-            groupIdRS.close();
-            db.close();
-            return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
-                    "group-id for registration was not found."));
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IGroupController groupController = ControllerFactory.getGroupController(manager);
+        Device newDevice = groupController.addDevice(groupId, _registration.getGroupAuth(),
+                _registration.getName(), _registration.getSecret());
+        manager.close();
+
+        if (newDevice == null)
+            return ResponseFactory.generateBadRequest(new Error().withMessage("Sent data was not " +
+                    "correct."));
+        else {
+            DeviceInfo rtnInfo = new DeviceInfo();
+            rtnInfo.setId(newDevice.getId());
+            rtnInfo.setAuthorized(newDevice.getAuthorized());
+            if (newDevice.getAuthorized())
+                return ResponseFactory.generateOK(rtnInfo);
+            else
+                return ResponseFactory.generateCreated(rtnInfo);
         }
-        int groupId = groupIdRS.getInt("dgid");
-        boolean firstDev = (groupIdRS.getInt("did") == 0 && groupIdRS.wasNull());
-        groupIdRS.close();
-        groupIdStmt.close();
-
-
-        PreparedStatement deviceCreationStmt = db.prepareStatement("INSERT INTO devices (name, " +
-                "devicegroup_id, autorizedtogroup, secret) VALUES (?, ?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS);
-        deviceCreationStmt.setString(1, _registration.getName());
-        deviceCreationStmt.setInt(2, groupId);
-        deviceCreationStmt.setBoolean(3, firstDev);
-        deviceCreationStmt.setString(4, BCrypt.hashpw(_registration.getSecret(), BCrypt.
-                gensalt(10)));
-        if (deviceCreationStmt.executeUpdate() != 1) {
-            deviceCreationStmt.close();
-            db.close();
-            System.err.println("Could not add device to group " + groupId);
-            return ResponseFactory.generateServerError(new Error().withMessage("Could not add " +
-                    "device to group."));
-        }
-        ResultSet createdDeviceIdRS = deviceCreationStmt.getGeneratedKeys();
-        createdDeviceIdRS.first();
-        DeviceRegistrationAck rtnEntity = new DeviceRegistrationAck();
-        rtnEntity.setDeviceId(createdDeviceIdRS.getInt(1));
-        createdDeviceIdRS.close();
-        deviceCreationStmt.close();
-
-        PreparedStatement groupSecureStmt = db.prepareStatement("UPDATE devicegroups SET " +
-                "readableid = NULL WHERE id = ?");
-        groupSecureStmt.setInt(1, groupId);
-        if (groupSecureStmt.executeUpdate() != 1) {
-            groupSecureStmt.close();
-            db.rollback();
-            db.close();
-            System.err.println("Could not secure devicegroup after adding a device.");
-            return ResponseFactory.generateServerError(new Error().withMessage("Could not add " +
-                    "device to group."));
-        }
-        groupSecureStmt.close();
-        db.commit();
-        db.close();
-
-        if (firstDev)
-            return ResponseFactory.generateOK(rtnEntity);
-        else
-            return ResponseFactory.generateCreated(rtnEntity);*/
-        return null;
     }
 
     @GET

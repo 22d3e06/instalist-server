@@ -52,7 +52,7 @@ public class AuthControllerTest extends JerseyTest {
         mManager.refresh(mDevice1);
         mManager.refresh(mDevice2);
 
-        mInstance = ControllerFactory.getAuthController(mManager);
+        mInstance = ControllerFactory.getAuthController();
     }
 
     @After
@@ -63,20 +63,20 @@ public class AuthControllerTest extends JerseyTest {
 
     @Test
     public void testGetTokenByHttpAuth() throws Exception {
-        assertNull(mInstance.getTokenByHttpAuth(0, null));
-        assertNull(mInstance.getTokenByHttpAuth(mDevice1.getId(), ""));
-        assertNull(mInstance.getTokenByHttpAuth(0, mData.mSecret));
+        assertNull(mInstance.getTokenByHttpAuth(mManager, 0, null));
+        assertNull(mInstance.getTokenByHttpAuth(mManager, mDevice1.getId(), ""));
+        assertNull(mInstance.getTokenByHttpAuth(mManager, 0, mData.mSecret));
 
-        String token = mInstance.getTokenByHttpAuth(mDevice1.getId(), mData.mSecret);
+        String token = mInstance.getTokenByHttpAuth(mManager, mDevice1.getId(), mData.mSecret);
         assertNotNull(token);
         assertEquals(mDevice1, mInstance.getDeviceByToken(token));
 
-        String token2 = mInstance.getTokenByHttpAuth(mDevice1.getId(), mData.mSecret);
+        String token2 = mInstance.getTokenByHttpAuth(mManager, mDevice1.getId(), mData.mSecret);
         assertNotEquals(token, token2);
         assertNull(mInstance.getDeviceByToken(token));
         assertEquals(mDevice1, mInstance.getDeviceByToken(token2));
 
-        String tokenDev2 = mInstance.getTokenByHttpAuth(mDevice2.getId(), mData.mSecret);
+        String tokenDev2 = mInstance.getTokenByHttpAuth(mManager, mDevice2.getId(), mData.mSecret);
         assertNotNull(tokenDev2);
         assertNotEquals(token2, tokenDev2);
         assertEquals(mDevice1, mInstance.getDeviceByToken(token2));

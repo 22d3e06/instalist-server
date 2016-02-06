@@ -1,5 +1,6 @@
 package org.noorganization.instalist.server.controller.impl;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
@@ -7,6 +8,7 @@ import org.noorganization.instalist.server.support.DatabaseHelper;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -32,6 +34,35 @@ class GroupController implements IGroupController {
         mManager.refresh(createdGroup);
 
         return createdGroup;
+    }
+
+    public Device addDevice(int _groupId, String _groupAuth, String _name, String _secret) {
+
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        if (group == null || group.getReadableId() == null || !group.getReadableId().
+                equals(_groupAuth))
+            return null;
+
+        mManager.getTransaction().begin();
+        TypedQuery<Device> otherDeviceQuery =
+                mManager.createQuery("select d from Device d where " +
+                        "d.group = :dg", Device.class);
+        otherDeviceQuery.setParameter("dg", group);
+        otherDeviceQuery.setMaxResults(1);
+        List<Device> otherDevices = otherDeviceQuery.getResultList();
+
+        group.setReadableId(null);
+        mManager.merge(group);
+        Device rtn = new Device();
+        rtn.setName(_name);
+        rtn.setGroup(group);
+        rtn.setSecret(BCrypt.hashpw(_secret, BCrypt.gensalt(10)));
+        rtn.setAuthorized(otherDevices.size() == 0);
+        mManager.persist(rtn);
+        mManager.getTransaction().commit();
+        mManager.refresh(rtn);
+
+        return rtn;
     }
 
     private String getNewGroupReadableId(EntityManager _manager) {

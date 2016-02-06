@@ -9,15 +9,15 @@ import com.fasterxml.jackson.annotation.*;
 @JsonPropertyOrder({ "groupid", "secret", "name" })
 public class DeviceRegistration extends EntityObject {
 
-    private String mGroupId;
+    private String mGroupAuth;
 
     private String mSecret;
 
     private String mName;
 
     @JsonProperty("groupid")
-    public String getGroupReadableId() {
-        return mGroupId;
+    public String getGroupAuth() {
+        return mGroupAuth;
     }
 
     @JsonProperty("name")
@@ -31,12 +31,12 @@ public class DeviceRegistration extends EntityObject {
     }
 
     @JsonProperty("groupid")
-    public void setGroupId(String _groupId) {
-        mGroupId = _groupId;
+    public void setGroupAuth(String _groupAuth) {
+        mGroupAuth = _groupAuth;
     }
 
-    public DeviceRegistration withGroupId(String _groupId) {
-        mGroupId = _groupId;
+    public DeviceRegistration withGroupAuth(String _groupAuth) {
+        mGroupAuth = _groupAuth;
         return this;
     }
 
