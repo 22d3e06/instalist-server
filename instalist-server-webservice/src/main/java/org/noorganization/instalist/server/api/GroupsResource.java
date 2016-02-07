@@ -3,6 +3,7 @@ package org.noorganization.instalist.server.api;
 
 import org.glassfish.jersey.internal.util.Base64;
 import org.noorganization.instalist.comm.message.DeviceInfo;
+import org.noorganization.instalist.comm.message.DeviceRegistration;
 import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.comm.message.TokenInfo;
 import org.noorganization.instalist.server.CommonEntity;
@@ -10,7 +11,6 @@ import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
-import org.noorganization.instalist.server.message.*;
 import org.noorganization.instalist.server.message.Error;
 import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
@@ -24,7 +24,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 @Path("/groups")
