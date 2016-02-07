@@ -22,4 +22,11 @@ public interface IGroupController {
      * @return Either a new device or null, if group is not existent or _groupAuth was invalid.
      */
     Device addDevice(int _groupId, String _groupAuth, String _name, String _secret);
+
+    /**
+     * Generates a new access-key for adding devices to the group.
+     * @param _groupId The id of the group to regenerate the access key.
+     * @return The new access key. Usually 6 characters excluding capital 'O'.
+     */
+    String generateAccessKey(int _groupId);
 }

@@ -158,6 +158,7 @@ public class GroupsResourceTest extends JerseyTest{
         Response authNeededResponse = target(String.format(url, mGroup.getId())).request().get();
         assertEquals(401, authNeededResponse.getStatus());
 
+        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
@@ -167,15 +168,18 @@ public class GroupsResourceTest extends JerseyTest{
         Response rightAuthNeededResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + invalidToken).get();
         assertEquals(401, rightAuthNeededResponse.getStatus());
+        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
+        Thread.sleep(300); // For checking whether "updated" gets really updated.
         String validToken = authController.getTokenByHttpAuth(mManager, mDeviceWAuth.getId(),
                 mData.mSecret);
         Response okResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + validToken).get();
         GroupInfo recvdGroup = okResponse.readEntity(GroupInfo.class);
         assertEquals(6, recvdGroup.getReadableId().length());
+        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals(recvdGroup.getReadableId(), mGroup.getReadableId());
         assertTrue(new Date(System.currentTimeMillis() - 10000).before(mGroup.getUpdated()));

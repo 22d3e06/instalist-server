@@ -323,6 +323,15 @@ public class GroupsResource {
     @Path("{groupid}/access_key")
     @Produces({ "application/json" })
     public Response getAccessKey(@PathParam("groupid") int _groupId) throws Exception {
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+
+        String accessKey = ControllerFactory.getGroupController(manager).
+                generateAccessKey(_groupId);
+        if (accessKey == null)
+            return ResponseFactory.generateServerError(new Error().withMessage("The request seems" +
+                    " to be correct, but accesskey could not be generated."));
+        return ResponseFactory.generateOK(new GroupInfo().withReadableId(accessKey));
+
         /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
@@ -344,7 +353,7 @@ public class GroupsResource {
         updateGroupStmt.close();
         db.close();
         return ResponseFactory.generateOK(new GroupInfo().withReadableId(newReadableId));*/
-        return null;
+        //return null;
     }
 
     /**

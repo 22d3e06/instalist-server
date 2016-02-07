@@ -43,8 +43,9 @@ public class DeviceGroup {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE " +
-            "CURRENT_TIMESTAMP", insertable = false)
+    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP ON " +
+            "UPDATE " +
+            "CURRENT_TIMESTAMP", insertable = false, updatable = false)
     public Date getUpdated() {
         return mUpdated;
     }
@@ -60,7 +61,7 @@ public class DeviceGroup {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable
+    @Column(name = "created", columnDefinition="TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP", insertable
             = false, updatable = false)
     public Date getCreated() {
         return mCreated;

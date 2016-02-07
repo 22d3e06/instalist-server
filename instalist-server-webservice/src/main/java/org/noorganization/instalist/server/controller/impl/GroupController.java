@@ -21,12 +21,8 @@ class GroupController implements IGroupController {
 
     public DeviceGroup addGroup() {
         String newGroupReadableId;
-        try {
-             newGroupReadableId = getNewGroupReadableId(mManager);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        newGroupReadableId = getNewGroupReadableId(mManager);
+
         mManager.getTransaction().begin();
         DeviceGroup createdGroup = new DeviceGroup().withReadableId(newGroupReadableId);
         mManager.persist(createdGroup);
@@ -63,6 +59,20 @@ class GroupController implements IGroupController {
         mManager.refresh(rtn);
 
         return rtn;
+    }
+
+    public String generateAccessKey(int _groupId) {
+        String newAccessKey = getNewGroupReadableId(mManager);
+
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        if (group == null)
+            return null;
+        mManager.getTransaction().begin();
+        group.setReadableId(newAccessKey);
+        mManager.merge(group);
+        mManager.getTransaction().commit();
+
+        return newAccessKey;
     }
 
     private String getNewGroupReadableId(EntityManager _manager) {

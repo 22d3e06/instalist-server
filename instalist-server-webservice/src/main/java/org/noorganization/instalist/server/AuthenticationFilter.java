@@ -12,6 +12,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
@@ -35,11 +36,20 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throw new NotAuthorizedException(ResponseFactory.
                     generateNotAuthorized(CommonEntity.sNotAuthorized));
 
+        MultivaluedMap<String, String> parameters = requestContext.getUriInfo().getPathParameters();
+        int groupId;
+        try {
+            groupId = Integer.parseInt(parameters.getFirst("groupid"));
+        } catch (NumberFormatException _e) {
+            throw new IOException("\"groupid\" was not found in path.");
+        }
+
         String token = authorizationHeader.substring("X-Token ".length()).trim();
 
         Device authenticatedDev = ControllerFactory.getAuthController().
                 getDeviceByToken(token);
-        if (authenticatedDev == null || !authenticatedDev.getAuthorized())
+        if (authenticatedDev == null || authenticatedDev.getGroup().getId() != groupId ||
+                !authenticatedDev.getAuthorized())
             throw new NotAuthorizedException(ResponseFactory.
                     generateNotAuthorized(CommonEntity.sNotAuthorized));
     }
