@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "devicegroups")
@@ -13,8 +14,10 @@ public class DeviceGroup {
     private Date   mUpdated;
     private Date   mCreated;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
-    private Collection<Device> mDevices;
+    private Set<Device> mDevices;
+    private Set<Category> mCategories;
+    private Set<ShoppingList> mLists;
+    private Set<DeletedObject> mDeletedObjects;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -79,6 +82,45 @@ public class DeviceGroup {
         setCreated(_created);
         return this;
     }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Device> getDevices() {
+        return mDevices;
+    }
+
+    public void setDevices(Set<Device> _devices) {
+        mDevices = _devices;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Category> getCategories() {
+        return mCategories;
+    }
+
+    public void setCategories(
+            Set<Category> _categories) {
+        mCategories = _categories;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<ShoppingList> getLists() {
+        return mLists;
+    }
+
+    public void setLists(Set<ShoppingList> _lists) {
+        mLists = _lists;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<DeletedObject> getDeletedObjects() {
+        return mDeletedObjects;
+    }
+
+    public void setDeletedObjects(
+            Set<DeletedObject> _deletedObjects) {
+        mDeletedObjects = _deletedObjects;
+    }
+
 
     @Override
     public boolean equals(Object _o) {

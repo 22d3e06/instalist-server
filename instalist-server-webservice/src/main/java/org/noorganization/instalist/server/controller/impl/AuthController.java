@@ -13,12 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * This helper was made for minimizing overhead for authenticating devices against tokens and http-
- * basic-auth. It also preserves the logins in memory, so that they can be easily invalidated by
- * redeploying the application.
- * Created by damihe on 30.01.16.
- */
 class AuthController implements IAuthController {
 
     private static SecureRandom sRandom;

@@ -20,8 +20,6 @@
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 
-            <!--<property name="hibernate.show_sql" value="true" />!-->
-
             <!-- "update" is critical for production. switch to "verify" for real production !-->
             <property name="hibernate.hbm2ddl.auto" value="verify" />
         </properties>
@@ -32,6 +30,7 @@
         <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeviceGroup</class>
         <class>org.noorganization.instalist.server.model.Device</class>
+        <class>org.noorganization.instalist.server.model.ShoppingList</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />

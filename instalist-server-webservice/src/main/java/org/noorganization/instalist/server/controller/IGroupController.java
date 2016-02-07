@@ -4,6 +4,7 @@ import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
 
 /**
+ * Controller for managing groups and devices.
  * Created by damihe on 05.02.16.
  */
 public interface IGroupController {

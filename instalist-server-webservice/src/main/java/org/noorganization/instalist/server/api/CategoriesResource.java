@@ -1,40 +1,34 @@
 
 package org.noorganization.instalist.server.api;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import org.noorganization.instalist.server.message.Category;
+import org.noorganization.instalist.server.TokenSecured;
+import org.noorganization.instalist.comm.message.CategoryInfo;
 
 
 /**
  * Collection of available categories.
  * 
  */
-@Path("/categories")
+@Path("/groups/{groupid}/categories")
 public class CategoriesResource {
 
 
     /**
      * Get a list of categories.
      *
-     * @param _categoryId Optional. The uuid of the category.
-     * @param _token Authorization-token for the current user.
+     * @param _groupId The id of the group.
      * @param _changedSince Optional. Requests only the elements that changed since the given date.
      *                      ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    public Response getCategories(@QueryParam("token") String _token,
-                                  @QueryParam("changedsince") String _changedSince,
-                                  @QueryParam("uuid") String  _categoryId) throws Exception {
+    public Response getCategories(@PathParam("groupid") int _groupId,
+                                  @QueryParam("changedsince") String _changedSince)
+            throws Exception {
         /*int groupId;
         if (_token == null || (groupId = mAuthController.getDeviceGroupByToken(_token)) < 0)
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
@@ -111,14 +105,16 @@ public class CategoriesResource {
 
     /**
      * Updates the category.
-     * @param _token Authorization-token for the current user.
+     * @param _uuid The uuid of the category to update.
      * @param _entity A category with updated information.
      */
     @PUT
+    @Path("{categoryuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    public Response putCategoryById(@QueryParam("token") String _token, Category _entity) throws
-            Exception {
+    public Response putCategory(@PathParam("groupid") int _groupId,
+                                @PathParam("categoryuuid") String _uuid,
+                                CategoryInfo _entity) throws Exception {
 //        int groupId;
 //        if (_token == null || (groupId = mAuthController.getGroupIdByToken(_token)) < 0)
 //            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
@@ -135,7 +131,7 @@ public class CategoriesResource {
     @POST
     @Consumes("application/json")
     @Produces({ "application/json" })
-    public Response postCategoryById(@QueryParam("token") String _token, Category[] _entity) throws
+    public Response postCategory(@PathParam("groupid") int _groupId, CategoryInfo _entity) throws
             Exception {
         return null;
     }
@@ -149,9 +145,10 @@ public class CategoriesResource {
      *     
      */
     @DELETE
+    @Path("{categoryuuid}")
     @Produces({ "application/json" })
-    public Response deleteCategoryById(@QueryParam("token") String _token, @QueryParam("categoryid")
-    String _categoryId) throws Exception {
+    public Response deleteCategory(@PathParam("groupid") int _groupId,
+                                   @PathParam("categoryuuid") String _uuid) throws Exception {
         return null;
     }
 

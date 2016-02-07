@@ -7,26 +7,40 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.server.CommonData;
-import org.noorganization.instalist.server.message.Category;
-import org.noorganization.instalist.server.support.DateHelper;
+import org.noorganization.instalist.comm.message.CategoryInfo;
+import org.noorganization.instalist.comm.support.DateHelper;
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
+import org.noorganization.instalist.server.model.Category;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.Device;
+import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.support.DatabaseHelper;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class CategoriesResourceTest extends JerseyTest {
 
-    static final String sUrl = "/categories";
-
-    private CommonData mData;
-    private int        mGroup;
-    private String     mToken;
-    private String     mCategoryUUID;
-    private String     mDeletedCategoryUUID;
+    private CommonData    mData;
+    private EntityManager mManager;
+    private DeviceGroup   mGroup;
+    private DeviceGroup   mNotAccessibleGroup;
+    private String        mToken;
+    private Category      mCategory;
+    private Category      mNotAccessibleCategory;
+    private DeletedObject mDeletedCategory;
 
     @Override
     protected Application configure() {
@@ -43,121 +57,225 @@ public class CategoriesResourceTest extends JerseyTest {
 
         mData = new CommonData();
 
-//        PreparedStatement groupStmt = mData.mDb.prepareStatement("INSERT INTO devicegroups " +
-//                "(readableid) VALUES (NULL)", Statement.RETURN_GENERATED_KEYS);
-//        groupStmt.executeUpdate();
-//        ResultSet groupRS = groupStmt.getGeneratedKeys();
-//        groupRS.first();
-//        mGroup = groupRS.getInt(1);
-//        groupRS.close();
-//        groupStmt.close();
-//
-//        PreparedStatement deviceStmt = mData.mDb.prepareStatement("INSERT INTO devices (name, " +
-//                "autorizedtogroup, secret, devicegroup_id) VALUES ('dev1', TRUE, ?, ?)",
-//                Statement.RETURN_GENERATED_KEYS);
-//        deviceStmt.setString(1, mData.mEncryptedSecret);
-//        deviceStmt.setInt(2, mGroup);
-//        deviceStmt.executeUpdate();
-//        ResultSet deviceRS = deviceStmt.getGeneratedKeys();
-//        deviceRS.first();
-//        int deviceId = deviceRS.getInt(1);
-//        deviceRS.close();
-//        deviceStmt.close();
-//
-//        mToken = AuthController.getInstance().getTokenByHttpAuth(mData.mDb, "Basic " + Base64.
-//                encodeAsString(deviceId + ":" + mData.mSecret));
-//        assertNotNull(mToken);
-//
-//        mCategoryUUID = UUID.randomUUID().toString();
-//        PreparedStatement category1Stmt = mData.mDb.prepareStatement("INSERT INTO categories " +
-//                "(uuid, name, devicegroup_id) VALUES (?, 'cat1', ?)");
-//        category1Stmt.setString(1, mCategoryUUID);
-//        category1Stmt.setInt(2, mGroup);
-//        assertEquals(1, category1Stmt.executeUpdate());
-//        category1Stmt.close();
-//
-//        mDeletedCategoryUUID = UUID.randomUUID().toString();
-//        PreparedStatement category2Stmt = mData.mDb.prepareStatement("INSERT INTO deletion_log " +
-//                "(uuid, type, devicegroup_id) VALUES (?, 'category', ?)");
-//        category2Stmt.setString(1, mDeletedCategoryUUID);
-//        category2Stmt.setInt(2, mGroup);
-//        assertEquals(1, category2Stmt.executeUpdate());
-//        category2Stmt.close();
+        mManager = DatabaseHelper.getInstance().getManager();
+        mManager.getTransaction().begin();
+        mGroup = new DeviceGroup();
+        Device aDev = new Device().withAuthorized(true).withGroup(mGroup).
+                withSecret(mData.mEncryptedSecret).withName("testDev");
+        mCategory = new Category().withGroup(mGroup).withName("cat1").withUUID(UUID.randomUUID());
+        mDeletedCategory = new DeletedObject().withGroup(mGroup).
+                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID());
+        mNotAccessibleGroup = new DeviceGroup();
+        mNotAccessibleCategory = new Category().withGroup(mNotAccessibleGroup).withName("cat2").
+                withUUID(UUID.randomUUID());
+
+        mManager.persist(mGroup);
+        mManager.persist(aDev);
+        mManager.persist(mCategory);
+        mManager.persist(mDeletedCategory);
+        mManager.persist(mNotAccessibleGroup);
+        mManager.persist(mNotAccessibleCategory);
+        mManager.getTransaction().commit();
+        mData.flushEntityManager(mManager);
+        mManager.refresh(mGroup);
+        mManager.refresh(aDev);
+        mManager.refresh(mCategory);
+        mManager.refresh(mDeletedCategory);
+        mManager.refresh(mNotAccessibleGroup);
+        mManager.refresh(mNotAccessibleCategory);
+
+        mToken = ControllerFactory.getAuthController().getTokenByHttpAuth(mManager, aDev.getId(),
+                mData .mSecret);
+        assertNotNull(mToken);
     }
 
     @After
     public void tearDown() throws Exception {
-//        PreparedStatement groupCleanUpStmt = mData.mDb.prepareStatement("DELETE FROM devicegroups " +
-//                "WHERE id = ?");
-//        groupCleanUpStmt.setInt(1, mGroup);
-//        groupCleanUpStmt.executeUpdate();
-//        groupCleanUpStmt.close();
-//        mData.mDb.close();
+        mManager.close();
         super.tearDown();
     }
 
-    @Ignore("Not updated yet.")
     @Test
     public void testGetCategories() throws Exception {
-        Response wrongTokenResponse = target(sUrl).queryParam("token", "invalidtoken").request()
-                .get();
+        final String url = "/groups/%d/categories";
+        Response wrongTokenResponse = target(String.format(url, mGroup.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").get();
         assertEquals(401, wrongTokenResponse.getStatus());
 
-        Response wrongTimeResponse = target(sUrl).queryParam("token", mToken).
-                queryParam("changedsince", "Tue Feb  2 15:59:41 CET 2016").request().get();
+        Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
+        assertEquals(401, wrongGroupResponse.getStatus());
+
+        Response wrongTimeResponse = target(String.format(url, mGroup.getId())).
+                queryParam("changedsince", "So 7. Feb 18:26:52 CET 2016").
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(400, wrongTimeResponse.getStatus());
 
-        Response okResponse = target(sUrl).queryParam("token", mToken).request().get();
+        Response okResponse = target(String.format(url, mGroup.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse.getStatus());
-        Category[] allCategories = okResponse.readEntity(Category[].class);
+        CategoryInfo[] allCategories = okResponse.readEntity(CategoryInfo[].class);
         assertEquals(2, allCategories.length);
+        Date shortTimeAgo = new Date(System.currentTimeMillis() - 10000);
         for (int i = 0; i < 2; i++) {
             assertNotNull(allCategories[i].getLastChanged());
-            if (mDeletedCategoryUUID.equals(allCategories[i].getUUID())) {
+            if (mDeletedCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertNull(allCategories[i].getName());
                 assertTrue(allCategories[i].getDeleted());
-            } else if (mCategoryUUID.equals(allCategories[i].getUUID())) {
+            } else if (mCategory.equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertEquals("cat1", allCategories[i].getName());
                 assertFalse(allCategories[i].getDeleted());
             } else {
                 fail("Got wrong category.");
             }
+            Date changeDate = DateHelper.parseDate(allCategories[i].getLastChanged());
+            assertNotNull(changeDate);
+            assertTrue(shortTimeAgo.before(changeDate));
         }
 
-        Response okResponseEmpty = target(sUrl).queryParam("token", mToken).
+        Response okResponseEmpty = target(String.format(url, mGroup.getId())).
                 queryParam("changedsince", DateHelper.writeDate(new Date(
-                        System.currentTimeMillis() + 10000))).request().get();
+                        System.currentTimeMillis() + 10000))).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponseEmpty.getStatus());
-        Category[] noCategories = okResponseEmpty.readEntity(Category[].class);
+        CategoryInfo[] noCategories = okResponseEmpty.readEntity(CategoryInfo[].class);
         assertEquals(0, noCategories.length);
-
-        Response okResponseSpecific = target(sUrl).queryParam("token", mToken).
-                queryParam("uuid", mCategoryUUID).request().get();
-        assertEquals(200, okResponseSpecific.getStatus());
-        Category[] oneCategory = okResponseSpecific.readEntity(Category[].class);
-        assertEquals(1, oneCategory.length);
-        assertEquals(mCategoryUUID, oneCategory[0].getUUID());
-        assertEquals("cat1", oneCategory[0].getName());
-        assertFalse(oneCategory[0].getDeleted());
-        assertTrue(new Date(System.currentTimeMillis() - 20000).before(DateHelper.parseDate(
-                oneCategory[0].getLastChanged())));
     }
 
-    @Ignore("Not implemented yet.")
     @Test
-    public void testPutCategoryById() throws Exception {
+    public void testPutCategory() throws Exception {
+        final String url = "/groups/%d/categories/%d";
+        Response wrongTokenResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").
+                put(Entity.json(new CategoryInfo().withName("dev111")));
+        assertEquals(401, wrongTokenResponse.getStatus());
 
+        Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId(),
+                mCategory.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withName("dev111")));;
+        assertEquals(401, wrongGroupResponse.getStatus());
+
+        Response wrongCatResponse = target(String.format(url, mGroup.getId(),
+                mNotAccessibleCategory.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withName("dev111")));
+        assertEquals(404, wrongCatResponse.getStatus());
+
+        Response invalidCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withUUID(mNotAccessibleCategory.getUUID()).
+                        withName("dev111")));
+        assertEquals(400, invalidCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        mManager.refresh(mNotAccessibleCategory);
+        mManager.refresh(mCategory);
+        assertEquals("cat1", mCategory.getName());
+        assertEquals("cat2", mNotAccessibleCategory.getName());
+
+        Date beforeChange = new Date(System.currentTimeMillis());
+        Thread.sleep(300);
+        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withName("dev111")));
+        assertEquals(200, validCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        mManager.refresh(mCategory);
+        assertEquals("dev111", mCategory.getName());
+        assertTrue(beforeChange.before(mCategory.getUpdated()));
+
+        Response conflictCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withName("cat1").
+                        withLastChanged(beforeChange)));
+        assertEquals(409, conflictCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        mManager.refresh(mCategory);
+        assertEquals("dev111", mCategory.getName());
+        assertTrue(beforeChange.before(mCategory.getUpdated()));
     }
 
-    @Ignore("Not implemented yet.")
     @Test
-    public void testPostCategoryById() throws Exception {
+    public void testPostCategory() throws Exception {
+        final String url = "/groups/%d/categories";
 
+        UUID uuid = UUID.randomUUID();
+        Response wrongTokenResponse = target(String.format(url, mGroup.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").
+                post(Entity.json(new CategoryInfo().withUUID(uuid).withName("cat3")));
+        assertEquals(401, wrongTokenResponse.getStatus());
+
+        Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                post(Entity.json(new CategoryInfo().withUUID(uuid).withName("cat3")));
+        assertEquals(401, wrongGroupResponse.getStatus());
+
+        Response invalidCatResponse = target(String.format(url, mGroup.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                post(Entity.json(new CategoryInfo().withUUID(uuid)));
+        assertEquals(400, invalidCatResponse.getStatus());
+
+        Response conflictCatResponse = target(String.format(url, mGroup.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                post(Entity.json(new CategoryInfo().withUUID(mCategory.getUUID()).
+                        withName("cat3")));
+        assertEquals(409, conflictCatResponse.getStatus());
+
+        mData.flushEntityManager(mManager);
+        mManager.refresh(mCategory);
+        assertEquals("cat1", mCategory.getName());
+
+        Response validCatResponse = target(String.format(url, mGroup.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                post(Entity.json(new CategoryInfo().withUUID(uuid).withName("cat3")));
+        assertEquals(200, validCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        TypedQuery<Category> savedCatQuery = mManager.createQuery("select c from Category c where " +
+                "c.UUID = :uuid and c.group = :groupid", Category.class);
+        savedCatQuery.setParameter("uuid", uuid);
+        savedCatQuery.setParameter("groupid", mGroup);
+        List<Category> savedCats = savedCatQuery.getResultList();
+        assertEquals(1, savedCats.size());
+        assertEquals("cat3", savedCats.get(0).getName());
     }
 
-    @Ignore("Not implemented yet.")
     @Test
     public void testDeleteCategoryById() throws Exception {
+        final String url = "/groups/%d/categories/%d";
+        Response wrongTokenResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").delete();
+        assertEquals(401, wrongTokenResponse.getStatus());
 
+        Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId(),
+                mCategory.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
+        assertEquals(401, wrongGroupResponse.getStatus());
+
+        Response wrongCatResponse = target(String.format(url, mGroup.getId(),
+                mNotAccessibleCategory.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
+        assertEquals(404, wrongCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        mManager.clear();
+        assertNotNull(mManager.find(Category.class, mNotAccessibleCategory.getId()));
+
+        Response goneCatResponse = target(String.format(url, mGroup.getId(),
+                mDeletedCategory.getId())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
+        assertEquals(410, goneCatResponse.getStatus());
+
+        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId()))
+                .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
+        assertEquals(200, validCatResponse.getStatus());
+        mData.flushEntityManager(mManager);
+        mManager.clear();
+        assertNull(mManager.find(Category.class, mCategory.getId()));
+        TypedQuery<DeletedObject> deletedCat1Query = mManager.createQuery("select do from " +
+                "DeletedObject do where do.UUID = :uuid and do.group = :groupid and " +
+                "do.type = do.Type.CATEGORY", DeletedObject.class);
+        deletedCat1Query.setParameter("uuid", mCategory.getUUID());
+        deletedCat1Query.setParameter("groupid", mGroup);
+        List<DeletedObject> deletedCat1 = deletedCat1Query.getResultList();
+        assertEquals(1, deletedCat1.size());
     }
 }

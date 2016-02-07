@@ -4,18 +4,15 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- * Created by damihe on 03.02.16.
- */
 @Entity
 @Table(name = "categories")
 public class Category {
 
     private int         mId;
-    private UUID        mUuid;
+    private UUID        mUUID;
     private DeviceGroup mGroup;
     private String      mName;
-    private Date mUpdated;
+    private Date        mUpdated;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,13 +25,23 @@ public class Category {
         mId = _id;
     }
 
-    @Column(name = "uuid", nullable = false)
-    public UUID getUuid(){
-        return mUuid;
+    public Category withId(int _id) {
+        setId(_id);
+        return this;
     }
 
-    public void setUuid(UUID _uuid){
-        mUuid = _uuid;
+    @Column(name = "uuid", nullable = false, columnDefinition = "BINARY(16)")
+    public UUID getUUID(){
+        return mUUID;
+    }
+
+    public void setUUID(UUID _uuid){
+        mUUID = _uuid;
+    }
+
+    public Category withUUID(UUID _uuid) {
+        setUUID(_uuid);
+        return this;
     }
 
     @ManyToOne
@@ -47,6 +54,11 @@ public class Category {
         mGroup = _group;
     }
 
+    public Category withGroup(DeviceGroup _group) {
+        setGroup(_group);
+        return this;
+    }
+
     @Column(name = "name", nullable = false)
     public String getName() {
         return mName;
@@ -56,16 +68,26 @@ public class Category {
         mName = _name;
     }
 
+    public Category withName(String _name) {
+        setName(_name);
+        return this;
+    }
+
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON " +
-            "UPDATE CURRENT_TIMESTAMP(3)", insertable = false, updatable = false)
+            "UPDATE CURRENT_TIMESTAMP(3)", insertable = false, updatable = false, nullable = false)
     public Date getUpdated() {
         return mUpdated;
     }
 
     public void setUpdated(Date _updated) {
         mUpdated = _updated;
+    }
+
+    public Category withUpdated(Date _updated) {
+        setUpdated(_updated);
+        return this;
     }
 
     @Override
@@ -79,7 +101,7 @@ public class Category {
 
         if (mId != category.mId)
             return false;
-        if (mUuid != null ? !mUuid.equals(category.mUuid) : category.mUuid != null)
+        if (mUUID != null ? !mUUID.equals(category.mUUID) : category.mUUID != null)
             return false;
         if (mGroup != null ? !mGroup.equals(category.mGroup) : category.mGroup != null)
             return false;
