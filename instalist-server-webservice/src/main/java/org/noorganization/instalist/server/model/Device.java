@@ -48,8 +48,8 @@ public class Device {
 
     @Temporal(TemporalType.TIMESTAMP)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "created", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", insertable
-            = false, updatable = false)
+    @Column(name = "created", columnDefinition="TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
+            insertable = false, updatable = false)
     public Date getCreated() {
         return mCreated;
     }

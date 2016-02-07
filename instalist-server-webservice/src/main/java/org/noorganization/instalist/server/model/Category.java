@@ -58,7 +58,8 @@ public class Category {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated")
+    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON " +
+            "UPDATE CURRENT_TIMESTAMP(3)", insertable = false, updatable = false)
     public Date getUpdated() {
         return mUpdated;
     }
