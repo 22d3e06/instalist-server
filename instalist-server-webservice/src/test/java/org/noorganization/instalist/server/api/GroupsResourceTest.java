@@ -274,7 +274,7 @@ public class GroupsResourceTest extends JerseyTest{
     }
 
     @Test
-    public void testDeleteUserGroupDevices() throws Exception {
+    public void testDeleteDevice() throws Exception {
         final String url = "/groups/%d/devices/%d";
 
         Response noTokenResponse = target(String.format(url, mGroup.getId(), mDeviceWOAuth.getId())).
@@ -291,13 +291,15 @@ public class GroupsResourceTest extends JerseyTest{
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).delete();
         assertEquals(200, okResponse.getStatus());
         mData.flushEntityManager(mManager);
+        mManager.clear();
         assertNull(mManager.find(Device.class, mDeviceWOAuth.getId()));
 
         Response okResponse2 = target(String.format(url, mGroup.getId(), mDeviceWAuth.getId())).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).delete();
         assertEquals(200, okResponse2.getStatus());
         mData.flushEntityManager(mManager);
-        assertNull(mManager.find(Device.class, mDeviceWOAuth.getId()));
+        mManager.clear();
+        assertNull(mManager.find(Device.class, mDeviceWAuth.getId()));
         assertNull(mManager.find(DeviceGroup.class, mGroup.getId()));
     }
 }

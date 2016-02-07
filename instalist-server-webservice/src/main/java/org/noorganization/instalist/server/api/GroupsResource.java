@@ -18,10 +18,14 @@ import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("/groups")
 public class GroupsResource {
@@ -134,40 +138,24 @@ public class GroupsResource {
     @Path("{groupid}/devices")
     @Produces({ "application/json" })
     public Response getDevices(@PathParam("groupid") int _groupId) throws Exception {
-        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
-            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+        TypedQuery<Device> devicesQuery = manager.createQuery("select d from Device d where " +
+                "d.group = :dgid", Device.class);
+        devicesQuery.setParameter("dgid", group);
+        List<Device> devices = devicesQuery.getResultList();
+        manager.close();
 
-        int groupId = mAuthController.getDeviceGroupByToken(_token);
-
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        PreparedStatement devicesStmt = db.prepareStatement("SELECT id, name, autorizedtogroup FROM " +
-                "devices WHERE devicegroup_id = ?");
-        devicesStmt.setInt(1, groupId);
-        ResultSet devicesRS = devicesStmt.executeQuery();
-        if (!devicesRS.first()) {
-            devicesRS.close();
-            devicesStmt.close();
-            db.close();
-
-            System.err.println("Found group without devices. Something is wrong with database!");
-            return ResponseFactory.generateServerError(new Error().withMessage("Could not " +
-                    "retrieve devices for group."));
+        List<DeviceInfo> rtn = new ArrayList<DeviceInfo>(devices.size());
+        for (Device currentDevice: devices) {
+            DeviceInfo currentInfo = new DeviceInfo();
+            currentInfo.setId(currentDevice.getId());
+            currentInfo.setName(currentDevice.getName());
+            currentInfo.setAuthorized(currentDevice.getAuthorized());
+            rtn.add(currentInfo);
         }
 
-        List<DeviceInfo> devices = new LinkedList<DeviceInfo>();
-        do {
-            DeviceInfo currentInfo = new DeviceInfo();
-            currentInfo.setId(devicesRS.getInt("id"));
-            currentInfo.setName(devicesRS.getString("name"));
-            currentInfo.setAuthorized(devicesRS.getBoolean("autorizedtogroup"));
-            devices.add(currentInfo);
-        } while (devicesRS.next());
-
-        devicesRS.close();
-        devicesStmt.close();
-        db.close();
-        return ResponseFactory.generateOK(devices);*/
-        return null;
+        return ResponseFactory.generateOK(rtn);
     }
 
     @GET
@@ -175,7 +163,20 @@ public class GroupsResource {
     @Produces({ "application/json" })
     public Response getDevice(@PathParam("groupid") int _groupId,
                               @PathParam("deviceid") int _deviceId) throws Exception {
-        return null;
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        Device device = manager.find(Device.class, _deviceId);
+        manager.close();
+
+        if (device == null || device.getGroup().getId() != _groupId)
+            return ResponseFactory.generateNotFound(new Error().withMessage("Device was not " +
+                    "found."));
+
+        DeviceInfo rtn = new DeviceInfo();
+        rtn.setId(device.getId());
+        rtn.setName(device.getName());
+        rtn.setAuthorized(device.getAuthorized());
+
+        return ResponseFactory.generateOK(rtn);
     }
 
     @PUT
@@ -209,73 +210,6 @@ public class GroupsResource {
         else
             return ResponseFactory.generateServerError(new Error().withMessage("Updating device " +
                     "failed."));
-
-        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
-            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
-
-        if (_devicesToUpdate == null || _devicesToUpdate.length == 0)
-            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
-
-        int groupId = mAuthController.getDeviceGroupByToken(_token);
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        db.setAutoCommit(false);
-        PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
-                "devices WHERE devicegroup_id = ? AND id = ?");
-        checkDeviceInGroupStmt.setInt(1, groupId);
-        boolean error = false;
-        for (DeviceInfo currentInfo : _devicesToUpdate) {
-            Integer deviceId = currentInfo.getId();
-            if (deviceId == null) {
-                error = true;
-                break;
-            }
-
-            checkDeviceInGroupStmt.setInt(2, deviceId);
-            ResultSet checkDeviceInGroupRS = checkDeviceInGroupStmt.executeQuery();
-            checkDeviceInGroupRS.first();
-            if (checkDeviceInGroupRS.getInt(1) != 1) {
-                checkDeviceInGroupRS.close();
-                error = true;
-                break;
-            }
-            checkDeviceInGroupRS.close();
-
-            PreparedStatement updateDeviceStmt;
-            if (currentInfo.getName() != null && currentInfo.getAuthorized() != null) {
-                updateDeviceStmt = db.prepareStatement("UPDATE devices SET name = ?, " +
-                        "autorizedtogroup = ? WHERE id = ?");
-                updateDeviceStmt.setString(1, currentInfo.getName());
-                updateDeviceStmt.setBoolean(2, currentInfo.getAuthorized());
-                updateDeviceStmt.setInt(3, currentInfo.getId());
-            } else if (currentInfo.getName() != null) {
-                updateDeviceStmt = db.prepareStatement("UPDATE devices SET name = ? WHERE id = ?");
-                updateDeviceStmt.setString(1, currentInfo.getName());
-                updateDeviceStmt.setInt(2, currentInfo.getId());
-            } else if (currentInfo.getAuthorized() != null) {
-                updateDeviceStmt = db.prepareStatement("UPDATE devices SET autorizedtogroup = ? " +
-                        "WHERE id = ?");
-                updateDeviceStmt.setBoolean(1, currentInfo.getAuthorized());
-                updateDeviceStmt.setInt(2, currentInfo.getId());
-            } else {
-                error = true;
-                break;
-            }
-            updateDeviceStmt.executeUpdate();
-            updateDeviceStmt.close();
-        }
-        checkDeviceInGroupStmt.close();
-        if (error) {
-            db.rollback();
-            db.close();
-
-            return ResponseFactory.generateBadRequest(new Error().withMessage("Invalid data for " +
-                    "device-changes provided."));
-        }
-        db.commit();
-        db.close();
-
-        return ResponseFactory.generateOK(null);*/
-        //return null;
     }
 
     @DELETE
@@ -283,60 +217,21 @@ public class GroupsResource {
     @Path("{groupid}/devices/{deviceid}")
     @Produces({ "application/json" })
     public Response deleteDevice(@PathParam("groupid") int _groupId,
-                                 @PathParam("deviceid") int _deviceId,
-                                 @QueryParam("deviceid") Integer _deviceToDelete)
+                                 @PathParam("deviceid") int _deviceId)
             throws Exception {
-        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
-            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
-
-        if (_deviceToDelete == null)
-            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
-
-
-
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        PreparedStatement checkDeviceInGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
-                "devices WHERE devicegroup_id = ? AND id = ?");
-        int groupId = mAuthController.getDeviceGroupByToken(_token);
-        checkDeviceInGroupStmt.setInt(1, groupId);
-        checkDeviceInGroupStmt.setInt(2, _deviceToDelete);
-        ResultSet checkDeviceInGroupRS = checkDeviceInGroupStmt.executeQuery();
-        checkDeviceInGroupRS.first();
-        if (checkDeviceInGroupRS.getInt(1) != 1) {
-            checkDeviceInGroupRS.close();
-            checkDeviceInGroupStmt.close();
-            db.close();
-
-            return ResponseFactory.generateNotFound(new Error().withMessage("Device not found or " +
-                    "not in same group."));
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        Device toDelete = manager.find(Device.class, _deviceId);
+        if (toDelete == null || toDelete.getGroup().getId() != _groupId) {
+            manager.close();
+            return ResponseFactory.generateNotFound(new Error().withMessage("The device was not " +
+                    "found."));
         }
-        checkDeviceInGroupRS.close();
-        checkDeviceInGroupStmt.close();
 
-        PreparedStatement deleteDeviceStmt = db.prepareStatement("DELETE FROM devices WHERE " +
-                "id = ?");
-        deleteDeviceStmt.setInt(1, _deviceToDelete);
-        deleteDeviceStmt.executeUpdate();
-        deleteDeviceStmt.close();
+        IGroupController groupController = ControllerFactory.getGroupController(manager);
+        groupController.deleteDevice(_deviceId);
+        manager.close();
 
-        PreparedStatement checkEmptyGroupStmt = db.prepareStatement("SELECT COUNT(id) FROM " +
-                "devices WHERE devicegroup_id = ?");
-        checkEmptyGroupStmt.setInt(1, groupId);
-        ResultSet checkEmptyGroupRS = checkEmptyGroupStmt.executeQuery();
-        checkEmptyGroupRS.first();
-        if (checkEmptyGroupRS.getInt(1) == 0) {
-            PreparedStatement deleteGroupStmt = db.prepareStatement("DELETE FROM devicegroups " +
-                    "WHERE id = ?");
-            deleteGroupStmt.setInt(1, groupId);
-            deleteGroupStmt.executeUpdate();
-            deleteGroupStmt.close();
-        }
-        checkEmptyGroupRS.close();
-        checkEmptyGroupStmt.close();
-        db.close();
-
-        return ResponseFactory.generateOK(null);*/
-        return null;
+        return ResponseFactory.generateOK(null);
     }
 
     /**

@@ -38,4 +38,10 @@ public interface IGroupController {
      * @return Whether the update was successful.
      */
     boolean updateDevice(int _deviceId, String _name, Boolean _authorized);
+
+    /**
+     * Deletes a device.
+     * @param _deviceId The id of the device to delete.
+     */
+    void deleteDevice(int _deviceId);
 }

@@ -1,7 +1,9 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "devicegroups")
@@ -10,6 +12,9 @@ public class DeviceGroup {
     private String mReadableId;
     private Date   mUpdated;
     private Date   mCreated;
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    private Collection<Device> mDevices;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

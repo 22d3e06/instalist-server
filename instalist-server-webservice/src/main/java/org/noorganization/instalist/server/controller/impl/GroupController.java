@@ -89,6 +89,26 @@ class GroupController implements IGroupController {
         return true;
     }
 
+    public void deleteDevice(int _deviceId) {
+        Device toDelete = mManager.find(Device.class, _deviceId);
+
+        mManager.getTransaction().begin();
+        mManager.remove(toDelete);
+
+        TypedQuery<Device> otherDevicesQuery = mManager.createQuery("select d from Device d where" +
+                " d.group = :dgid and d.id <> :did", Device.class);
+        otherDevicesQuery.setParameter("dgid", toDelete.getGroup());
+        otherDevicesQuery.setParameter("did", toDelete.getId());
+        otherDevicesQuery.setMaxResults(1);
+        List<Device> otherDevices = otherDevicesQuery.getResultList();
+        if (otherDevices.size() == 0)
+            mManager.remove(toDelete.getGroup());
+        mManager.getTransaction().commit();
+
+        IAuthController authController = ControllerFactory.getAuthController();
+        authController.revalidateDevice(mManager, _deviceId);
+    }
+
     private String getNewGroupReadableId(EntityManager _manager) {
         final char[] acceptableChars =
                 new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
