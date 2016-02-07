@@ -21,7 +21,10 @@ import java.io.IOException;
  * Authentication as filter. Inspired by
  * <a href="http://stackoverflow.com/questions/26777083/best-practice-for-rest-token-based">Stackoverflow</a>.
  * Thanks to the special IAuthControlle, there is no db-connection needed, with should improve
- * performance for refusing clients with wrong authorization.
+ * performance for refusing clients with wrong authorization to group.
+ * This filter checks, if the device (which is authenticated by token) has authorization to group
+ * sent by url. It does not check if it has access to other url parts, since this check would be
+ * different for every case and would make the filter big and slow.
  * Created by damihe on 05.02.16.
  */
 @TokenSecured
