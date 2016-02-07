@@ -27,4 +27,11 @@ public interface IAuthController {
      * @return Either a token-string or null if authentication data was incorrect.
      */
     String getTokenByHttpAuth(EntityManager _manager, int _device, String _secret);
+
+    /**
+     * Reloads a device without logging it out, if not deleted.
+     * @param _manager A manager for reloading the data from database.
+     * @param _device The device's id for reloading.
+     */
+    void revalidateDevice(EntityManager _manager, int _device);
 }

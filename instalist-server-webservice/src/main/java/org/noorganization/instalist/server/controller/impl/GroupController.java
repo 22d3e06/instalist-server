@@ -1,17 +1,13 @@
 package org.noorganization.instalist.server.controller.impl;
 
 import org.mindrot.jbcrypt.BCrypt;
+import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
-import org.noorganization.instalist.server.support.DatabaseHelper;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.security.SecureRandom;
 import java.util.List;
 
@@ -73,6 +69,24 @@ class GroupController implements IGroupController {
         mManager.getTransaction().commit();
 
         return newAccessKey;
+    }
+
+    public boolean updateDevice(int _deviceId, String _name, Boolean _authorized) {
+        mManager.getTransaction().begin();
+        Device toChange = mManager.find(Device.class, _deviceId);
+        if (toChange == null)
+            return false;
+        if (_name != null)
+            toChange.setName(_name);
+        if (_authorized != null)
+            toChange.setAuthorized(_authorized);
+        mManager.merge(toChange);
+        mManager.getTransaction().commit();
+
+        IAuthController authController = ControllerFactory.getAuthController();
+        authController.revalidateDevice(mManager, _deviceId);
+
+        return true;
     }
 
     private String getNewGroupReadableId(EntityManager _manager) {

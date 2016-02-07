@@ -5,6 +5,7 @@ import org.glassfish.jersey.internal.util.Base64;
 import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.comm.message.TokenInfo;
+import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
@@ -185,6 +186,30 @@ public class GroupsResource {
     public Response putDevice(@PathParam("groupid") int _groupId,
                               @PathParam("deviceid") int _deviceId,
                               DeviceInfo _deviceToUpdate) throws Exception {
+        if ((_deviceToUpdate.getId() != null && _deviceId != _deviceToUpdate.getId()) ||
+                (_deviceToUpdate.getName() != null && _deviceToUpdate.getName().length() == 0))
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+        if (_deviceToUpdate.getName() == null && _deviceToUpdate.getAuthorized() == null)
+            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        Device toUpdate = manager.find(Device.class, _deviceId);
+        if (toUpdate == null || toUpdate.getGroup().getId() != _groupId) {
+            manager.close();
+            return ResponseFactory.generateNotFound(new Error().withMessage("The device was not " +
+                    "found."));
+        }
+        IGroupController groupController = ControllerFactory.getGroupController(manager);
+        boolean done = groupController.updateDevice(_deviceId, _deviceToUpdate.getName(),
+                _deviceToUpdate.getAuthorized());
+        manager.close();
+
+        if (done)
+            return ResponseFactory.generateOK(null);
+        else
+            return ResponseFactory.generateServerError(new Error().withMessage("Updating device " +
+                    "failed."));
+
         /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
             return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
 
@@ -250,7 +275,7 @@ public class GroupsResource {
         db.close();
 
         return ResponseFactory.generateOK(null);*/
-        return null;
+        //return null;
     }
 
     @DELETE
@@ -324,36 +349,14 @@ public class GroupsResource {
     @Produces({ "application/json" })
     public Response getAccessKey(@PathParam("groupid") int _groupId) throws Exception {
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-
         String accessKey = ControllerFactory.getGroupController(manager).
                 generateAccessKey(_groupId);
+        manager.close();
+
         if (accessKey == null)
             return ResponseFactory.generateServerError(new Error().withMessage("The request seems" +
                     " to be correct, but accesskey could not be generated."));
         return ResponseFactory.generateOK(new GroupInfo().withReadableId(accessKey));
-
-        /*if (_token == null || !mAuthController.getIsAuthorizedToGroup(_token))
-            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
-
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        String newReadableId = getNewGroupReadableId(db);
-        PreparedStatement updateGroupStmt = db.prepareStatement("UPDATE devicegroups SET " +
-                "readableid = ? WHERE id = ?");
-        updateGroupStmt.setString(1, newReadableId);
-        int group = mAuthController.getDeviceGroupByToken(_token);
-        updateGroupStmt.setInt(2, mAuthController.getDeviceGroupByToken(_token));
-        if (updateGroupStmt.executeUpdate() != 1) {
-            updateGroupStmt.close();
-            db.close();
-            System.err.println("Changing access-key for group " + group + " did not change one " +
-                    "line in database.");
-            return ResponseFactory.generateServerError(new Error().withMessage("Saving new " +
-                    "group-id failed."));
-        }
-        updateGroupStmt.close();
-        db.close();
-        return ResponseFactory.generateOK(new GroupInfo().withReadableId(newReadableId));*/
-        //return null;
     }
 
     /**

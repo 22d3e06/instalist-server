@@ -67,12 +67,9 @@ class AuthController implements IAuthController {
         if (foundDevices.size() == 1) {
             Device foundDevice = foundDevices.get(0);
             if (BCrypt.checkpw(_secret, foundDevice.getSecret())){
-                for (String alreadyGeneratedToken : sClients.keySet()) {
-                    if (sClients.get(alreadyGeneratedToken).device.getId() == _device) {
-                        sClients.remove(alreadyGeneratedToken);
-                        break;
-                    }
-                }
+                String currentToken = getTokenForDevice(_device);
+                if (currentToken != null)
+                    sClients.remove(currentToken);
 
                 String token = generateToken();
                 AuthInfo authenticated = new AuthInfo();
@@ -86,11 +83,32 @@ class AuthController implements IAuthController {
             return null;
     }
 
+    public void revalidateDevice(EntityManager _manager, int _device) {
+        String currentToken = getTokenForDevice(_device);
+        if (currentToken == null)
+            return;
+
+        Device updatedDevice = _manager.find(Device.class, _device);
+        if (updatedDevice == null)
+            sClients.remove(currentToken);
+        else
+            sClients.get(currentToken).device = updatedDevice;
+    }
+
     AuthController() {
         if (sRandom == null)
             sRandom = new SecureRandom();
         if (sClients == null)
             sClients = new HashMap<String, AuthInfo>();
+    }
+
+    private String getTokenForDevice(int _device) {
+        for (String token: sClients.keySet()) {
+            if (sClients.get(token).device.getId() == _device) {
+                return token;
+            }
+        }
+        return null;
     }
 
     private String generateToken() {

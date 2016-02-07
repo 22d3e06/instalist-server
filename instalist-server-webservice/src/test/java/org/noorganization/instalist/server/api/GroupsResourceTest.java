@@ -122,9 +122,7 @@ public class GroupsResourceTest extends JerseyTest{
         DeviceInfo dev3Ack = validDevice.readEntity(DeviceInfo.class);
 
         //mData.flushEntityManager(mManager);
-        mManager.getTransaction().begin();
-        mManager.flush();
-        mManager.getTransaction().commit();
+        mData.flushEntityManager(mManager);
         Device savedDev3 = mManager.find(Device.class, dev3Ack.getId());
         assertNotNull(savedDev3);
         assertEquals(mGroup, savedDev3.getGroup());
@@ -258,6 +256,7 @@ public class GroupsResourceTest extends JerseyTest{
                 .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).
                 put(Entity.json(new DeviceInfo()));
         assertEquals(400, noDataResponse.getStatus());
+        mData.flushEntityManager(mManager);
         mManager.refresh(mDeviceWOAuth);
         assertEquals("dev2", mDeviceWOAuth.getName());
         assertFalse(mDeviceWOAuth.getAuthorized());
@@ -267,6 +266,7 @@ public class GroupsResourceTest extends JerseyTest{
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).
                 put(Entity.json(new DeviceInfo().withAuthorized(true).withName("none")));
         assertEquals(200, okResponse.getStatus());
+        mData.flushEntityManager(mManager);
         mManager.refresh(mDeviceWOAuth);
         assertEquals("none", mDeviceWOAuth.getName());
         assertTrue(mDeviceWOAuth.getAuthorized());

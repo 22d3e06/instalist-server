@@ -29,4 +29,13 @@ public interface IGroupController {
      * @return The new access key. Usually 6 characters excluding capital 'O'.
      */
     String generateAccessKey(int _groupId);
+
+    /**
+     * Changes a device.
+     * @param _deviceId The id of the device to change.
+     * @param _name A new name for the device. Optional.
+     * @param _authorized A new authorization-status for the device. Optional.
+     * @return Whether the update was successful.
+     */
+    boolean updateDevice(int _deviceId, String _name, Boolean _authorized);
 }
