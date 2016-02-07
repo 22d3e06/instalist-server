@@ -19,7 +19,7 @@ public class Application extends ResourceConfig {
         dbHelper.initialize("org.noorganization.instalist.server");
 
         register(GroupsResource.class);
-        register(CategoriesResource.class);
+        //register(CategoriesResource.class);
 
         register(AuthenticationFilter.class);
     }
