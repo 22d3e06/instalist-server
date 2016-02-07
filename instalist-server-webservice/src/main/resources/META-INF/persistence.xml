@@ -22,8 +22,8 @@
 
             <!--<property name="hibernate.show_sql" value="true" />!-->
 
-            <!-- switch to "verify" for real production !-->
-            <property name="hibernate.hbm2ddl.auto" value="update" />
+            <!-- "update" is critical for production. switch to "verify" for real production !-->
+            <property name="hibernate.hbm2ddl.auto" value="verify" />
         </properties>
 
     </persistence-unit>
