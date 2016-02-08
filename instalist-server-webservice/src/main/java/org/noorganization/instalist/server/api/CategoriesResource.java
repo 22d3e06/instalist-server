@@ -1,11 +1,24 @@
 
 package org.noorganization.instalist.server.api;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import org.noorganization.instalist.comm.support.DateHelper;
+import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.comm.message.CategoryInfo;
+import org.noorganization.instalist.server.model.Category;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.support.DatabaseHelper;
+import org.noorganization.instalist.server.support.ResponseFactory;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -29,78 +42,73 @@ public class CategoriesResource {
     public Response getCategories(@PathParam("groupid") int _groupId,
                                   @QueryParam("changedsince") String _changedSince)
             throws Exception {
-        /*int groupId;
-        if (_token == null || (groupId = mAuthController.getDeviceGroupByToken(_token)) < 0)
-            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
-
-
-        Date filterDate = null;
-        if (_changedSince != null && (filterDate = DateHelper.parseDate(_changedSince)) == null)
-            return ResponseFactory.generateBadRequest(new Error().withMessage("Provided date is " +
-                    "invalid."));
-
-        UUID filterUUID = null;
-        try {
-            if(_categoryId != null)
-                filterUUID = UUID.fromString(_categoryId);
-        } catch (IllegalArgumentException e) {
-            return ResponseFactory.generateBadRequest(new Error().withMessage("Provided uuid is " +
-                    "invalid."));
+        Date changedSince = null;
+        if (_changedSince != null) {
+            changedSince = DateHelper.parseDate(_changedSince);
+            if (changedSince == null)
+                return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
         }
 
-        Connection db = DatabaseHelper.getInstance().getConnection();
-        PreparedStatement categoriesStmt;
-        if (filterDate != null && filterUUID != null) {
-            categoriesStmt = db.prepareStatement("SELECT uuid, name, updated, FALSE as deleted " +
-                    "FROM categories WHERE devicegroup_id = ? AND uuid = ? AND updated > ? UNION " +
-                    "SELECT uuid, NULL as name, time, TRUE as deleted FROM deletion_log WHERE " +
-                    "devicegroup_id = ? AND uuid = ? AND time > ?");
-            categoriesStmt.setString(2, filterUUID.toString());
-            categoriesStmt.setTimestamp(3, new Timestamp(filterDate.getTime()));
-            categoriesStmt.setInt(4, groupId);
-            categoriesStmt.setString(5, filterUUID.toString());
-            categoriesStmt.setTimestamp(6, new Timestamp(filterDate.getTime()));
-        } else if (filterDate != null) {
-            categoriesStmt = db.prepareStatement("SELECT uuid, name, updated, FALSE as deleted " +
-                    "FROM categories WHERE devicegroup_id = ? AND updated > ? UNION " +
-                    "SELECT uuid, NULL as name, time, TRUE as deleted FROM deletion_log WHERE " +
-                    "devicegroup_id = ? AND time > ?");
-            System.out.println("Sql: " + new java.sql.Date(filterDate.getTime()).getTime());
-            categoriesStmt.setTimestamp(2, new Timestamp(filterDate.getTime()));
-            categoriesStmt.setInt(3, groupId);
-            categoriesStmt.setTimestamp(4, new Timestamp(filterDate.getTime()));
-        } else if (filterUUID != null) {
-            categoriesStmt = db.prepareStatement("SELECT uuid, name, updated, FALSE as deleted " +
-                    "FROM categories WHERE devicegroup_id = ? AND uuid = ? UNION " +
-                    "SELECT uuid, NULL as name, time, TRUE as deleted FROM deletion_log WHERE " +
-                    "devicegroup_id = ? AND uuid = ?");
-            categoriesStmt.setString(2, filterUUID.toString());
-            categoriesStmt.setInt(3, groupId);
-            categoriesStmt.setString(4, filterUUID.toString());
+        List<Category> categories;
+        List<DeletedObject> deletedCategories;
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+
+        if (changedSince != null) {
+            TypedQuery<Category> categoriesQuery =
+                    manager.createQuery("select c from Category c " +
+                                    "where c.group = :groupid and c.updated > :updated",
+                            Category.class);
+            categoriesQuery.setParameter("groupid", group);
+            categoriesQuery.setParameter("updated", changedSince);
+            categories = categoriesQuery.getResultList();
+
+            TypedQuery<DeletedObject> deletedCategoriesQuery =
+                    manager.createQuery("select do " +
+                                    "from DeletedObject do where do.group = :groupid and " +
+                                    "do.type = :type and do.time > :time",
+                            DeletedObject.class);
+            deletedCategoriesQuery.setParameter("groupid", group);
+            deletedCategoriesQuery.setParameter("time", changedSince);
+            deletedCategoriesQuery.setParameter("type", DeletedObject.Type.CATEGORY);
+            deletedCategories = deletedCategoriesQuery.getResultList();
         } else {
-            categoriesStmt = db.prepareStatement("SELECT uuid, name, updated, FALSE as deleted " +
-                    "FROM categories WHERE devicegroup_id = ? UNION " +
-                    "SELECT uuid, NULL as name, time, TRUE as deleted FROM deletion_log WHERE " +
-                    "devicegroup_id = ?");
-            categoriesStmt.setInt(2, groupId);
-        }
-        categoriesStmt.setInt(1, groupId);
-        ResultSet categoriesRS = categoriesStmt.executeQuery();
-        List<Category> categoriesResult = new LinkedList<Category>();
-        while (categoriesRS.next()) {
-            Category toRtn = new Category();
-            toRtn.setUUID(categoriesRS.getString("uuid"));
-            toRtn.setName(categoriesRS.getString("name"));
-            toRtn.setLastChanged(categoriesRS.getDate("updated"));
-            toRtn.setDeleted(categoriesRS.getBoolean("deleted"));
-            categoriesResult.add(toRtn);
-        }
-        categoriesRS.close();
-        categoriesStmt.close();
-        db.close();
+            TypedQuery<Category> categoriesQuery =
+                    manager.createQuery("select c from Category c " +
+                            "where c.group = :groupid", Category.class);
+            categoriesQuery.setParameter("groupid", group);
+            categories = categoriesQuery.getResultList();
 
-        return ResponseFactory.generateOK(categoriesResult);*/
-        return null;
+            TypedQuery<DeletedObject> deletedCategoriesQuery =
+                    manager.createQuery("select do " +
+                                    "from DeletedObject do where do.group = :groupid and " +
+                                    "do.type = :type",
+                            DeletedObject.class);
+            deletedCategoriesQuery.setParameter("groupid", group);
+            deletedCategoriesQuery.setParameter("type", DeletedObject.Type.CATEGORY);
+            deletedCategories = deletedCategoriesQuery.getResultList();
+        }
+        manager.close();
+
+        List<CategoryInfo> rtnPayload = new ArrayList<CategoryInfo>(categories.size() +
+                deletedCategories.size());
+        for (Category currentCat: categories) {
+            CategoryInfo info = new CategoryInfo();
+            info.setUUID(currentCat.getUUID());
+            info.setName(currentCat.getName());
+            info.setLastChanged(currentCat.getUpdated());
+            info.setDeleted(false);
+            rtnPayload.add(info);
+        }
+        for (DeletedObject currentCat: deletedCategories) {
+            CategoryInfo info = new CategoryInfo();
+            info.setUUID(currentCat.getUUID());
+            info.setLastChanged(currentCat.getTime());
+            info.setDeleted(true);
+            rtnPayload.add(info);
+        }
+
+        return ResponseFactory.generateOK(rtnPayload);
     }
 
     /**
@@ -109,6 +117,7 @@ public class CategoriesResource {
      * @param _entity A category with updated information.
      */
     @PUT
+    @TokenSecured
     @Path("{categoryuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
@@ -129,6 +138,7 @@ public class CategoriesResource {
      *      e.g. examples/category.example
      */
     @POST
+    @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
     public Response postCategory(@PathParam("groupid") int _groupId, CategoryInfo _entity) throws
@@ -145,6 +155,7 @@ public class CategoriesResource {
      *     
      */
     @DELETE
+    @TokenSecured
     @Path("{categoryuuid}")
     @Produces({ "application/json" })
     public Response deleteCategory(@PathParam("groupid") int _groupId,

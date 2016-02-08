@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.noorganization.instalist.comm.message.GroupInfo;
+import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.comm.message.CategoryInfo;
 import org.noorganization.instalist.comm.support.DateHelper;
@@ -47,7 +48,9 @@ public class CategoriesResourceTest extends JerseyTest {
         enable(TestProperties.LOG_TRAFFIC);
         enable(TestProperties.DUMP_ENTITY);
 
-        return new ResourceConfig(CategoriesResource.class);
+        ResourceConfig rtn = new ResourceConfig(CategoriesResource.class);
+        rtn.register(AuthenticationFilter.class);
+        return rtn;
     }
 
 
@@ -122,7 +125,7 @@ public class CategoriesResourceTest extends JerseyTest {
             if (mDeletedCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertNull(allCategories[i].getName());
                 assertTrue(allCategories[i].getDeleted());
-            } else if (mCategory.equals(UUID.fromString(allCategories[i].getUUID()))) {
+            } else if (mCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertEquals("cat1", allCategories[i].getName());
                 assertFalse(allCategories[i].getDeleted());
             } else {

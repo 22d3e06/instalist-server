@@ -27,8 +27,9 @@
     </persistence-unit>
     <persistence-unit name="org.noorganization.instalist.server.test">
 
-        <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeviceGroup</class>
+        <class>org.noorganization.instalist.server.model.Category</class>
+        <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
 
