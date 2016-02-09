@@ -8,9 +8,11 @@
             Persistence unit for the JPA tutorial of the Hibernate Getting Started Guide
         </description>
 
-        <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeviceGroup</class>
+        <class>org.noorganization.instalist.server.model.Category</class>
+        <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
+        <class>org.noorganization.instalist.server.model.ShoppingList</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
