@@ -121,8 +121,6 @@ public class GroupsResourceTest extends JerseyTest{
         assertEquals(201, validDevice.getStatus());
         DeviceInfo dev3Ack = validDevice.readEntity(DeviceInfo.class);
 
-        //mData.flushEntityManager(mManager);
-        mData.flushEntityManager(mManager);
         Device savedDev3 = mManager.find(Device.class, dev3Ack.getId());
         assertNotNull(savedDev3);
         assertEquals(mGroup, savedDev3.getGroup());
@@ -142,7 +140,6 @@ public class GroupsResourceTest extends JerseyTest{
         assertEquals(200, validDevice2.getStatus());
         DeviceInfo dev4Ack = validDevice2.readEntity(DeviceInfo.class);
 
-        mData.flushEntityManager(mManager);
         Device savedDev4 = mManager.find(Device.class, dev4Ack.getId());
         assertNotNull(savedDev4);
         assertEquals(newDevGroup, savedDev4.getGroup());
@@ -156,7 +153,6 @@ public class GroupsResourceTest extends JerseyTest{
         Response authNeededResponse = target(String.format(url, mGroup.getId())).request().get();
         assertEquals(401, authNeededResponse.getStatus());
 
-        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
@@ -166,7 +162,6 @@ public class GroupsResourceTest extends JerseyTest{
         Response rightAuthNeededResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + invalidToken).get();
         assertEquals(401, rightAuthNeededResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
 
@@ -177,7 +172,6 @@ public class GroupsResourceTest extends JerseyTest{
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + validToken).get();
         GroupInfo recvdGroup = okResponse.readEntity(GroupInfo.class);
         assertEquals(6, recvdGroup.getReadableId().length());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         assertEquals(recvdGroup.getReadableId(), mGroup.getReadableId());
         assertTrue(new Date(System.currentTimeMillis() - 10000).before(mGroup.getUpdated()));
@@ -256,7 +250,6 @@ public class GroupsResourceTest extends JerseyTest{
                 .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).
                 put(Entity.json(new DeviceInfo()));
         assertEquals(400, noDataResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mDeviceWOAuth);
         assertEquals("dev2", mDeviceWOAuth.getName());
         assertFalse(mDeviceWOAuth.getAuthorized());
@@ -266,7 +259,6 @@ public class GroupsResourceTest extends JerseyTest{
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).
                 put(Entity.json(new DeviceInfo().withAuthorized(true).withName("none")));
         assertEquals(200, okResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mDeviceWOAuth);
         assertEquals("none", mDeviceWOAuth.getName());
         assertTrue(mDeviceWOAuth.getAuthorized());
@@ -290,14 +282,12 @@ public class GroupsResourceTest extends JerseyTest{
         Response okResponse = target(String.format(url, mGroup.getId(), mDeviceWOAuth.getId())).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).delete();
         assertEquals(200, okResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.clear();
         assertNull(mManager.find(Device.class, mDeviceWOAuth.getId()));
 
         Response okResponse2 = target(String.format(url, mGroup.getId(), mDeviceWAuth.getId())).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + token).delete();
         assertEquals(200, okResponse2.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.clear();
         assertNull(mManager.find(Device.class, mDeviceWAuth.getId()));
         assertNull(mManager.find(DeviceGroup.class, mGroup.getId()));

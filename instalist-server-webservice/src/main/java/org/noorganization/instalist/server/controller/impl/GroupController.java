@@ -17,7 +17,7 @@ class GroupController implements IGroupController {
 
     public DeviceGroup addGroup() {
         String newGroupReadableId;
-        newGroupReadableId = getNewGroupReadableId(mManager);
+        newGroupReadableId = getNewGroupReadableId();
 
         mManager.getTransaction().begin();
         DeviceGroup createdGroup = new DeviceGroup().withReadableId(newGroupReadableId);
@@ -44,7 +44,7 @@ class GroupController implements IGroupController {
         List<Device> otherDevices = otherDeviceQuery.getResultList();
 
         group.setReadableId(null);
-        mManager.merge(group);
+        // mManager.merge(group);
         Device rtn = new Device();
         rtn.setName(_name);
         rtn.setGroup(group);
@@ -58,14 +58,14 @@ class GroupController implements IGroupController {
     }
 
     public String generateAccessKey(int _groupId) {
-        String newAccessKey = getNewGroupReadableId(mManager);
+        String newAccessKey = getNewGroupReadableId();
 
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         if (group == null)
             return null;
         mManager.getTransaction().begin();
         group.setReadableId(newAccessKey);
-        mManager.merge(group);
+        // mManager.merge(group);
         mManager.getTransaction().commit();
 
         return newAccessKey;
@@ -80,7 +80,7 @@ class GroupController implements IGroupController {
             toChange.setName(_name);
         if (_authorized != null)
             toChange.setAuthorized(_authorized);
-        mManager.merge(toChange);
+        // mManager.merge(toChange);
         mManager.getTransaction().commit();
 
         IAuthController authController = ControllerFactory.getAuthController();
@@ -109,7 +109,7 @@ class GroupController implements IGroupController {
         authController.revalidateDevice(mManager, _deviceId);
     }
 
-    private String getNewGroupReadableId(EntityManager _manager) {
+    private String getNewGroupReadableId() {
         final char[] acceptableChars =
                 new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
                         'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3',
@@ -122,7 +122,7 @@ class GroupController implements IGroupController {
             while (idBuilder.length() < 6)
                 idBuilder.append(acceptableChars[random.nextInt(acceptableChars.length)]);
 
-            Query dgQuery = _manager.createQuery("select dg from DeviceGroup dg where dg" +
+            Query dgQuery = mManager.createQuery("select dg from DeviceGroup dg where dg" +
                     ".readableId = :rid");
             dgQuery.setParameter("rid", idBuilder.toString());
             dgQuery.setMaxResults(1);

@@ -10,15 +10,21 @@ import org.noorganization.instalist.comm.support.DateHelper;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.comm.message.CategoryInfo;
+import org.noorganization.instalist.server.controller.ICategoryController;
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
+import org.noorganization.instalist.server.message.Error;
 import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.DatabaseHelper;
+import org.noorganization.instalist.server.support.exceptions.GoneException;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -124,11 +130,52 @@ public class CategoriesResource {
     public Response putCategory(@PathParam("groupid") int _groupId,
                                 @PathParam("categoryuuid") String _uuid,
                                 CategoryInfo _entity) throws Exception {
-//        int groupId;
-//        if (_token == null || (groupId = mAuthController.getGroupIdByToken(_token)) < 0)
-//            return ResponseFactory.generateNotAuthorized(CommonEntity.sNotAuthorized);
+        try{
 
-        return null;
+        if (_entity.getName() == null)
+            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+        if ((_entity.getUUID() != null && !_entity.getUUID().equals(_uuid)) ||
+                (_entity.getDeleted() != null && _entity.getDeleted()))
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+
+        Date changedDate;
+        if (_entity.getLastChanged() != null) {
+            changedDate = DateHelper.parseDate(_entity.getLastChanged());
+            if (changedDate == null || changedDate.after(new Date())) {
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+            }
+        } else
+            changedDate = new Date(System.currentTimeMillis());
+        UUID categoryUUID;
+        try {
+            categoryUUID = UUID.fromString(_uuid);
+        } catch (IllegalArgumentException e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        ICategoryController categoryController =
+                ControllerFactory.getCategoryController(manager);
+        try {
+            categoryController.update(_groupId, categoryUUID, _entity.getName(), changedDate);
+        } catch (NotFoundException e) {
+            return ResponseFactory.generateNotFound(new Error().withMessage("Category was not " +
+                            "found."));
+        } catch (GoneException e) {
+            return ResponseFactory.generateGone(new Error().withMessage("Category was already " +
+                            "deleted."));
+        } catch (ConflictException e) {
+            return ResponseFactory.generateConflict(new Error().withMessage("Sent sategory is in " +
+                    "conflict with saved one."));
+        } finally {
+            manager.close();
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return ResponseFactory.generateOK(null);
     }
 
     /**

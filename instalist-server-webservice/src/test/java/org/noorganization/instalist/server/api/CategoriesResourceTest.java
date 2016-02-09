@@ -63,14 +63,16 @@ public class CategoriesResourceTest extends JerseyTest {
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
         mGroup = new DeviceGroup();
+        Date now = new Date(System.currentTimeMillis());
         Device aDev = new Device().withAuthorized(true).withGroup(mGroup).
                 withSecret(mData.mEncryptedSecret).withName("testDev");
-        mCategory = new Category().withGroup(mGroup).withName("cat1").withUUID(UUID.randomUUID());
+        mCategory = new Category().withGroup(mGroup).withName("cat1").withUUID(UUID.randomUUID()).
+                withUpdated(now);
         mDeletedCategory = new DeletedObject().withGroup(mGroup).
-                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID());
-        mNotAccessibleGroup = new DeviceGroup();
+                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID()).withTime(now);
+        mNotAccessibleGroup = new DeviceGroup().withUpdated(now);
         mNotAccessibleCategory = new Category().withGroup(mNotAccessibleGroup).withName("cat2").
-                withUUID(UUID.randomUUID());
+                withUUID(UUID.randomUUID()).withUpdated(now);
 
         mManager.persist(mGroup);
         mManager.persist(aDev);
@@ -78,8 +80,9 @@ public class CategoriesResourceTest extends JerseyTest {
         mManager.persist(mDeletedCategory);
         mManager.persist(mNotAccessibleGroup);
         mManager.persist(mNotAccessibleCategory);
+        mManager.flush();
         mManager.getTransaction().commit();
-        mData.flushEntityManager(mManager);
+        //mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         mManager.refresh(aDev);
         mManager.refresh(mCategory);
@@ -147,52 +150,51 @@ public class CategoriesResourceTest extends JerseyTest {
 
     @Test
     public void testPutCategory() throws Exception {
-        final String url = "/groups/%d/categories/%d";
+        final String url = "/groups/%d/categories/%s";
         Response wrongTokenResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").
                 put(Entity.json(new CategoryInfo().withName("dev111")));
         assertEquals(401, wrongTokenResponse.getStatus());
 
         Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId(),
-                mCategory.getId())).request().
+                mCategory.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("dev111")));;
         assertEquals(401, wrongGroupResponse.getStatus());
 
         Response wrongCatResponse = target(String.format(url, mGroup.getId(),
-                mNotAccessibleCategory.getId())).request().
+                mNotAccessibleCategory.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("dev111")));
         assertEquals(404, wrongCatResponse.getStatus());
 
-        Response invalidCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
-                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                put(Entity.json(new CategoryInfo().withUUID(mNotAccessibleCategory.getUUID()).
+        Response invalidCatResponse = target(String.format(url, mGroup.getId(), mCategory.
+                getUUID().toString())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+                put(Entity.json(new CategoryInfo().withUUID(mNotAccessibleCategory.getUUID().toString()).
                         withName("dev111")));
         assertEquals(400, invalidCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mNotAccessibleCategory);
         mManager.refresh(mCategory);
         assertEquals("cat1", mCategory.getName());
         assertEquals("cat2", mNotAccessibleCategory.getName());
 
         Date beforeChange = new Date(System.currentTimeMillis());
-        Thread.sleep(300);
-        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
-                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+        Thread.sleep(200);
+        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getUUID().
+                toString())).request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("dev111")));
         assertEquals(200, validCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mCategory);
         assertEquals("dev111", mCategory.getName());
         assertTrue(beforeChange.before(mCategory.getUpdated()));
 
-        Response conflictCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
-                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
+        Response conflictCatResponse = target(String.format(url, mGroup.getId(), mCategory.
+                getUUID().toString())).request().
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("cat1").
                         withLastChanged(beforeChange)));
         assertEquals(409, conflictCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.refresh(mCategory);
         assertEquals("dev111", mCategory.getName());
         assertTrue(beforeChange.before(mCategory.getUpdated()));
@@ -224,7 +226,6 @@ public class CategoriesResourceTest extends JerseyTest {
                         withName("cat3")));
         assertEquals(409, conflictCatResponse.getStatus());
 
-        mData.flushEntityManager(mManager);
         mManager.refresh(mCategory);
         assertEquals("cat1", mCategory.getName());
 
@@ -232,7 +233,6 @@ public class CategoriesResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 post(Entity.json(new CategoryInfo().withUUID(uuid).withName("cat3")));
         assertEquals(200, validCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         TypedQuery<Category> savedCatQuery = mManager.createQuery("select c from Category c where " +
                 "c.UUID = :uuid and c.group = :groupid", Category.class);
         savedCatQuery.setParameter("uuid", uuid);
@@ -258,7 +258,6 @@ public class CategoriesResourceTest extends JerseyTest {
                 mNotAccessibleCategory.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(404, wrongCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.clear();
         assertNotNull(mManager.find(Category.class, mNotAccessibleCategory.getId()));
 
@@ -270,7 +269,6 @@ public class CategoriesResourceTest extends JerseyTest {
         Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId()))
                 .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(200, validCatResponse.getStatus());
-        mData.flushEntityManager(mManager);
         mManager.clear();
         assertNull(mManager.find(Category.class, mCategory.getId()));
         TypedQuery<DeletedObject> deletedCat1Query = mManager.createQuery("select do from " +

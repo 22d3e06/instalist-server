@@ -26,9 +26,4 @@ public class CommonData {
         DatabaseHelper.getInstance().initialize("org.noorganization.instalist.server.test");
     }
 
-    public void flushEntityManager(EntityManager _manager) {
-        _manager.getTransaction().begin();
-        _manager.flush();
-        _manager.getTransaction().commit();
-    }
 }

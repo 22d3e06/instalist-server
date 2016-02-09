@@ -3,8 +3,10 @@ package org.noorganization.instalist.server.controller;
 import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
-import org.noorganization.instalist.server.support.exceptions.NotFoundException;
 
+import javax.persistence.EntityManager;
+import javax.ws.rs.NotFoundException;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -25,12 +27,15 @@ public interface ICategoryController {
 
     /**
      * Updates a category.
-     * @param _id The id of the category to update.
+     * @param _id The id of the group.
+     * @param _categoryUUID The uuid of the category to update.
      * @param _name The new name of the category.
      * @throws GoneException If category was deleted before.
      * @throws NotFoundException If category was not found.
+     * @throws ConflictException If a change made after this occurred before.
      */
-    void update(int _id, String _name) throws GoneException, NotFoundException;
+    void update(int _id, UUID _categoryUUID, String _name, Date _change)
+            throws GoneException, NotFoundException, ConflictException;
 
     /**
      * Deletes a category.

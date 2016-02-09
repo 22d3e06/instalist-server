@@ -2,6 +2,7 @@ package org.noorganization.instalist.server.support;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +25,9 @@ public class DatabaseHelper {
     public EntityManager getManager() {
         if (mFactory == null)
             throw new IllegalStateException("DatabaseHelper was not initialized properly.");
-        return mFactory.createEntityManager();
+        EntityManager rtn = mFactory.createEntityManager();
+        rtn.setFlushMode(FlushModeType.COMMIT);
+        return rtn;
     }
 
     /**
