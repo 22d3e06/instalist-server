@@ -5,9 +5,7 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.comm.message.CategoryInfo;
@@ -82,7 +80,6 @@ public class CategoriesResourceTest extends JerseyTest {
         mManager.persist(mNotAccessibleCategory);
         mManager.flush();
         mManager.getTransaction().commit();
-        //mData.flushEntityManager(mManager);
         mManager.refresh(mGroup);
         mManager.refresh(aDev);
         mManager.refresh(mCategory);
@@ -180,7 +177,7 @@ public class CategoriesResourceTest extends JerseyTest {
         assertEquals("cat2", mNotAccessibleCategory.getName());
 
         Date beforeChange = new Date(System.currentTimeMillis());
-        Thread.sleep(200);
+        Thread.sleep(1000);
         Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getUUID().
                 toString())).request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("dev111")));
