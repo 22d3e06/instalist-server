@@ -18,10 +18,10 @@
     <facet type="jpa" name="JPA">
       <configuration>
         <setting name="validation-enabled" value="true" />
-        <setting name="provider-name" value="" />
+        <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="org.noorganization.instalist.server" />
-          <factory-entry name="org.noorganization.instalist.server.test" />
+          <factory-entry name="org.noorganization.instalist.server" value="4026c043-895b-44aa-becb-cb9cbc09b814" />
+          <factory-entry name="org.noorganization.instalist.server.test" value="4026c043-895b-44aa-becb-cb9cbc09b814" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
       </configuration>

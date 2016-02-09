@@ -14,6 +14,10 @@ public class ShoppingList {
     private Date        mUpdated;
     private DeviceGroup mGroup;
 
+    public ShoppingList() {
+        mUpdated = new Date(System.currentTimeMillis());
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -55,8 +59,8 @@ public class ShoppingList {
 
     @Temporal(TemporalType.TIMESTAMP)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON " +
-            "UPDATE CURRENT_TIMESTAMP(3)", nullable = false, insertable = false, updatable = false)
+    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
+            nullable = false)
     public Date getUpdated() {
         return mUpdated;
     }

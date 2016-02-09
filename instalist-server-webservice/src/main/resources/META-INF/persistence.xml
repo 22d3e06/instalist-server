@@ -33,6 +33,7 @@
         <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
+        <class>org.noorganization.instalist.server.model.ListEntry</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
 
         <properties>

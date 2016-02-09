@@ -118,6 +118,68 @@ public class CategoriesResource {
     }
 
     /**
+     * Get a list of categories.
+     *
+     * @param _groupId The id of the group.
+     * @param _categoryUUID The uuid of the category to fetch.
+     */
+    @GET
+    @TokenSecured
+    @Path("{categoryuuid}")
+    @Produces({ "application/json" })
+    public Response getCategory(@PathParam("groupid") int _groupId,
+                                @PathParam("categoryuuid") String _categoryUUID)
+            throws Exception {
+        UUID categoryUUID;
+        try {
+            categoryUUID = UUID.fromString(_categoryUUID);
+        } catch (IllegalArgumentException e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+
+        TypedQuery<Category> categoriesQuery =
+                manager.createQuery("select c from Category c " +
+                        "where c.group = :groupid and c.UUID = :uuid", Category.class);
+        categoriesQuery.setParameter("groupid", group);
+        categoriesQuery.setParameter("uuid", categoryUUID);
+        List<Category> categories = categoriesQuery.getResultList();
+        if (categories.size() != 1) {
+            TypedQuery<DeletedObject> deletedCategoriesQuery =
+                    manager.createQuery("select do " +
+                                    "from DeletedObject do where do.group = :groupid and " +
+                                    "do.type = :type and do.UUID = :uuid",
+                            DeletedObject.class);
+            deletedCategoriesQuery.setParameter("groupid", group);
+            deletedCategoriesQuery.setParameter("type", DeletedObject.Type.CATEGORY);
+            deletedCategoriesQuery.setParameter("uuid", categoryUUID);
+            List<DeletedObject> deletedCategories = deletedCategoriesQuery.getResultList();
+            manager.close();
+            if (deletedCategories.size() == 1) {
+                CategoryInfo catInfo = new CategoryInfo();
+                catInfo.setDeleted(true);
+                catInfo.setLastChanged(deletedCategories.get(0).getTime());
+                catInfo.setUUID(categoryUUID);
+                return ResponseFactory.generateGone(catInfo);
+            } else {
+                return ResponseFactory.generateNotFound(new Error().withMessage("Category was not" +
+                        " found."));
+            }
+        }
+        manager.close();
+        CategoryInfo catInfo = new CategoryInfo();
+        catInfo.setDeleted(false);
+        catInfo.setLastChanged(categories.get(0).getUpdated());
+        catInfo.setName(categories.get(0).getName());
+        catInfo.setUUID(categoryUUID);
+
+        return ResponseFactory.generateOK(catInfo);
+    }
+
+    /**
      * Updates the category.
      * @param _uuid The uuid of the category to update.
      * @param _entity A category with updated information.
@@ -252,6 +314,9 @@ public class CategoriesResource {
         } catch (NotFoundException _e) {
             return ResponseFactory.generateNotFound(new Error().withMessage("The category " +
                     "was not found."));
+        } catch (ConflictException _e) {
+            return ResponseFactory.generateConflict(new Error().withMessage("The category still " +
+                    "contains lists."));
         } finally {
             manager.close();
         }

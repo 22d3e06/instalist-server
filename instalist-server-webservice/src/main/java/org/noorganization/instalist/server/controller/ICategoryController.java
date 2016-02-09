@@ -44,5 +44,6 @@ public interface ICategoryController {
      * @throws GoneException If already deleted before.
      * @throws NotFoundException If category was not found.
      */
-    void delete(int _groupId, UUID _categoryUUID) throws GoneException, NotFoundException;
+    void delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
+            NotFoundException;
 }

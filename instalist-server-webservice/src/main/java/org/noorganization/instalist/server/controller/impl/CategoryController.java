@@ -70,7 +70,8 @@ class CategoryController implements ICategoryController {
     }
 
 
-    public void delete(int _groupId, UUID _categoryUUID) throws NotFoundException, GoneException {
+    public void delete(int _groupId, UUID _categoryUUID) throws ConflictException,
+            NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         Category catToDelete = getCategoryByGroupAndUUID(_groupId, _categoryUUID);
@@ -82,6 +83,10 @@ class CategoryController implements ICategoryController {
                 tx.rollback();
                 throw new GoneException();
             }
+        }
+        if (catToDelete.getLists().size() != 0) {
+            tx.rollback();
+            throw new ConflictException();
         }
         DeletedObject deletedCat = new DeletedObject();
         deletedCat.setType(DeletedObject.Type.CATEGORY);
@@ -96,7 +101,7 @@ class CategoryController implements ICategoryController {
         this.mManager = _manager;
     }
 
-    private Category getCategoryByGroupAndUUID(int _groupId, UUID
+    Category getCategoryByGroupAndUUID(int _groupId, UUID
             _catUUID) {
         TypedQuery<Category> categoryToChangeQuery = mManager.createQuery("select c from " +
                 "Category c where c.group = :group and c.UUID = :uuid", Category.class);

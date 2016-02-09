@@ -1,10 +1,9 @@
 package org.noorganization.instalist.server.controller.impl;
 
-import org.noorganization.instalist.server.controller.IAuthController;
-import org.noorganization.instalist.server.controller.ICategoryController;
-import org.noorganization.instalist.server.controller.IGroupController;
+import org.noorganization.instalist.server.controller.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * This Factory points to always up-to-date controllers (for decoupling).
@@ -22,6 +21,14 @@ public class ControllerFactory {
 
     public static IGroupController getGroupController(EntityManager _manager) {
         return new GroupController(_manager);
+    }
+
+    public static IListController getListController(EntityManager _manager) {
+        return new ListController(_manager);
+    }
+
+    public static IEntryController getEntryController(EntityManager _manager) {
+        return new EntryController(_manager);
     }
 
     private ControllerFactory(){

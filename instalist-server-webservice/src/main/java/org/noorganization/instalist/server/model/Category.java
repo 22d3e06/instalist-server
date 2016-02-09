@@ -3,6 +3,7 @@ package org.noorganization.instalist.server.model;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -14,6 +15,8 @@ public class Category {
     private DeviceGroup mGroup;
     private String      mName;
     private Date        mUpdated;
+
+    private Set<ShoppingList> mLists;
 
     public Category() {
         mUpdated = new Date(System.currentTimeMillis());
@@ -98,6 +101,15 @@ public class Category {
     public Category withUpdated(Date _updated) {
         setUpdated(_updated);
         return this;
+    }
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REFRESH)
+    public Set<ShoppingList> getLists() {
+        return mLists;
+    }
+
+    public void setLists(Set<ShoppingList> _lists) {
+        mLists = _lists;
     }
 
     @Override

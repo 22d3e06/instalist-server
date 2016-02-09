@@ -18,6 +18,7 @@ public class DeviceGroup {
     private Set<Category> mCategories;
     private Set<ShoppingList> mLists;
     private Set<DeletedObject> mDeletedObjects;
+    private Set<ListEntry> mListEntries;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -119,6 +120,16 @@ public class DeviceGroup {
     public void setDeletedObjects(
             Set<DeletedObject> _deletedObjects) {
         mDeletedObjects = _deletedObjects;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<ListEntry> getListEntries() {
+        return mListEntries;
+    }
+
+    public void setListEntries(
+            Set<ListEntry> _listEntries) {
+        mListEntries = _listEntries;
     }
 
 

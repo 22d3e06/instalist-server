@@ -12,6 +12,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+import org.noorganization.instalist.comm.message.ListInfo;
+import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.message.ShoppingList;
 
 
@@ -19,73 +22,81 @@ import org.noorganization.instalist.server.message.ShoppingList;
  * Collection of available lists.
  * 
  */
-@Path("lists")
-public interface ListResource {
+@Path("/groups/{groupid}/lists")
+public class ListResource {
 
 
     /**
-     * Get a list of lists.
-     * 
-     * 
-     * @param changedSince
-     *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
+     * Get a list of shopping-lists.
+     * @param _groupId The id of the group, containing the lists.
+     * @param _changedSince Requests only the elements that changed since the given date. ISO 8601
+     *                     time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    Response getLists(@QueryParam("changedSince") Date changedSince) throws Exception;
+    public Response getLists(@PathParam("groupid") int _groupId,
+                             @QueryParam("changedSince") Date _changedSince) throws Exception {
+        return null;
+    }
 
     /**
-     * Returns the list.
-     * 
-     * 
-     * @param listId
+     * Get a single list.
+     * @param _groupId The id of the group, containing the list.
      *     
      */
     @GET
-    @Path("{listId}")
+    @TokenSecured
+    @Path("{listuuid}")
     @Produces({ "application/json" })
-    Response getListById(@PathParam("listId") String listId) throws Exception;
+    public Response getListById(@PathParam("groupid") int _groupId,
+                                @PathParam("listuuid") String _listUUID) throws Exception {
+        return null;
+    }
 
     /**
-     * Updates the list.
-     * 
-     * 
-     * @param listId
-     *     
-     * @param entity
-     *      e.g. examples/shoppingList.example
+     * Updates a existing list.
+     * @param _groupId The id of the group containing the list.
+     * @param _listUUID The uuid of the list to update.
+     * @param _listInfo Information for changing the list. Not all information needs to be set.
      */
     @PUT
-    @Path("{listId}")
+    @Path("{listuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putListById(@PathParam("listId") String listId, ShoppingList entity) throws Exception;
+    Response putListById(@PathParam("groupid") int _groupId,
+                         @PathParam("listuuid") String _listUUID,
+                         ListInfo _listInfo) throws Exception {
+        return null;
+    }
 
     /**
-     * Creates the list.
-     * 
-     * 
-     * @param listId
-     *     
-     * @param entity
-     *      e.g. examples/shoppingList.example
+     * Creates a list in the group.
+     * @param _groupId The id of the group containing the list.
+     * @param _listUUID The uuid of the list to update.
+     * @param _listInfo Information for changing the list. Not all information needs to be set.
      */
     @POST
-    @Path("{listId}")
+    @Path("{listuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postListById(@PathParam("listId") String listId, ShoppingList entity) throws Exception;
+    public Response postListById(@PathParam("groupid") int _groupId,
+                                 @PathParam("listuuid") String _listUUID,
+                                 ListInfo _listInfo) throws Exception {
+        return null;
+    }
 
     /**
      * Deletes the list.
-     * 
-     * 
-     * @param listId
-     *     
+     * @param _groupId The id of the group containing the list.
+     * @param _listUUID The uuid of the list to update.
      */
     @DELETE
-    @Path("{listId}")
+    @Path("{listuuid}")
     @Produces({ "application/json" })
-    Response deleteListById(@PathParam("listId") String listId) throws Exception;
+    Response deleteListById(@PathParam("groupid") int _groupId,
+                            @PathParam("listuuid") String _listUUID) throws Exception {
+        return null;
+    }
 
 }
