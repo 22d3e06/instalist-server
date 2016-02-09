@@ -20,10 +20,11 @@ public interface ICategoryController {
      * @param _groupId The id of the group to add the category
      * @param _uuid The uuid of the category.
      * @param _name The name of the category.
+     * @param _added The time of addition.
      * @return The created Category.
      * @throws ConflictException If there is already a category with same uuid for the group.
      */
-    Category add(int _groupId, UUID _uuid, String _name) throws ConflictException;
+    Category add(int _groupId, UUID _uuid, String _name, Date _added) throws ConflictException;
 
     /**
      * Updates a category.
@@ -39,9 +40,9 @@ public interface ICategoryController {
 
     /**
      * Deletes a category.
-     * @param _id The id of the category to delete.
+     * @param _groupId The id of the category to delete.
      * @throws GoneException If already deleted before.
      * @throws NotFoundException If category was not found.
      */
-    void delete(int _id) throws GoneException, NotFoundException;
+    void delete(int _groupId, UUID _categoryUUID) throws GoneException, NotFoundException;
 }

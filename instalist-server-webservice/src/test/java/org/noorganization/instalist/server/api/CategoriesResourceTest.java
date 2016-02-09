@@ -229,7 +229,7 @@ public class CategoriesResourceTest extends JerseyTest {
         Response validCatResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 post(Entity.json(new CategoryInfo().withUUID(uuid).withName("cat3")));
-        assertEquals(200, validCatResponse.getStatus());
+        assertEquals(201, validCatResponse.getStatus());
         TypedQuery<Category> savedCatQuery = mManager.createQuery("select c from Category c where " +
                 "c.UUID = :uuid and c.group = :groupid", Category.class);
         savedCatQuery.setParameter("uuid", uuid);
@@ -241,38 +241,40 @@ public class CategoriesResourceTest extends JerseyTest {
 
     @Test
     public void testDeleteCategoryById() throws Exception {
-        final String url = "/groups/%d/categories/%d";
-        Response wrongTokenResponse = target(String.format(url, mGroup.getId(), mCategory.getId())).
-                request().header(HttpHeaders.AUTHORIZATION, "X-Token wrongToken").delete();
+        final String url = "/groups/%d/categories/%s";
+        Response wrongTokenResponse = target(String.format(url, mGroup.getId(),
+                mCategory.getUUID())).request().header(HttpHeaders.AUTHORIZATION, "X-Token " +
+                "wrongToken").delete();
         assertEquals(401, wrongTokenResponse.getStatus());
 
         Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId(),
-                mCategory.getId())).request().
+                mCategory.getUUID())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(401, wrongGroupResponse.getStatus());
 
         Response wrongCatResponse = target(String.format(url, mGroup.getId(),
-                mNotAccessibleCategory.getId())).request().
+                mNotAccessibleCategory.getUUID())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(404, wrongCatResponse.getStatus());
         mManager.clear();
         assertNotNull(mManager.find(Category.class, mNotAccessibleCategory.getId()));
 
         Response goneCatResponse = target(String.format(url, mGroup.getId(),
-                mDeletedCategory.getId())).request().
+                mDeletedCategory.getUUID())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(410, goneCatResponse.getStatus());
 
-        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getId()))
+        Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getUUID()))
                 .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(200, validCatResponse.getStatus());
         mManager.clear();
         assertNull(mManager.find(Category.class, mCategory.getId()));
         TypedQuery<DeletedObject> deletedCat1Query = mManager.createQuery("select do from " +
                 "DeletedObject do where do.UUID = :uuid and do.group = :groupid and " +
-                "do.type = do.Type.CATEGORY", DeletedObject.class);
+                "do.type = :type", DeletedObject.class);
         deletedCat1Query.setParameter("uuid", mCategory.getUUID());
         deletedCat1Query.setParameter("groupid", mGroup);
+        deletedCat1Query.setParameter("type", DeletedObject.Type.CATEGORY);
         List<DeletedObject> deletedCat1 = deletedCat1Query.getResultList();
         assertEquals(1, deletedCat1.size());
     }

@@ -180,7 +180,7 @@ public class CategoriesResource {
 
     /**
      * Creates the category.
-     * @param _token Authorization-token for the current user.
+     * @param _groupId The group to add the category to.
      * @param _entity Information for the new category.
      *      e.g. examples/category.example
      */
@@ -190,16 +190,44 @@ public class CategoriesResource {
     @Produces({ "application/json" })
     public Response postCategory(@PathParam("groupid") int _groupId, CategoryInfo _entity) throws
             Exception {
-        return null;
+        if (_entity.getUUID() == null || _entity.getName() == null ||
+                _entity.getName().length() == 0 || (_entity.getDeleted() != null &&
+                _entity.getDeleted()))
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+        Date lastChanged;
+        if (_entity.getLastChanged() != null) {
+            lastChanged = DateHelper.parseDate(_entity.getLastChanged());
+            if (lastChanged == null)
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        } else
+            lastChanged = new Date(System.currentTimeMillis());
+
+        UUID newCatUUID;
+        try {
+            newCatUUID = UUID.fromString(_entity.getUUID());
+        } catch (IllegalArgumentException e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        ICategoryController categoryController = ControllerFactory.getCategoryController(manager);
+        try {
+            categoryController.add(_groupId, newCatUUID, _entity.getName(), lastChanged);
+        } catch (ConflictException _e) {
+            return ResponseFactory.generateConflict(new Error().withMessage("The new category " +
+                    "stands in conflict with existing one."));
+        } finally {
+            manager.close();
+        }
+
+        return ResponseFactory.generateCreated(null);
     }
 
     /**
      * Deletes the category.
      * 
-     * 
-     * @param _categoryId The uuid of the category to delete.
-     * @param _token
-     *     
+     * @param _groupId The group of the category to delete.
+     * @param _uuid The uuid of the category to delete.
      */
     @DELETE
     @TokenSecured
@@ -207,7 +235,28 @@ public class CategoriesResource {
     @Produces({ "application/json" })
     public Response deleteCategory(@PathParam("groupid") int _groupId,
                                    @PathParam("categoryuuid") String _uuid) throws Exception {
-        return null;
+        UUID newCatUUID;
+        try {
+            newCatUUID = UUID.fromString(_uuid);
+        } catch (IllegalArgumentException e) {
+            return ResponseFactory.generateNotFound(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        ICategoryController categoryController = ControllerFactory.getCategoryController(manager);
+        try {
+            categoryController.delete(_groupId, newCatUUID);
+        } catch (GoneException _e) {
+            return ResponseFactory.generateGone(new Error().withMessage("The category " +
+                    "was already deleted"));
+        } catch (NotFoundException _e) {
+            return ResponseFactory.generateNotFound(new Error().withMessage("The category " +
+                    "was not found."));
+        } finally {
+            manager.close();
+        }
+
+        return ResponseFactory.generateOK(null);
     }
 
 }
