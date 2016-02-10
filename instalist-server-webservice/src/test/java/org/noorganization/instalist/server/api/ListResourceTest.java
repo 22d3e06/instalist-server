@@ -297,7 +297,8 @@ public class ListResourceTest extends JerseyTest {
         mManager.refresh(mListWC);
         assertEquals("changedlist", mListWC.getName());
         assertEquals(mCat, mListWC.getCategory());
-        assertTrue(preUpdate.before(mListWC.getUpdated()));
+        assertTrue(preUpdate.getTime() + " is not before " + mListWC.getUpdated().getTime(),
+                preUpdate.before(mListWC.getUpdated()));
     }
 
     @Test
