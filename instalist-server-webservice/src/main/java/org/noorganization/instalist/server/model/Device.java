@@ -63,7 +63,7 @@ public class Device {
         return this;
     }
 
-    @Column(name = "authorized", columnDefinition = "BOOLEAN", nullable = false)
+    @Column(name = "authorized", columnDefinition = "TINYINT(1)", nullable = false)
     public boolean getAuthorized() {
         return mAuthorized;
     }
