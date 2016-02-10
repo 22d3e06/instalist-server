@@ -2,6 +2,8 @@
 package org.noorganization.instalist.server.api;
 
 import java.util.Date;
+import java.util.UUID;
+import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -14,7 +16,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.noorganization.instalist.comm.message.ListInfo;
+import org.noorganization.instalist.comm.support.DateHelper;
+import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
+import org.noorganization.instalist.server.controller.IListController;
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
+import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.server.support.DatabaseHelper;
+import org.noorganization.instalist.server.support.ResponseFactory;
+import org.noorganization.instalist.server.support.exceptions.ConflictException;
 
 
 /**
@@ -73,7 +83,6 @@ public class ListResource {
     /**
      * Creates a list in the group.
      * @param _groupId The id of the group containing the list.
-     * @param _listUUID The uuid of the list to update.
      * @param _listInfo Information for changing the list. Not all information needs to be set.
      */
     @POST
@@ -81,9 +90,39 @@ public class ListResource {
     @Consumes("application/json")
     @Produces({ "application/json" })
     public Response postList(@PathParam("groupid") int _groupId,
-                             @PathParam("listuuid") String _listUUID,
                              ListInfo _listInfo) throws Exception {
-        return null;
+        if ((_listInfo.getDeleted() != null && _listInfo.getDeleted()) ||
+                _listInfo.getName() == null || _listInfo.getName().length() == 0 ||
+                _listInfo.getUUID() == null)
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+
+        UUID listUUID;
+        UUID categoryUUID = null;
+        try {
+            listUUID = UUID.fromString(_listInfo.getUUID());
+            if (_listInfo.getCategoryUUID() != null)
+                categoryUUID = UUID.fromString(_listInfo.getCategoryUUID());
+        } catch (IllegalArgumentException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+        Date created;
+        if (_listInfo.getLastChanged() != null) {
+            created = DateHelper.parseDate(_listInfo.getLastChanged());
+            if (created == null || created.after(new Date(System.currentTimeMillis())))
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        } else
+            created = new Date(System.currentTimeMillis());
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IListController listController = ControllerFactory.getListController(manager);
+        try {
+            listController.add(_groupId, listUUID, _listInfo.getName(), categoryUUID, created);
+        } catch(ConflictException _e) {
+            return ResponseFactory.generateConflict(new Error().withMessage("A list with this " +
+                    "uuid already exists."));
+        }
+
+        return ResponseFactory.generateCreated(null);
     }
 
     /**

@@ -46,4 +46,10 @@ public interface ICategoryController {
      */
     void delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
             NotFoundException;
+
+    /**
+     * Finds a category by it's uuid and group.
+     * @return Either the found Category or null, if nothing found.
+     */
+    Category getCategoryByGroupAndUUID(int _groupId, UUID _catUUID);
 }

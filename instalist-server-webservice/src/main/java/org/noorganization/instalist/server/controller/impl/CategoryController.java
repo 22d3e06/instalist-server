@@ -97,12 +97,7 @@ class CategoryController implements ICategoryController {
         tx.commit();
     }
 
-    CategoryController(EntityManager _manager) {
-        this.mManager = _manager;
-    }
-
-    Category getCategoryByGroupAndUUID(int _groupId, UUID
-            _catUUID) {
+    public Category getCategoryByGroupAndUUID(int _groupId, UUID _catUUID) {
         TypedQuery<Category> categoryToChangeQuery = mManager.createQuery("select c from " +
                 "Category c where c.group = :group and c.UUID = :uuid", Category.class);
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
@@ -126,5 +121,9 @@ class CategoryController implements ICategoryController {
         if (delCat.size() == 0)
             return null;
         return delCat.get(0);
+    }
+
+    CategoryController(EntityManager _manager) {
+        this.mManager = _manager;
     }
 }
