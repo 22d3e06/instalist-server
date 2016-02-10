@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 
 import org.noorganization.instalist.comm.message.ListInfo;
 import org.noorganization.instalist.server.TokenSecured;
-import org.noorganization.instalist.server.message.ShoppingList;
 
 
 /**
@@ -49,8 +48,8 @@ public class ListResource {
     @TokenSecured
     @Path("{listuuid}")
     @Produces({ "application/json" })
-    public Response getListById(@PathParam("groupid") int _groupId,
-                                @PathParam("listuuid") String _listUUID) throws Exception {
+    public Response getList(@PathParam("groupid") int _groupId,
+                            @PathParam("listuuid") String _listUUID) throws Exception {
         return null;
     }
 
@@ -61,12 +60,13 @@ public class ListResource {
      * @param _listInfo Information for changing the list. Not all information needs to be set.
      */
     @PUT
+    @TokenSecured
     @Path("{listuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putListById(@PathParam("groupid") int _groupId,
-                         @PathParam("listuuid") String _listUUID,
-                         ListInfo _listInfo) throws Exception {
+    public Response putList(@PathParam("groupid") int _groupId,
+                     @PathParam("listuuid") String _listUUID,
+                     ListInfo _listInfo) throws Exception {
         return null;
     }
 
@@ -77,12 +77,12 @@ public class ListResource {
      * @param _listInfo Information for changing the list. Not all information needs to be set.
      */
     @POST
-    @Path("{listuuid}")
+    @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
-    public Response postListById(@PathParam("groupid") int _groupId,
-                                 @PathParam("listuuid") String _listUUID,
-                                 ListInfo _listInfo) throws Exception {
+    public Response postList(@PathParam("groupid") int _groupId,
+                             @PathParam("listuuid") String _listUUID,
+                             ListInfo _listInfo) throws Exception {
         return null;
     }
 
@@ -92,10 +92,11 @@ public class ListResource {
      * @param _listUUID The uuid of the list to update.
      */
     @DELETE
+    @TokenSecured
     @Path("{listuuid}")
     @Produces({ "application/json" })
-    Response deleteListById(@PathParam("groupid") int _groupId,
-                            @PathParam("listuuid") String _listUUID) throws Exception {
+    public Response deleteList(@PathParam("groupid") int _groupId,
+                        @PathParam("listuuid") String _listUUID) throws Exception {
         return null;
     }
 

@@ -9,6 +9,7 @@
 /.idea/inspectionProfiles
 /.idea/dataSources.*
 /.idea/artifacts
+/.idea/dataSources.xml
 
 # Locks and backups.
 *~

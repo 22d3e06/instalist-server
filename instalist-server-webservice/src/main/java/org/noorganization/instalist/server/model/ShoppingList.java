@@ -29,6 +29,11 @@ public class ShoppingList {
         mId = _id;
     }
 
+    public ShoppingList withId(int _id) {
+        setId(_id);
+        return this;
+    }
+
     @Column(name = "uuid", nullable = false, columnDefinition = "BINARY(16)")
     public UUID getUUID() {
         return mUUID;
@@ -36,6 +41,11 @@ public class ShoppingList {
 
     public void setUUID(UUID _UUID) {
         mUUID = _UUID;
+    }
+
+    public ShoppingList withUUID(UUID _uuid) {
+        setUUID(_uuid);
+        return this;
     }
 
     @ManyToOne
@@ -48,6 +58,11 @@ public class ShoppingList {
         mCategory = _category;
     }
 
+    public ShoppingList withCategrory(Category _category) {
+        setCategory(_category);
+        return this;
+    }
+
     @Column(name = "name", nullable = false)
     public String getName() {
         return mName;
@@ -55,6 +70,11 @@ public class ShoppingList {
 
     public void setName(String _name) {
         mName = _name;
+    }
+
+    public ShoppingList withName(String _name) {
+        setName(_name);
+        return this;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -69,6 +89,11 @@ public class ShoppingList {
         mUpdated = _updated;
     }
 
+    public ShoppingList withUpdated(Date _updated) {
+        setUpdated(_updated);
+        return this;
+    }
+
     @ManyToOne
     @JoinColumn(name = "devicegroup_id", nullable = false)
     public DeviceGroup getGroup() {
@@ -77,5 +102,10 @@ public class ShoppingList {
 
     public void setGroup(DeviceGroup _group) {
         mGroup = _group;
+    }
+
+    public ShoppingList withGroup(DeviceGroup _group) {
+        setGroup(_group);
+        return this;
     }
 }
