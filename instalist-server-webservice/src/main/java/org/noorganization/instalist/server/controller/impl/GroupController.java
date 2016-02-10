@@ -93,8 +93,6 @@ class GroupController implements IGroupController {
         Device toDelete = mManager.find(Device.class, _deviceId);
 
         mManager.getTransaction().begin();
-        mManager.remove(toDelete);
-
         TypedQuery<Device> otherDevicesQuery = mManager.createQuery("select d from Device d where" +
                 " d.group = :dgid and d.id <> :did", Device.class);
         otherDevicesQuery.setParameter("dgid", toDelete.getGroup());
@@ -103,6 +101,8 @@ class GroupController implements IGroupController {
         List<Device> otherDevices = otherDevicesQuery.getResultList();
         if (otherDevices.size() == 0)
             mManager.remove(toDelete.getGroup());
+        else
+            mManager.remove(toDelete);
         mManager.getTransaction().commit();
 
         IAuthController authController = ControllerFactory.getAuthController();
