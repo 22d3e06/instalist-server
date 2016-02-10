@@ -1,9 +1,12 @@
 
 package org.noorganization.instalist.server.api;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
@@ -14,6 +17,9 @@ import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IListController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.model.ShoppingList;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
@@ -38,8 +44,69 @@ public class ListResource {
     @TokenSecured
     @Produces({ "application/json" })
     public Response getLists(@PathParam("groupid") int _groupId,
-                             @QueryParam("changedSince") Date _changedSince) throws Exception {
-        return null;
+                             @QueryParam("changedsince") String _changedSince) throws Exception {
+        List<ShoppingList> foundLists;
+        List<DeletedObject> foundDeleted;
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+
+        if (_changedSince != null) {
+            Date changedSince = DateHelper.parseDate(_changedSince);
+            if (changedSince == null) {
+                manager.close();
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+            }
+
+            TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
+                            "ShoppingList sl where sl.group = :group and sl.updated > :updated",
+                    ShoppingList.class);
+            foundListsQuery.setParameter("group", group);
+            foundListsQuery.setParameter("updated", changedSince);
+            foundLists = foundListsQuery.getResultList();
+
+            TypedQuery<DeletedObject> foundDeletedListsQuery = manager.createQuery("select do from" +
+                            " DeletedObject do where do.group = :group and do.time > :updated and" +
+                            " do.type = :type",
+                    DeletedObject.class);
+            foundDeletedListsQuery.setParameter("group", group);
+            foundDeletedListsQuery.setParameter("updated", changedSince);
+            foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
+            foundDeleted = foundDeletedListsQuery.getResultList();
+        } else {
+            TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
+                            "ShoppingList sl where sl.group = :group", ShoppingList.class);
+            foundListsQuery.setParameter("group", group);
+            foundLists = foundListsQuery.getResultList();
+
+            TypedQuery<DeletedObject> foundDeletedListsQuery = manager.createQuery("select do from" +
+                            " DeletedObject do where do.group = :group and do.type = :type",
+                    DeletedObject.class);
+            foundDeletedListsQuery.setParameter("group", group);
+            foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
+            foundDeleted = foundDeletedListsQuery.getResultList();
+        }
+        manager.close();
+
+        ArrayList<ListInfo> rtn = new ArrayList<ListInfo>(foundLists.size() + foundDeleted.size());
+        for (ShoppingList current: foundLists) {
+            ListInfo toAdd = new ListInfo();
+            toAdd.setUUID(current.getUUID());
+            toAdd.setName(current.getName());
+            if (current.getCategory() != null)
+                toAdd.setCategoryUUID(current.getCategory().getUUID());
+            toAdd.setLastChanged(current.getUpdated());
+            toAdd.setDeleted(false);
+            rtn.add(toAdd);
+        }
+        for (DeletedObject current: foundDeleted) {
+            ListInfo toAdd = new ListInfo();
+            toAdd.setUUID(current.getUUID());
+            toAdd.setLastChanged(current.getTime());
+            toAdd.setDeleted(true);
+            rtn.add(toAdd);
+        }
+
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
@@ -53,7 +120,38 @@ public class ListResource {
     @Produces({ "application/json" })
     public Response getList(@PathParam("groupid") int _groupId,
                             @PathParam("listuuid") String _listUUID) throws Exception {
-        return null;
+        UUID listUUID;
+        try {
+            listUUID = UUID.fromString(_listUUID);
+        } catch (IllegalArgumentException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+        IListController listController = ControllerFactory.getListController(manager);
+
+        ShoppingList foundList = listController.getListByGroupAndUUID(group, listUUID);
+        if (foundList == null) {
+            if (listController.getDeletedListByGroupAndUUID(group, listUUID) == null) {
+                manager.close();
+                return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
+                        "list was not found."));
+            }
+            manager.close();
+            return ResponseFactory.generateGone(new Error().withMessage("The requested list was " +
+                    "deleted."));
+        }
+
+        ListInfo rtn = new ListInfo();
+        rtn.setUUID(foundList.getUUID());
+        rtn.setName(foundList.getName());
+        if (foundList.getCategory() != null)
+            rtn.setCategoryUUID(foundList.getCategory().getUUID());
+        rtn.setLastChanged(foundList.getUpdated());
+        rtn.setDeleted(false);
+
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
@@ -164,8 +262,29 @@ public class ListResource {
     @Path("{listuuid}")
     @Produces({ "application/json" })
     public Response deleteList(@PathParam("groupid") int _groupId,
-                        @PathParam("listuuid") String _listUUID) throws Exception {
-        return null;
+                               @PathParam("listuuid") String _listUUID) throws Exception {
+        UUID listUUID;
+        try {
+            listUUID = UUID.fromString(_listUUID);
+        } catch (IllegalArgumentException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IListController listController = ControllerFactory.getListController(manager);
+        try {
+            listController.delete(_groupId, listUUID);
+        } catch(NotFoundException _e) {
+            return ResponseFactory.generateNotFound(new Error().withMessage("A list with this " +
+                    "uuid was not found."));
+        } catch(GoneException _e) {
+            return ResponseFactory.generateGone(new Error().withMessage("A list with this " +
+                    "uuid was already deleted."));
+        } finally {
+            manager.close();
+        }
+
+        return ResponseFactory.generateOK(null);
     }
 
     private Date parseDate(ListInfo _info) {

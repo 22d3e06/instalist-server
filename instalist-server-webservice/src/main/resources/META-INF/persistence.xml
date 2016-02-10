@@ -22,8 +22,8 @@
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 
-            <!-- "update" is critical for production. switch to "verify" for real production !-->
-            <property name="hibernate.hbm2ddl.auto" value="verify" />
+            <!-- "update" is critical for production. switch to "validate" for real production !-->
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
         </properties>
 
     </persistence-unit>

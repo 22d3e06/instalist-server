@@ -1,6 +1,9 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.model.ShoppingList;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
@@ -48,4 +51,8 @@ public interface IListController {
      * @throws NotFoundException If list was not found.
      */
     void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException;
+
+    ShoppingList getListByGroupAndUUID(DeviceGroup _group, UUID _uuid);
+
+    DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

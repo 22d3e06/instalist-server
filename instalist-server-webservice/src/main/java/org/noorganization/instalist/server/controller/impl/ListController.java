@@ -1,5 +1,6 @@
 package org.noorganization.instalist.server.controller.impl;
 
+import org.noorganization.instalist.comm.message.ListInfo;
 import org.noorganization.instalist.server.controller.ICategoryController;
 import org.noorganization.instalist.server.controller.IListController;
 import org.noorganization.instalist.server.model.Category;
@@ -89,7 +90,28 @@ public class ListController implements IListController {
     }
 
     public void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException {
+        // TODO: also delete entries.
 
+        mManager.getTransaction().begin();
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        ShoppingList listToDelete = getListByGroupAndUUID(group, _listUUID);
+        if (listToDelete == null) {
+            if (getDeletedListByGroupAndUUID(group, _listUUID) != null) {
+                mManager.getTransaction().rollback();
+                throw new GoneException();
+            }
+            mManager.getTransaction().rollback();
+            throw new NotFoundException();
+        }
+
+        DeletedObject deletedList = new DeletedObject().withType(DeletedObject.Type.LIST);
+        deletedList.setUUID(_listUUID);
+        deletedList.setTime(new Date(System.currentTimeMillis()));
+        deletedList.setGroup(group);
+        mManager.persist(deletedList);
+        mManager.remove(listToDelete);
+
+        mManager.getTransaction().commit();
     }
 
     public ShoppingList getListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
@@ -103,7 +125,7 @@ public class ListController implements IListController {
         return lists.get(0);
     }
 
-    DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
+    public DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> listQuery = mManager.createQuery("select do from " +
                 "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type",
                 DeletedObject.class);

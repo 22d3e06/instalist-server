@@ -156,7 +156,7 @@ public class ListResourceTest extends JerseyTest {
         assertEquals(200, okResponse2.getStatus());
         ListInfo[] oneListInfo = okResponse2.readEntity(ListInfo[].class);
         assertEquals(1, oneListInfo.length);
-        assertEquals(mCat.getUUID(), UUID.fromString(oneListInfo[0].getUUID()));
+        assertEquals(mListWC.getUUID(), UUID.fromString(oneListInfo[0].getUUID()));
         assertEquals("list1", oneListInfo[0].getName());
         assertEquals(mCat.getUUID(), UUID.fromString(oneListInfo[0].getCategoryUUID()));
         assertFalse(oneListInfo[0].getDeleted());
