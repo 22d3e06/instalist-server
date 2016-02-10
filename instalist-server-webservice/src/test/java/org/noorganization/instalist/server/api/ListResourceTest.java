@@ -67,7 +67,7 @@ public class ListResourceTest extends JerseyTest {
         mListWOC = new ShoppingList().withGroup(mGroup).withName("list2").withUUID(UUID.
                 randomUUID());
         mDeletedList = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.CATEGORY);
+                withType(DeletedObject.Type.LIST);
         mNAGroup = new DeviceGroup();
         mNAList = new ShoppingList().withGroup(mNAGroup).withName("list3").withUUID(UUID.
                 randomUUID());
@@ -250,40 +250,40 @@ public class ListResourceTest extends JerseyTest {
         ListInfo updatedList = new ListInfo().withDeleted(false).withName("changedlist");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().post(Entity.json(updatedList));
+                mListWC.getUUID().toString())).request().put(Entity.json(updatedList));
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(401, wrongAuthResponse.getStatus());
 
         Response wrongGroupResponse = target(String.format(url, mNAGroup.getId(),
                 mNAList.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(401, wrongGroupResponse.getStatus());
 
         Response wrongListResponse = target(String.format(url, mGroup.getId(),
                 mNAList.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(404, wrongListResponse.getStatus());
 
         Response goneResponse = target(String.format(url, mGroup.getId(),
                 mDeletedList.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(410, goneResponse.getStatus());
         mManager.refresh(mListWC);
         assertEquals("list1", mListWC.getName());
 
         updatedList.setLastChanged(new Date(preUpdate.getTime() - 10000));
         Response conflictResponse = target(String.format(url, mGroup.getId(),
-                mDeletedList.getUUID().toString())).request().
+                mListWC.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(409, conflictResponse.getStatus());
         mManager.refresh(mListWC);
         assertEquals("list1", mListWC.getName());
@@ -292,7 +292,7 @@ public class ListResourceTest extends JerseyTest {
         Response okResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                post(Entity.json(updatedList));
+                put(Entity.json(updatedList));
         assertEquals(200, okResponse.getStatus());
         mManager.refresh(mListWC);
         assertEquals("changedlist", mListWC.getName());

@@ -36,7 +36,8 @@ public interface IListController {
      * @throws GoneException If list was deleted before.
      * @throws NotFoundException If list was not found.
      */
-    void update(int _groupId, UUID _listUUID, String _name, UUID _category, Date _lastChanged)
+    void update(int _groupId, UUID _listUUID, String _name, UUID _category,
+                boolean _removeCategory, Date _lastChanged)
             throws ConflictException, GoneException, NotFoundException;
 
     /**
