@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -86,6 +87,10 @@ public class ListEntry {
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false)
     public Date getUpdated() {
+        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
+            Timestamp current = (Timestamp) mUpdated;
+            return new Date(current.getTime() + (current.getNanos() / 1000000));
+        }
         return mUpdated;
     }
 

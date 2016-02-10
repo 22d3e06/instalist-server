@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -55,6 +56,10 @@ public class DeviceGroup {
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON " +
             "UPDATE CURRENT_TIMESTAMP(3)", insertable = false, updatable = false)
     public Date getUpdated() {
+        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
+            Timestamp current = (Timestamp) mUpdated;
+            return new Date(current.getTime() + (current.getNanos() / 1000000));
+        }
         return mUpdated;
     }
 
@@ -72,6 +77,10 @@ public class DeviceGroup {
     @Column(name = "created", columnDefinition="TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             insertable = false, updatable = false)
     public Date getCreated() {
+        if (mCreated != null && mCreated.getClass() == Timestamp.class) {
+            Timestamp current = (Timestamp) mCreated;
+            return new Date(current.getTime() + (current.getNanos() / 1000000));
+        }
         return mCreated;
     }
 

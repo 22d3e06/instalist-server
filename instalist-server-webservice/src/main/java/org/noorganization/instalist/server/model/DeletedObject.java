@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
@@ -61,6 +62,12 @@ public class DeletedObject {
     @Column(name = "time", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false, insertable = false, updatable = false)
     public Date getTime() {
+        if (mTime != null && mTime.getClass() == Timestamp.class) {
+            Timestamp current = (Timestamp) mTime;
+            Date rtn = new Date(current.getTime() + (current.getNanos() / 1000000));
+            return rtn;
+        }
+
         return mTime;
     }
 
