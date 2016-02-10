@@ -288,6 +288,7 @@ public class ListResourceTest extends JerseyTest {
         mManager.refresh(mListWC);
         assertEquals("list1", mListWC.getName());
 
+        Thread.sleep(1000);
         updatedList.setLastChanged(new Date(System.currentTimeMillis()));
         Response okResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().

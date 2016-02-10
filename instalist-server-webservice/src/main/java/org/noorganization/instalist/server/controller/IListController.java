@@ -7,6 +7,7 @@ import org.noorganization.instalist.server.model.ShoppingList;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
+import javax.ws.rs.BadRequestException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public interface IListController {
      */
     void update(int _groupId, UUID _listUUID, String _name, UUID _category,
                 boolean _removeCategory, Date _lastChanged)
-            throws ConflictException, GoneException, NotFoundException;
+            throws ConflictException, GoneException, NotFoundException, BadRequestException;
 
     /**
      * Deletes a list and all entries.

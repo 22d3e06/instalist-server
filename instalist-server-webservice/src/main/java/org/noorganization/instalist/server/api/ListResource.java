@@ -195,14 +195,16 @@ public class ListResource {
             listController.update(_groupId, listUUID, _listInfo.getName(), categoryUUID,
                     removeCategory, updated);
         } catch(ConflictException _e) {
-            return ResponseFactory.generateConflict(new Error().withMessage("A list with this " +
-                    "uuid already exists."));
+            return ResponseFactory.generateConflict(new Error().withMessage("The new data is in " +
+                    "conflict with a saved list."));
         } catch(NotFoundException _e) {
             return ResponseFactory.generateNotFound(new Error().withMessage("The list was not " +
                     "found."));
         } catch(GoneException _e) {
             return ResponseFactory.generateGone(new Error().withMessage("The list was " +
                     "deleted already."));
+        } catch(BadRequestException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
         } finally {
             manager.close();
         }

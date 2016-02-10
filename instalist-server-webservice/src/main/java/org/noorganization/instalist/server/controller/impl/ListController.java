@@ -12,6 +12,7 @@ import org.noorganization.instalist.server.support.exceptions.GoneException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +55,7 @@ public class ListController implements IListController {
 
     public void update(int _groupId, UUID _listUUID, String _name, UUID _category,
                        boolean _removeCategory, Date _lastChanged)
-            throws ConflictException, GoneException, NotFoundException {
+            throws ConflictException, GoneException, NotFoundException, BadRequestException {
         ICategoryController categoryController = ControllerFactory.getCategoryController(mManager);
 
         EntityTransaction tx = mManager.getTransaction();
@@ -139,12 +140,13 @@ public class ListController implements IListController {
     }
 
     private Category getCategory(int _groupId, UUID _category,
-                                 ICategoryController _categoryController, EntityTransaction _tx) {
+                                 ICategoryController _categoryController, EntityTransaction _tx)
+            throws BadRequestException  {
         Category cat;
         cat = _categoryController.getCategoryByGroupAndUUID(_groupId, _category);
         if (cat == null) {
             _tx.rollback();
-            throw new ConflictException();
+            throw new BadRequestException();
         }
         return cat;
     }
