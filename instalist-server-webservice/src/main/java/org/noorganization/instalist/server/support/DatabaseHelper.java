@@ -35,6 +35,8 @@ public class DatabaseHelper {
      * @param _jpaInstance The JPA-Persistence-Instance.
      */
     public void initialize(String _jpaInstance) {
+        if (mFactory != null)
+            mFactory.close();
         mFactory = Persistence.createEntityManagerFactory(_jpaInstance);
     }
 
