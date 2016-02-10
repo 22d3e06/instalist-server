@@ -32,9 +32,10 @@ public class ListController implements IListController {
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         ShoppingList found = getListByGroupAndUUID(group, _listUUID);
-        if (found != null) {
+        DeletedObject deletedList = getDeletedListByGroupAndUUID(group, _listUUID);
+        if (found != null || (deletedList != null && deletedList.getTime().after(_lastChanged))) {
             tx.rollback();
-            throw new NotFoundException();
+            throw new ConflictException();
         }
         Category cat = null;
         if (_category != null) {
@@ -61,7 +62,6 @@ public class ListController implements IListController {
         ShoppingList listToUpdate = getListByGroupAndUUID(group, _listUUID);
         if (listToUpdate == null) {
             if (getDeletedListByGroupAndUUID(group, _listUUID) != null) {
-                System.err.println("List " + _listUUID.toString() + " was deleted.");
                 tx.rollback();
                 throw new GoneException();
             }
