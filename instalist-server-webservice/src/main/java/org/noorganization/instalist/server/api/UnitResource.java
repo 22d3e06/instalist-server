@@ -104,8 +104,8 @@ public class UnitResource {
     @TokenSecured
     @Path("{unituuid}")
     @Produces({ "application/json" })
-    Response deleteUnitById(@PathParam("groupid") int _groupId,
-                            @PathParam("unituuid") String _unitUUID) throws Exception {
+    public Response deleteUnit(@PathParam("groupid") int _groupId,
+                               @PathParam("unituuid") String _unitUUID) throws Exception {
         return null;
     }
 

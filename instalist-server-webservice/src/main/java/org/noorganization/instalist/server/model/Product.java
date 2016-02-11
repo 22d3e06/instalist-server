@@ -17,6 +17,12 @@ public class Product {
     private Date        mUpdated;
     private DeviceGroup mGroup;
 
+    public Product() {
+        mUpdated       = new Date(System.currentTimeMillis());
+        mDefaultAmount = 1.0f;
+        mStepAmount    = 1.0f;
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -28,6 +34,11 @@ public class Product {
         mId = _id;
     }
 
+    public Product withId(int _id) {
+        setId(_id);
+        return this;
+    }
+
     @Column(name = "uuid", nullable = false)
     public UUID getUUID() {
         return mUUID;
@@ -37,6 +48,11 @@ public class Product {
         mUUID = _UUID;
     }
 
+    public Product withUUID(UUID _uuid) {
+        setUUID(_uuid);
+        return this;
+    }
+
     @Column(name = "name", nullable = false)
     public String getName() {
         return mName;
@@ -44,6 +60,11 @@ public class Product {
 
     public void setName(String _name) {
         mName = _name;
+    }
+
+    public Product withName(String _name) {
+        setName(_name);
+        return this;
     }
 
     @ManyToOne
@@ -56,6 +77,11 @@ public class Product {
         mUnit = _unit;
     }
 
+    public Product withUnit(Unit _unit) {
+        setUnit(_unit);
+        return this;
+    }
+
     @Column(name = "defaultamount", nullable = false)
     public float getDefaultAmount() {
         return mDefaultAmount;
@@ -65,6 +91,11 @@ public class Product {
         mDefaultAmount = _defaultAmount;
     }
 
+    public Product withDefaultAmount(float _defaultAmount) {
+        setDefaultAmount(_defaultAmount);
+        return this;
+    }
+
     @Column(name = "stepamount", nullable = false)
     public float getStepAmount() {
         return mStepAmount;
@@ -72,6 +103,11 @@ public class Product {
 
     public void setStepAmount(float _stepAmount) {
         mStepAmount = _stepAmount;
+    }
+
+    public Product withStepAmount(float _stepAmount) {
+        setStepAmount(_stepAmount);
+        return this;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -89,6 +125,11 @@ public class Product {
         mUpdated = _updated;
     }
 
+    public Product withUpdated(Date _updated) {
+        setUpdated(_updated);
+        return this;
+    }
+
     @ManyToOne
     @JoinColumn(name = "devicegroup_id", nullable = false)
     public DeviceGroup getGroup() {
@@ -97,5 +138,10 @@ public class Product {
 
     public void setGroup(DeviceGroup _group) {
         mGroup = _group;
+    }
+
+    public Product withGroup(DeviceGroup _group) {
+        setGroup(_group);
+        return this;
     }
 }

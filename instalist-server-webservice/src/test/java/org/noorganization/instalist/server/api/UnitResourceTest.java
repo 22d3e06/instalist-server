@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.noorganization.instalist.comm.message.ListInfo;
+import org.noorganization.instalist.comm.message.UnitInfo;
 import org.noorganization.instalist.comm.support.DateHelper;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
@@ -98,8 +99,8 @@ public class UnitResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testGetLists() throws Exception {
-        String url = "/groups/%d/lists";
+    public void testGetUnits() throws Exception {
+        String url = "/groups/%d/units";
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().get();
         assertEquals(401, notAuthorizedResponse.getStatus());
@@ -115,55 +116,47 @@ public class UnitResourceTest extends JerseyTest {
         Response okResponse1 = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse1.getStatus());
-        ListInfo[] allListInfo = okResponse1.readEntity(ListInfo[].class);
-        assertEquals(3, allListInfo.length);
-        for(ListInfo current: allListInfo) {
-            if (mListWC.getUUID().equals(UUID.fromString(current.getUUID()))) {
-                assertEquals("list1", current.getName());
-                assertEquals(mCat.getUUID(), UUID.fromString(current.getCategoryUUID()));
-                assertNotNull(current.getLastChanged());
-                assertFalse(current.getDeleted());
-            } else if (mUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
-                assertEquals("list2", current.getName());
-                assertNull(current.getCategoryUUID());
+        UnitInfo[] allUnitInfo = okResponse1.readEntity(UnitInfo[].class);
+        assertEquals(3, allUnitInfo.length);
+        for(UnitInfo current: allUnitInfo) {
+            if (mUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
+                assertEquals("unit1", current.getName());
                 assertNotNull(current.getLastChanged());
                 assertFalse(current.getDeleted());
             } else if (mDeletedUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
-                assertNull(current.getCategoryUUID());
                 assertNotNull(current.getLastChanged());
                 assertTrue(current.getDeleted());
             } else
-                fail("Unexpected list.");
+                fail("Unexpected unit.");
         }
 
         Thread.sleep(1000);
         mManager.getTransaction().begin();
-        mListWC.setUpdated(new Date(System.currentTimeMillis()));
+        mUnit.setUpdated(new Date(System.currentTimeMillis()));
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
                 queryParam("changedsince", DateHelper.writeDate(new Date(System.
                         currentTimeMillis() - 500))).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse2.getStatus());
-        ListInfo[] oneListInfo = okResponse2.readEntity(ListInfo[].class);
-        assertEquals(1, oneListInfo.length);
-        assertEquals(mListWC.getUUID(), UUID.fromString(oneListInfo[0].getUUID()));
-        assertEquals("list1", oneListInfo[0].getName());
-        assertEquals(mCat.getUUID(), UUID.fromString(oneListInfo[0].getCategoryUUID()));
-        assertFalse(oneListInfo[0].getDeleted());
+        UnitInfo[] oneUnitInfo = okResponse2.readEntity(UnitInfo[].class);
+        assertEquals(1, oneUnitInfo.length);
+        assertEquals(mUnit.getUUID(), UUID.fromString(oneUnitInfo[0].getUUID()));
+        assertEquals("unit1", oneUnitInfo[0].getName());
+        assertFalse(oneUnitInfo[0].getDeleted());
     }
 
     @Test
-    public void testGetList() throws Exception {
-        String url = "/groups/%d/lists/%s";
+    public void testGetUnit() throws Exception {
+        String url = "/groups/%d/units/%s";
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().get();
+                mUnit.getUUID().toString())).request().get();
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").get();
         assertEquals(401, wrongAuthResponse.getStatus());
 
@@ -183,70 +176,68 @@ public class UnitResourceTest extends JerseyTest {
         assertEquals(410, goneResponse.getStatus());
 
         Response okResponse1 = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse1.getStatus());
-        ListInfo returnedListInfo = okResponse1.readEntity(ListInfo.class);
-        assertNotNull(returnedListInfo);
-        assertEquals(mListWC.getUUID(), UUID.fromString(returnedListInfo.getUUID()));
-        assertEquals("list1", returnedListInfo.getName());
-        assertEquals(mCat.getUUID(), UUID.fromString(returnedListInfo.getCategoryUUID()));
-        assertNotNull(returnedListInfo.getLastChanged());
-        assertFalse(returnedListInfo.getDeleted());
+        UnitInfo returnedUnitInfo = okResponse1.readEntity(UnitInfo.class);
+        assertNotNull(returnedUnitInfo);
+        assertEquals(mUnit.getUUID(), UUID.fromString(returnedUnitInfo.getUUID()));
+        assertEquals("unit1", returnedUnitInfo.getName());
+        assertNotNull(returnedUnitInfo.getLastChanged());
+        assertFalse(returnedUnitInfo.getDeleted());
     }
 
     @Test
-    public void testPostList() throws Exception {
-        String url = "/groups/%d/lists";
-        ListInfo newList = new ListInfo().withUUID(mListWC.getUUID()).withName("list4");
+    public void testPostUnit() throws Exception {
+        String url = "/groups/%d/units";
+        UnitInfo newUnit = new UnitInfo().withUUID(mUnit.getUUID()).withName("unit4");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().
-                post(Entity.json(newList));
+                post(Entity.json(newUnit));
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").
-                post(Entity.json(newList));
+                post(Entity.json(newUnit));
         assertEquals(401, wrongAuthResponse.getStatus());
 
         Response wrongGroupResponse = target(String.format(url, mNAGroup.getId())).request().
-                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newList));
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newUnit));
         assertEquals(401, wrongGroupResponse.getStatus());
 
         Response goneResponse = target(String.format(url, mGroup.getId())).request().
-                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newList));
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newUnit));
         assertEquals(409, goneResponse.getStatus());
-        mManager.refresh(mListWC);
-        assertEquals("list1", mListWC.getName());
+        mManager.refresh(mUnit);
+        assertEquals("unit1", mUnit.getName());
 
-        newList.setUUID(UUID.randomUUID());
+        newUnit.setUUID(UUID.randomUUID());
         Response okResponse = target(String.format(url, mGroup.getId())).request().
-                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newList));
+                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newUnit));
         assertEquals(201, okResponse.getStatus());
-        TypedQuery<ShoppingList> savedListQuery = mManager.createQuery("select sl from " +
-                "ShoppingList sl where sl.group = :group and sl.UUID = :uuid", ShoppingList.class);
-        savedListQuery.setParameter("group", mGroup);
-        savedListQuery.setParameter("uuid", UUID.fromString(newList.getUUID()));
-        List<ShoppingList> savedLists = savedListQuery.getResultList();
-        assertEquals(1, savedLists.size());
-        assertEquals("list4", savedLists.get(0).getName());
-        assertNull(savedLists.get(0).getCategory());
+        TypedQuery<Unit> savedUnitQuery = mManager.createQuery("select u from " +
+                "Unit u where u.group = :group and u.UUID = :uuid", Unit.class);
+        savedUnitQuery.setParameter("group", mGroup);
+        savedUnitQuery.setParameter("uuid", UUID.fromString(newUnit.getUUID()));
+        List<Unit> savedUnits = savedUnitQuery.getResultList();
+        assertEquals(1, savedUnits.size());
+        assertEquals("unit4", savedUnits.get(0).getName());
         assertTrue(new Date(System.currentTimeMillis() - 10000).before(
-                savedLists.get(0).getUpdated()));
+                savedUnits.get(0).getUpdated()));
     }
 
     @Test
-    public void testPutList() throws Exception {
-        String url = "/groups/%d/lists/%s";
-        Date preUpdate = mListWC.getUpdated();
-        ListInfo updatedList = new ListInfo().withDeleted(false).withName("changedlist");
+    public void testPutUnit() throws Exception {
+        String url = "/groups/%d/units/%s";
+        Date preUpdate = mUnit.getUpdated();
+        ListInfo updatedList = new ListInfo().withDeleted(false).withName("changedunit");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().put(Entity.json(updatedList));
+                mUnit.getUUID().toString())).request().put(Entity.json(updatedList));
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").
                 put(Entity.json(updatedList));
         assertEquals(401, wrongAuthResponse.getStatus());
@@ -268,43 +259,42 @@ public class UnitResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(updatedList));
         assertEquals(410, goneResponse.getStatus());
-        mManager.refresh(mListWC);
-        assertEquals("list1", mListWC.getName());
+        mManager.refresh(mUnit);
+        assertEquals("unit1", mUnit.getName());
 
         updatedList.setLastChanged(new Date(preUpdate.getTime() - 10000));
         Response conflictResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(updatedList));
         assertEquals(409, conflictResponse.getStatus());
-        mManager.refresh(mListWC);
-        assertEquals("list1", mListWC.getName());
+        mManager.refresh(mUnit);
+        assertEquals("unit1", mUnit.getName());
 
         Thread.sleep(1000);
         updatedList.setLastChanged(new Date(System.currentTimeMillis()));
         Response okResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(updatedList));
         assertEquals(200, okResponse.getStatus());
-        mManager.refresh(mListWC);
-        assertEquals("changedlist", mListWC.getName());
-        assertEquals(mCat, mListWC.getCategory());
-        assertTrue(preUpdate.getTime() + " is not before " + mListWC.getUpdated().getTime(),
-                preUpdate.before(mListWC.getUpdated()));
+        mManager.refresh(mUnit);
+        assertEquals("changedunit", mUnit.getName());
+        assertTrue(preUpdate.getTime() + " is not before " + mUnit.getUpdated().getTime(),
+                preUpdate.before(mUnit.getUpdated()));
     }
 
     @Test
-    public void testDeleteList() throws Exception {
-        String url = "/groups/%d/lists/%s";
-        Date preDelete = mListWC.getUpdated();
+    public void testDeleteUnit() throws Exception {
+        String url = "/groups/%d/units/%s";
+        Date preDelete = mUnit.getUpdated();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().delete();
+                mUnit.getUUID().toString())).request().delete();
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").delete();
         assertEquals(401, wrongAuthResponse.getStatus());
 
@@ -319,23 +309,24 @@ public class UnitResourceTest extends JerseyTest {
         assertEquals(404, wrongListResponse.getStatus());
 
         Response okResponse = target(String.format(url, mGroup.getId(),
-                mListWC.getUUID().toString())).request().
+                mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(200, okResponse.getStatus());
 
-        TypedQuery<ShoppingList> savedListQuery = mManager.createQuery("select sl from " +
-                "ShoppingList sl where sl.group = :group and sl.UUID = :uuid", ShoppingList.class);
-        savedListQuery.setParameter("group", mGroup);
-        savedListQuery.setParameter("uuid", mListWC.getUUID());
-        List<ShoppingList> savedLists = savedListQuery.getResultList();
-        assertEquals(0, savedLists.size());
-        TypedQuery<DeletedObject> savedDeletedListQuery = mManager.createQuery("select do from " +
-                "DeletedObject do where do.group = :group and do.UUID = :uuid", DeletedObject.class);
-        savedDeletedListQuery.setParameter("group", mGroup);
-        savedDeletedListQuery.setParameter("uuid", mListWC.getUUID());
-        List<DeletedObject> savedDeletedLists = savedDeletedListQuery.getResultList();
-        assertEquals(1, savedDeletedLists.size());
-        assertTrue(preDelete.before(savedDeletedLists.get(0).getTime()));
-
+        TypedQuery<Unit> savedUnitQuery = mManager.createQuery("select u from Unit u where " +
+                "u.group = :group and u.UUID = :uuid", Unit.class);
+        savedUnitQuery.setParameter("group", mGroup);
+        savedUnitQuery.setParameter("uuid", mUnit.getUUID());
+        List<Unit> savedUnits = savedUnitQuery.getResultList();
+        assertEquals(0, savedUnits.size());
+        TypedQuery<DeletedObject> savedDeletedUnitQuery = mManager.createQuery("select do from " +
+                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type",
+                DeletedObject.class);
+        savedDeletedUnitQuery.setParameter("group", mGroup);
+        savedDeletedUnitQuery.setParameter("uuid", mUnit.getUUID());
+        savedDeletedUnitQuery.setParameter("type", DeletedObject.Type.UNIT);
+        List<DeletedObject> savedDeletedUnits = savedDeletedUnitQuery.getResultList();
+        assertEquals(1, savedDeletedUnits.size());
+        assertTrue(preDelete.before(savedDeletedUnits.get(0).getTime()));
     }
 }

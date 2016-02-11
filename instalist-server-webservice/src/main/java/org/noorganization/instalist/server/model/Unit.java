@@ -1,7 +1,6 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
-import javax.ws.rs.Produces;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
@@ -18,6 +17,10 @@ public class Unit {
 
     private Set<Product> mProducts;
 
+    public Unit() {
+        mUpdated = new Date(System.currentTimeMillis());
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "id")
@@ -29,6 +32,11 @@ public class Unit {
         mId = _id;
     }
 
+    public Unit withId(int _id) {
+        setId(_id);
+        return this;
+    }
+
     @Column(name = "uuid", columnDefinition = "BINARY(16)", nullable = false)
     public UUID getUUID() {
         return mUUID;
@@ -38,6 +46,11 @@ public class Unit {
         mUUID = _UUID;
     }
 
+    public Unit withUUID(UUID _uuid) {
+        setUUID(_uuid);
+        return this;
+    }
+
     @Column(name = "name", nullable = false)
     public String getName() {
         return mName;
@@ -45,6 +58,11 @@ public class Unit {
 
     public void setName(String _name) {
         mName = _name;
+    }
+
+    public Unit withName(String _name) {
+        setName(_name);
+        return this;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -62,6 +80,11 @@ public class Unit {
         mUpdated = _updated;
     }
 
+    public Unit withUpdated(Date _updated) {
+        setUpdated(_updated);
+        return this;
+    }
+
     @ManyToOne
     @JoinColumn(name = "devicegroup_id", nullable = false)
     public DeviceGroup getGroup() {
@@ -70,6 +93,11 @@ public class Unit {
 
     public void setGroup(DeviceGroup _group) {
         mGroup = _group;
+    }
+
+    public Unit withGroup(DeviceGroup _group) {
+        setGroup(_group);
+        return this;
     }
 
     @OneToMany(mappedBy = "unit")
