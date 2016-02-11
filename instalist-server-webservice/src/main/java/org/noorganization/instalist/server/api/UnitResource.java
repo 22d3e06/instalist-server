@@ -1,7 +1,6 @@
 
 package org.noorganization.instalist.server.api;
 
-import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,15 +11,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.noorganization.instalist.server.message.Unit;
+
+import org.noorganization.instalist.comm.message.UnitInfo;
+import org.noorganization.instalist.server.TokenSecured;
 
 
 /**
  * Collection of available units.
  * 
  */
-@Path("units")
-public interface UnitResource {
+@Path("/groups/{groupid}/units")
+public class UnitResource {
 
 
     /**
@@ -31,8 +32,12 @@ public interface UnitResource {
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    Response getUnits(@QueryParam("changedSince") Date changedSince) throws Exception;
+    public Response getUnits(@PathParam("groupid") int _groupId,
+                             @QueryParam("changedsince") String changedSince) throws Exception {
+        return null;
+    }
 
     /**
      * Returns the unit.
@@ -42,9 +47,13 @@ public interface UnitResource {
      *     
      */
     @GET
-    @Path("{unitId}")
+    @TokenSecured
+    @Path("{unituuid}")
     @Produces({ "application/json" })
-    Response getUnitById(@PathParam("unitId") String unitId) throws Exception;
+    public Response getUnitById(@PathParam("groupid") int _groupId,
+                                @PathParam("unituuid") String _unitUUID) throws Exception {
+        return null;
+    }
 
     /**
      * Updates the unit.
@@ -56,10 +65,15 @@ public interface UnitResource {
      *      e.g. examples/unit.example
      */
     @PUT
-    @Path("{unitId}")
+    @TokenSecured
+    @Path("{unituuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putUnitById(@PathParam("unitId") String unitId, Unit entity) throws Exception;
+    public Response putUnitById(@PathParam("groupid") int _groupId,
+                                @PathParam("unituuid") String _unitUUID,
+                                UnitInfo _entity) throws Exception {
+        return null;
+    }
 
     /**
      * Creates the unit.
@@ -71,10 +85,13 @@ public interface UnitResource {
      *      e.g. examples/unit.example
      */
     @POST
-    @Path("{unitId}")
+    @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postUnitById(@PathParam("unitId") String unitId, Unit entity) throws Exception;
+    public Response postUnit(@PathParam("groupid") int _groupId, UnitInfo _entity) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Deletes the unit.
@@ -84,8 +101,12 @@ public interface UnitResource {
      *     
      */
     @DELETE
-    @Path("{unitId}")
+    @TokenSecured
+    @Path("{unituuid}")
     @Produces({ "application/json" })
-    Response deleteUnitById(@PathParam("unitId") String unitId) throws Exception;
+    Response deleteUnitById(@PathParam("groupid") int _groupId,
+                            @PathParam("unituuid") String _unitUUID) throws Exception {
+        return null;
+    }
 
 }
