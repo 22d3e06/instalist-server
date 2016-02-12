@@ -6,7 +6,7 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import org.noorganization.instalist.comm.support.DateHelper;
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.comm.message.CategoryInfo;
@@ -21,6 +21,8 @@ import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,9 +52,11 @@ public class CategoriesResource {
             throws Exception {
         Date changedSince = null;
         if (_changedSince != null) {
-            changedSince = DateHelper.parseDate(_changedSince);
-            if (changedSince == null)
+            try {
+                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0));
+            } catch (ParseException _e) {
                 return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            }
         }
 
         List<Category> categories;
@@ -200,12 +204,9 @@ public class CategoriesResource {
                 (_entity.getDeleted() != null && _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
 
-        Date changedDate;
-        if (_entity.getLastChanged() != null) {
-            changedDate = DateHelper.parseDate(_entity.getLastChanged());
-            if (changedDate == null || changedDate.after(new Date())) {
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
-            }
+        Date changedDate = _entity.getLastChanged();
+        if (_entity.getLastChanged() != null && changedDate.after(new Date())) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
         } else
             changedDate = new Date(System.currentTimeMillis());
         UUID categoryUUID;
@@ -256,11 +257,9 @@ public class CategoriesResource {
                 _entity.getName().length() == 0 || (_entity.getDeleted() != null &&
                 _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
-        Date lastChanged;
-        if (_entity.getLastChanged() != null) {
-            lastChanged = DateHelper.parseDate(_entity.getLastChanged());
-            if (lastChanged == null)
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        Date lastChanged = _entity.getLastChanged();
+        if (lastChanged != null && lastChanged.after(new Date(System.currentTimeMillis()))) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
         } else
             lastChanged = new Date(System.currentTimeMillis());
 

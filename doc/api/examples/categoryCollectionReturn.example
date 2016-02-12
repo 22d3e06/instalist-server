@@ -2,11 +2,11 @@
   {
     "uuid" : "a7b3d2b4-5f5a-461f-a80d-04e48af0b241",
     "name" : "test_Category1",
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   },
   {
     "uuid" : "340fa987-72e7-4939-b2da-138ffc2ae5e0",
     "name" : "test_Category2",
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   }
 ]

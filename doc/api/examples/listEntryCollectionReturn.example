@@ -4,13 +4,13 @@
     "shoppingListuuid" : "1634a3d5-e240-4039-b265-653d20b679e0",
     "productuuid" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
     "amount" : 0.5,
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   },
   {
     "uuid" : "3d3f23d4-823e-4376-82e9-b7c5d0a6e1d8",
     "shoppingListuuid" : "7669efef-264c-4801-8132-221451b95831",
     "productuuid" : "de14221d-6958-4cf1-b099-7c6a67b2125d",
     "amount" : 5.5,
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   }
 ]

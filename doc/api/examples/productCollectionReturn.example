@@ -5,7 +5,7 @@
       "unituuid" : "079d3bc8-ee0c-47de-a9c5-bb673e980892",
       "defaultAmount" : 1.5,
       "stepAmount" : 0.5,
-      "lastchanged": "2016-01-19T11:54:07+01:00"
+      "lastchanged": "2016-01-19T11:54:07+0100"
   },
   {
       "uuid" : "de14221d-6958-4cf1-b099-7c6a67b2125d",
@@ -13,6 +13,6 @@
       "unituuid" : "7359a706-3303-497e-b6bb-11f34e73e7c4",
       "defaultAmount" : 0.75,
       "stepAmount" : 0.5,
-      "lastchanged": "2016-01-19T11:54:07+01:00"
+      "lastchanged": "2016-01-19T11:54:07+0100"
   }
 ]

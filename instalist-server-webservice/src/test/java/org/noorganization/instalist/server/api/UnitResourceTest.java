@@ -1,14 +1,13 @@
 package org.noorganization.instalist.server.api;
 
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.noorganization.instalist.comm.message.ListInfo;
 import org.noorganization.instalist.comm.message.UnitInfo;
-import org.noorganization.instalist.comm.support.DateHelper;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
@@ -27,9 +26,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by damihe on 10.02.16.
- */
 public class UnitResourceTest extends JerseyTest {
 
     EntityManager mManager;
@@ -117,15 +113,15 @@ public class UnitResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse1.getStatus());
         UnitInfo[] allUnitInfo = okResponse1.readEntity(UnitInfo[].class);
-        assertEquals(3, allUnitInfo.length);
+        assertEquals(2, allUnitInfo.length);
         for(UnitInfo current: allUnitInfo) {
             if (mUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertEquals("unit1", current.getName());
-                assertNotNull(current.getLastChanged());
+                assertEquals(mUnit.getUpdated(), current.getLastChanged());
                 assertFalse(current.getDeleted());
             } else if (mDeletedUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
-                assertNotNull(current.getLastChanged());
+                assertEquals(mDeletedUnit.getTime(), current.getLastChanged());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected unit.");
@@ -136,8 +132,8 @@ public class UnitResourceTest extends JerseyTest {
         mUnit.setUpdated(new Date(System.currentTimeMillis()));
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
-                queryParam("changedsince", DateHelper.writeDate(new Date(System.
-                        currentTimeMillis() - 500))).request().
+                queryParam("changedsince", ISO8601Utils.format(new Date(System.
+                        currentTimeMillis() - 500), true)).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse2.getStatus());
         UnitInfo[] oneUnitInfo = okResponse2.readEntity(UnitInfo[].class);
@@ -183,7 +179,7 @@ public class UnitResourceTest extends JerseyTest {
         assertNotNull(returnedUnitInfo);
         assertEquals(mUnit.getUUID(), UUID.fromString(returnedUnitInfo.getUUID()));
         assertEquals("unit1", returnedUnitInfo.getName());
-        assertNotNull(returnedUnitInfo.getLastChanged());
+        assertEquals(mUnit.getUpdated(), returnedUnitInfo.getLastChanged());
         assertFalse(returnedUnitInfo.getDeleted());
     }
 
@@ -230,7 +226,7 @@ public class UnitResourceTest extends JerseyTest {
     public void testPutUnit() throws Exception {
         String url = "/groups/%d/units/%s";
         Date preUpdate = mUnit.getUpdated();
-        ListInfo updatedList = new ListInfo().withDeleted(false).withName("changedunit");
+        UnitInfo updatedList = new UnitInfo().withDeleted(false).withName("changedunit");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
                 mUnit.getUUID().toString())).request().put(Entity.json(updatedList));

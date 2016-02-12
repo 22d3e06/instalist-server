@@ -1,6 +1,8 @@
 
 package org.noorganization.instalist.server.api;
 
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +12,8 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.noorganization.instalist.comm.message.ListInfo;
-import org.noorganization.instalist.comm.support.DateHelper;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IListController;
@@ -38,7 +40,7 @@ public class ListResource {
      * Get a list of shopping-lists.
      * @param _groupId The id of the group, containing the lists.
      * @param _changedSince Requests only the elements that changed since the given date. ISO 8601
-     *                     time e.g. 2016-01-19T11:54:07+01:00
+     *                     time e.g. 2016-01-19T11:54:07+0100
      */
     @GET
     @TokenSecured
@@ -51,8 +53,10 @@ public class ListResource {
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
         if (_changedSince != null) {
-            Date changedSince = DateHelper.parseDate(_changedSince);
-            if (changedSince == null) {
+            Date changedSince;
+            try {
+                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0));
+            } catch (ParseException _e) {
                 manager.close();
                 return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
             }
@@ -185,9 +189,12 @@ public class ListResource {
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
-        Date updated = parseDate(_listInfo);
-        if (updated == null)
+        Date updated = _listInfo.getLastChanged();
+        Date now = new Date(System.currentTimeMillis());
+        if (updated != null && now.before(updated))
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        else
+            updated = now;
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         IListController listController = ControllerFactory.getListController(manager);
@@ -236,9 +243,11 @@ public class ListResource {
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
-        Date created = parseDate(_listInfo);
-        if (created == null)
+        Date created = _listInfo.getLastChanged();
+        if (created != null && created.after(new Date(System.currentTimeMillis())))
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        else
+            created = new Date(System.currentTimeMillis());
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         IListController listController = ControllerFactory.getListController(manager);
@@ -287,16 +296,5 @@ public class ListResource {
         }
 
         return ResponseFactory.generateOK(null);
-    }
-
-    private Date parseDate(ListInfo _info) {
-        Date rtn;
-        if (_info.getLastChanged() != null) {
-            rtn = DateHelper.parseDate(_info.getLastChanged());
-            if (rtn == null || rtn.after(new Date(System.currentTimeMillis())))
-                return null;
-        } else
-            rtn = new Date(System.currentTimeMillis());
-        return rtn;
     }
 }

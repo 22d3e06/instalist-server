@@ -2,11 +2,11 @@
   {
     "uuid" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
     "name" : "test_Recipe",
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   },
   {
     "uuid" : "c937bad6-7121-441b-bf3c-c6c0971bb9fe",
     "name" : "test_Recipe2",
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   }
 ]

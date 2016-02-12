@@ -1,5 +1,6 @@
 package org.noorganization.instalist.server.api;
 
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
@@ -9,7 +10,6 @@ import org.junit.Test;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.comm.message.CategoryInfo;
-import org.noorganization.instalist.comm.support.DateHelper;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.model.DeletedObject;
@@ -119,26 +119,24 @@ public class CategoriesResourceTest extends JerseyTest {
         assertEquals(200, okResponse.getStatus());
         CategoryInfo[] allCategories = okResponse.readEntity(CategoryInfo[].class);
         assertEquals(2, allCategories.length);
-        Date shortTimeAgo = new Date(System.currentTimeMillis() - 10000);
         for (int i = 0; i < 2; i++) {
             assertNotNull(allCategories[i].getLastChanged());
             if (mDeletedCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertNull(allCategories[i].getName());
                 assertTrue(allCategories[i].getDeleted());
+                assertEquals(mDeletedCategory.getTime(), allCategories[i].getLastChanged());
             } else if (mCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertEquals("cat1", allCategories[i].getName());
                 assertFalse(allCategories[i].getDeleted());
+                assertEquals(mCategory.getUpdated(), allCategories[i].getLastChanged());
             } else {
                 fail("Got wrong category.");
             }
-            Date changeDate = DateHelper.parseDate(allCategories[i].getLastChanged());
-            assertNotNull(changeDate);
-            assertTrue(shortTimeAgo.before(changeDate));
         }
 
         Response okResponseEmpty = target(String.format(url, mGroup.getId())).
-                queryParam("changedsince", DateHelper.writeDate(new Date(
-                        System.currentTimeMillis() + 10000))).
+                queryParam("changedsince", ISO8601Utils.format(new Date(
+                        System.currentTimeMillis() + 10000), true)).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponseEmpty.getStatus());
         CategoryInfo[] noCategories = okResponseEmpty.readEntity(CategoryInfo[].class);

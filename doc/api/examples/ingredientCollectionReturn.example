@@ -4,13 +4,13 @@
     "productuuid" : "87c03314-8733-4e91-b356-0f1d37dd4eb8",
     "recipeuuid" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
     "amount" : 0.5,
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   },
   {
     "uuid" : "f86f1c7c-0e49-4af2-82df-1f50600590ff",
     "productuuid" : "de14221d-6958-4cf1-b099-7c6a67b2125d",
     "recipeuuid" : "ce3c12e8-747a-4745-abd7-411e2a21d52c",
     "amount" : 2.5,
-    "lastchanged": "2016-01-19T11:54:07+01:00"
+    "lastchanged": "2016-01-19T11:54:07+0100"
   }
 ]
