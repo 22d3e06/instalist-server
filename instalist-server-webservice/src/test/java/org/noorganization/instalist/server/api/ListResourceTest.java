@@ -146,9 +146,9 @@ public class ListResourceTest extends JerseyTest {
         mListWC.setUpdated(new Date(System.currentTimeMillis()));
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
-                queryParam("changedsince", ISO8601Utils.format(new Date(System.
-                        currentTimeMillis() - 500), true)).request().
-                header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
+                queryParam("changedsince", ISO8601Utils.format(new Date(
+                        mListWC.getUpdated().getTime() - 500), true))
+                .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse2.getStatus());
         ListInfo[] oneListInfo = okResponse2.readEntity(ListInfo[].class);
         assertEquals(1, oneListInfo.length);

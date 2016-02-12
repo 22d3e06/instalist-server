@@ -65,7 +65,6 @@ class GroupController implements IGroupController {
             return null;
         mManager.getTransaction().begin();
         group.setReadableId(newAccessKey);
-        // mManager.merge(group);
         mManager.getTransaction().commit();
 
         return newAccessKey;

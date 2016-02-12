@@ -36,6 +36,7 @@ public class GroupsResourceTest extends JerseyTest{
     private Device mDeviceWAuth;
     private Device mDeviceWOAuth;
     private DeviceGroup mGroup;
+    private Date mCreationDate;
 
     private EntityManager mManager;
 
@@ -53,11 +54,14 @@ public class GroupsResourceTest extends JerseyTest{
         super.setUp();
         mData = new CommonData();
 
-        mGroup = new DeviceGroup().withReadableId("123456");
+        mCreationDate = new Date(System.currentTimeMillis());
+
+        mGroup = new DeviceGroup().withReadableId("123456").withUpdated(mCreationDate)
+                .withUpdated(mCreationDate);
         mDeviceWAuth = new Device().withName("dev1").withAuthorized(true).withSecret(mData
-                .mEncryptedSecret).withGroup(mGroup);
+                .mEncryptedSecret).withGroup(mGroup).withCreated(mCreationDate);
         mDeviceWOAuth = new Device().withName("dev2").withAuthorized(false).withSecret(mData
-                .mEncryptedSecret).withGroup(mGroup);
+                .mEncryptedSecret).withGroup(mGroup).withCreated(mCreationDate);
 
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
@@ -68,7 +72,6 @@ public class GroupsResourceTest extends JerseyTest{
         mManager.refresh(mGroup);
         mManager.refresh(mDeviceWAuth);
         mManager.refresh(mDeviceWOAuth);
-
     }
 
     @After
@@ -164,6 +167,7 @@ public class GroupsResourceTest extends JerseyTest{
         assertEquals(401, rightAuthNeededResponse.getStatus());
         mManager.refresh(mGroup);
         assertEquals("123456", mGroup.getReadableId());
+        assertEquals(mGroup.getCreated(), mGroup.getUpdated());
 
         Thread.sleep(300); // For checking whether "updated" gets really updated.
         String validToken = authController.getTokenByHttpAuth(mManager, mDeviceWAuth.getId(),
@@ -174,28 +178,27 @@ public class GroupsResourceTest extends JerseyTest{
         assertEquals(6, recvdGroup.getReadableId().length());
         mManager.refresh(mGroup);
         assertEquals(recvdGroup.getReadableId(), mGroup.getReadableId());
-        assertTrue(new Date(System.currentTimeMillis() - 10000).before(mGroup.getUpdated()));
+        assertTrue(mCreationDate.before(mGroup.getUpdated()));
+        System.err.println("c: " + mGroup.getCreated().getTime() + " u:" + mGroup.getUpdated().getTime());
         assertNotEquals(mGroup.getCreated(), mGroup.getUpdated());
     }
 
     @Test
     public void testPostGroup() throws Exception {
         final String url = "/groups";
+        Date preCreate = new Date(System.currentTimeMillis());
+
         Response okResponse = target(url).request().post(null);
         assertEquals(200, okResponse.getStatus());
         GroupInfo newGroupInfo = okResponse.readEntity(GroupInfo.class);
         assertEquals(6, newGroupInfo.getReadableId().length());
         assertNotEquals(mGroup.getId(), (int) newGroupInfo.getId());
 
-        mManager.getTransaction().begin();
-        mManager.flush();
-        mManager.getTransaction().commit();
-
         DeviceGroup savedGroup = mManager.find(DeviceGroup.class, newGroupInfo.getId());
         assertNotNull(savedGroup);
         assertEquals(newGroupInfo.getReadableId(), savedGroup.getReadableId());
-        assertTrue(savedGroup.getCreated().after(
-                new Date(System.currentTimeMillis() - 10000)));
+        assertTrue(savedGroup.getCreated().after(preCreate));
+        assertEquals(savedGroup.getCreated(), savedGroup.getUpdated());
     }
 
     @Test

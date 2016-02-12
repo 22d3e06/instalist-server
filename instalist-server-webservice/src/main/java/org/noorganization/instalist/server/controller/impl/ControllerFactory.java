@@ -31,6 +31,10 @@ public class ControllerFactory {
         return new EntryController(_manager);
     }
 
+    public static IUnitController getUnitController(EntityManager _manager) {
+        return new UnitController(_manager);
+    }
+
     private ControllerFactory(){
     }
 }

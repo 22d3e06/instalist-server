@@ -2,13 +2,12 @@ package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "devicegroups")
+@EntityListeners({DeviceGroup.PostUpdateEventListener.class})
 public class DeviceGroup {
     private int    mId;
     private String mReadableId;
@@ -20,6 +19,13 @@ public class DeviceGroup {
     private Set<ShoppingList> mLists;
     private Set<DeletedObject> mDeletedObjects;
     private Set<ListEntry> mListEntries;
+    private Set<Unit> mUnits;
+
+    public DeviceGroup() {
+        long currentTime = System.currentTimeMillis();
+        mCreated = new Date(currentTime);
+        mUpdated = new Date(currentTime);
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,10 +57,9 @@ public class DeviceGroup {
         return this;
     }
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) ON " +
-            "UPDATE CURRENT_TIMESTAMP(3)", insertable = false, updatable = false)
+    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
+            nullable = false)
     public Date getUpdated() {
         if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
             Timestamp current = (Timestamp) mUpdated;
@@ -72,10 +77,9 @@ public class DeviceGroup {
         return this;
     }
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created", columnDefinition="TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
-            insertable = false, updatable = false)
+            /*updatable = false,*/ nullable = false)
     public Date getCreated() {
         if (mCreated != null && mCreated.getClass() == Timestamp.class) {
             Timestamp current = (Timestamp) mCreated;
@@ -132,6 +136,15 @@ public class DeviceGroup {
     }
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Unit> getUnits() {
+        return mUnits;
+    }
+
+    public void setUnits(Set<Unit> _units) {
+        mUnits = _units;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
     public Set<ListEntry> getListEntries() {
         return mListEntries;
     }
@@ -173,5 +186,18 @@ public class DeviceGroup {
                 ", mUpdated=" + mUpdated +
                 ", mCreated=" + mCreated +
                 '}';
+    }
+
+    /**
+     * This entity-listener updates the 'updated' field of {@link DeviceGroup} after updates
+     * automatically.
+     * Created by damihe on 12.02.16.
+     */
+    public static class PostUpdateEventListener {
+
+        @PreUpdate
+        public void onUpdate(final DeviceGroup _group) {
+            _group.setUpdated(new Date(System.currentTimeMillis()));
+        }
     }
 }
