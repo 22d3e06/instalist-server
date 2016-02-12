@@ -8,7 +8,7 @@ import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import javax.ws.rs.BadRequestException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -26,7 +26,7 @@ public interface IListController {
      * @throws ConflictException If already a list with same uuid exists or the list was already
      * deleted.
      */
-    void add(int _groupId, UUID _listUUID, String _name, UUID _category, Date _lastChanged)
+    void add(int _groupId, UUID _listUUID, String _name, UUID _category, Instant _lastChanged)
             throws ConflictException;
 
     /**
@@ -41,7 +41,7 @@ public interface IListController {
      * @throws NotFoundException If list was not found.
      */
     void update(int _groupId, UUID _listUUID, String _name, UUID _category,
-                boolean _removeCategory, Date _lastChanged)
+                boolean _removeCategory, Instant _lastChanged)
             throws ConflictException, GoneException, NotFoundException, BadRequestException;
 
     /**

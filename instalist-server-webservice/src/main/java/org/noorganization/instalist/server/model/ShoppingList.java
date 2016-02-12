@@ -2,6 +2,8 @@ package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,11 +14,11 @@ public class ShoppingList {
     private UUID        mUUID;
     private Category    mCategory;
     private String      mName;
-    private Date        mUpdated;
+    private Instant     mUpdated;
     private DeviceGroup mGroup;
 
     public ShoppingList() {
-        mUpdated = new Date(System.currentTimeMillis());
+        mUpdated = Instant.now();
     }
 
     @Id
@@ -78,23 +80,23 @@ public class ShoppingList {
         return this;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false)
-    public Date getUpdated() {
-        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
+    public Instant getUpdated() {
+        /*if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
             Timestamp current = (Timestamp) mUpdated;
             return new Date(current.getTime() + (current.getNanos() / 1000000));
-        }
+        }*/
         return mUpdated;
     }
 
-    public void setUpdated(Date _updated) {
+    public void setUpdated(Instant _updated) {
         mUpdated = _updated;
     }
 
-    public ShoppingList withUpdated(Date _updated) {
+    public ShoppingList withUpdated(Instant _updated) {
         setUpdated(_updated);
         return this;
     }

@@ -20,6 +20,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class ListResourceTest extends JerseyTest {
     Category mCat;
     DeviceGroup mGroup;
     DeviceGroup mNAGroup;
+    Instant mUpdate;
 
     @Override
     public Application configure() {
@@ -56,20 +58,23 @@ public class ListResourceTest extends JerseyTest {
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
 
+        mUpdate = Instant.now();
+
         mGroup = new DeviceGroup();
-        mCat = new Category().withGroup(mGroup).withName("").withUUID(UUID.randomUUID());
+        mCat = new Category().withGroup(mGroup).withName("").withUUID(UUID.randomUUID()).
+                withUpdated(Date.from(mUpdate));
         mListWC = new ShoppingList().withGroup(mGroup).withName("list1").withCategrory(mCat).
-                withUUID(UUID.randomUUID());
+                withUUID(UUID.randomUUID()).withUpdated(mUpdate);
         mListWOC = new ShoppingList().withGroup(mGroup).withName("list2").withUUID(UUID.
-                randomUUID());
+                randomUUID()).withUpdated(mUpdate);
         mDeletedList = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.LIST);
-        mNAGroup = new DeviceGroup();
+                withType(DeletedObject.Type.LIST).withTime(Date.from(mUpdate));
+        mNAGroup = new DeviceGroup().withUpdated(Date.from(mUpdate));
         mNAList = new ShoppingList().withGroup(mNAGroup).withName("list3").withUUID(UUID.
-                randomUUID());
+                randomUUID()).withUpdated(mUpdate);
 
         Device authorizedDevice = new Device().withAuthorized(true).withGroup(mGroup).
-                withName("dev1").withSecret(data.mEncryptedSecret);
+                withName("dev1").withSecret(data.mEncryptedSecret).withCreated(Date.from(mUpdate));
 
         mManager.persist(mGroup);
         mManager.persist(mCat);
@@ -143,12 +148,14 @@ public class ListResourceTest extends JerseyTest {
 
         Thread.sleep(1000);
         mManager.getTransaction().begin();
-        mListWC.setUpdated(new Date(System.currentTimeMillis()));
+        Instant current = Instant.now();
+        System.err.println("Current: " + current);
+        mListWC.setUpdated(current);
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
-                queryParam("changedsince", ISO8601Utils.format(new Date(
-                        mListWC.getUpdated().getTime() - 500), true))
-                .request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
+                queryParam("changedsince", ISO8601Utils.format(
+                        new Date(current.toEpochMilli() - 500), true)).
+                request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse2.getStatus());
         ListInfo[] oneListInfo = okResponse2.readEntity(ListInfo[].class);
         assertEquals(1, oneListInfo.length);
@@ -235,14 +242,13 @@ public class ListResourceTest extends JerseyTest {
         assertEquals(1, savedLists.size());
         assertEquals("list4", savedLists.get(0).getName());
         assertNull(savedLists.get(0).getCategory());
-        assertTrue(new Date(System.currentTimeMillis() - 10000).before(
-                savedLists.get(0).getUpdated()));
+        assertTrue(mUpdate.isBefore(savedLists.get(0).getUpdated()));
     }
 
     @Test
     public void testPutList() throws Exception {
         String url = "/groups/%d/lists/%s";
-        Date preUpdate = mListWC.getUpdated();
+        Instant preUpdate = mListWC.getUpdated();
         ListInfo updatedList = new ListInfo().withDeleted(false).withName("changedlist");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
@@ -275,7 +281,7 @@ public class ListResourceTest extends JerseyTest {
         mManager.refresh(mListWC);
         assertEquals("list1", mListWC.getName());
 
-        updatedList.setLastChanged(new Date(preUpdate.getTime() - 10000));
+        updatedList.setLastChanged(new Date(preUpdate.toEpochMilli() - 10000));
         Response conflictResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
@@ -294,14 +300,14 @@ public class ListResourceTest extends JerseyTest {
         mManager.refresh(mListWC);
         assertEquals("changedlist", mListWC.getName());
         assertEquals(mCat, mListWC.getCategory());
-        assertTrue(preUpdate.getTime() + " is not before " + mListWC.getUpdated().getTime(),
-                preUpdate.before(mListWC.getUpdated()));
+        assertTrue(preUpdate.toEpochMilli() + " is not before " + mListWC.getUpdated().toEpochMilli(),
+                preUpdate.isBefore(mListWC.getUpdated()));
     }
 
     @Test
     public void testDeleteList() throws Exception {
         String url = "/groups/%d/lists/%s";
-        Date preDelete = mListWC.getUpdated();
+        Instant preDelete = mListWC.getUpdated();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().delete();
@@ -322,6 +328,7 @@ public class ListResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
         assertEquals(404, wrongListResponse.getStatus());
 
+        Thread.sleep(300);
         Response okResponse = target(String.format(url, mGroup.getId(),
                 mListWC.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).delete();
@@ -339,7 +346,8 @@ public class ListResourceTest extends JerseyTest {
         savedDeletedListQuery.setParameter("uuid", mListWC.getUUID());
         List<DeletedObject> savedDeletedLists = savedDeletedListQuery.getResultList();
         assertEquals(1, savedDeletedLists.size());
-        assertTrue(preDelete.before(savedDeletedLists.get(0).getTime()));
+        assertTrue(preDelete.toEpochMilli() + " vs. " + savedDeletedLists.get(0).getTime().getTime(),
+                preDelete.isBefore(savedDeletedLists.get(0).getTime().toInstant()));
 
     }
 }

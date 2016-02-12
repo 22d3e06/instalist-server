@@ -1,6 +1,5 @@
 package org.noorganization.instalist.server.controller.impl;
 
-import org.noorganization.instalist.comm.message.ListInfo;
 import org.noorganization.instalist.server.controller.ICategoryController;
 import org.noorganization.instalist.server.controller.IListController;
 import org.noorganization.instalist.server.model.Category;
@@ -14,6 +13,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +26,7 @@ public class ListController implements IListController {
         mManager = _manager;
     }
 
-    public void add(int _groupId, UUID _listUUID, String _name, UUID _category, Date _lastChanged)
+    public void add(int _groupId, UUID _listUUID, String _name, UUID _category, Instant _lastChanged)
             throws ConflictException {
         ICategoryController categoryController = ControllerFactory.getCategoryController(mManager);
 
@@ -35,7 +35,8 @@ public class ListController implements IListController {
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         ShoppingList found = getListByGroupAndUUID(group, _listUUID);
         DeletedObject deletedList = getDeletedListByGroupAndUUID(group, _listUUID);
-        if (found != null || (deletedList != null && deletedList.getTime().after(_lastChanged))) {
+        if (found != null || (deletedList != null && deletedList.getTime().toInstant().
+                isAfter(_lastChanged))) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -54,7 +55,7 @@ public class ListController implements IListController {
     }
 
     public void update(int _groupId, UUID _listUUID, String _name, UUID _category,
-                       boolean _removeCategory, Date _lastChanged)
+                       boolean _removeCategory, Instant _lastChanged)
             throws ConflictException, GoneException, NotFoundException, BadRequestException {
         ICategoryController categoryController = ControllerFactory.getCategoryController(mManager);
 
@@ -70,7 +71,7 @@ public class ListController implements IListController {
             tx.rollback();
             throw new NotFoundException();
         }
-        if (listToUpdate.getUpdated().after(_lastChanged)) {
+        if (listToUpdate.getUpdated().isAfter(_lastChanged)) {
             tx.rollback();
             throw new ConflictException();
         }
