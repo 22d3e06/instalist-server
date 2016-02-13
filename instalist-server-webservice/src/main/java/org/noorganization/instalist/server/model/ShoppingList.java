@@ -80,15 +80,9 @@ public class ShoppingList {
         return this;
     }
 
-    //@Temporal(TemporalType.TIMESTAMP)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false)
     public Instant getUpdated() {
-        /*if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
-            Timestamp current = (Timestamp) mUpdated;
-            return new Date(current.getTime() + (current.getNanos() / 1000000));
-        }*/
         return mUpdated;
     }
 
