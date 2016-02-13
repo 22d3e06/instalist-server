@@ -13,7 +13,9 @@
         <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
         <class>org.noorganization.instalist.server.model.ListEntry</class>
+        <class>org.noorganization.instalist.server.model.Product</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
+        <class>org.noorganization.instalist.server.model.Unit</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
@@ -35,7 +37,9 @@
         <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
         <class>org.noorganization.instalist.server.model.ListEntry</class>
+        <class>org.noorganization.instalist.server.model.Product</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
+        <class>org.noorganization.instalist.server.model.Unit</class>
 
         <properties>
             <!--<property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
