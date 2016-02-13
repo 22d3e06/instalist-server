@@ -20,6 +20,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -117,7 +118,7 @@ public class UnitResourceTest extends JerseyTest {
         for(UnitInfo current: allUnitInfo) {
             if (mUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertEquals("unit1", current.getName());
-                assertEquals(mUnit.getUpdated(), current.getLastChanged());
+                assertEquals(mUnit.getUpdated(), current.getLastChanged().toInstant());
                 assertFalse(current.getDeleted());
             } else if (mDeletedUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
@@ -129,7 +130,7 @@ public class UnitResourceTest extends JerseyTest {
 
         Thread.sleep(1000);
         mManager.getTransaction().begin();
-        mUnit.setUpdated(new Date(System.currentTimeMillis()));
+        mUnit.setUpdated(Instant.now());
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
                 queryParam("changedsince", ISO8601Utils.format(new Date(System.
@@ -179,7 +180,7 @@ public class UnitResourceTest extends JerseyTest {
         assertNotNull(returnedUnitInfo);
         assertEquals(mUnit.getUUID(), UUID.fromString(returnedUnitInfo.getUUID()));
         assertEquals("unit1", returnedUnitInfo.getName());
-        assertEquals(mUnit.getUpdated(), returnedUnitInfo.getLastChanged());
+        assertEquals(mUnit.getUpdated(), returnedUnitInfo.getLastChanged().toInstant());
         assertFalse(returnedUnitInfo.getDeleted());
     }
 
@@ -187,6 +188,7 @@ public class UnitResourceTest extends JerseyTest {
     public void testPostUnit() throws Exception {
         String url = "/groups/%d/units";
         UnitInfo newUnit = new UnitInfo().withUUID(mUnit.getUUID()).withName("unit4");
+        Instant preInsert = Instant.now();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().
                 post(Entity.json(newUnit));
@@ -218,14 +220,13 @@ public class UnitResourceTest extends JerseyTest {
         List<Unit> savedUnits = savedUnitQuery.getResultList();
         assertEquals(1, savedUnits.size());
         assertEquals("unit4", savedUnits.get(0).getName());
-        assertTrue(new Date(System.currentTimeMillis() - 10000).before(
-                savedUnits.get(0).getUpdated()));
+        assertTrue(preInsert.isBefore(savedUnits.get(0).getUpdated()));
     }
 
     @Test
     public void testPutUnit() throws Exception {
         String url = "/groups/%d/units/%s";
-        Date preUpdate = mUnit.getUpdated();
+        Instant preUpdate = mUnit.getUpdated();
         UnitInfo updatedList = new UnitInfo().withDeleted(false).withName("changedunit");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
@@ -258,7 +259,7 @@ public class UnitResourceTest extends JerseyTest {
         mManager.refresh(mUnit);
         assertEquals("unit1", mUnit.getName());
 
-        updatedList.setLastChanged(new Date(preUpdate.getTime() - 10000));
+        updatedList.setLastChanged(new Date(preUpdate.toEpochMilli() - 10000));
         Response conflictResponse = target(String.format(url, mGroup.getId(),
                 mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
@@ -267,8 +268,7 @@ public class UnitResourceTest extends JerseyTest {
         mManager.refresh(mUnit);
         assertEquals("unit1", mUnit.getName());
 
-        Thread.sleep(1000);
-        updatedList.setLastChanged(new Date(System.currentTimeMillis()));
+        updatedList.setLastChanged(Date.from(Instant.now()));
         Response okResponse = target(String.format(url, mGroup.getId(),
                 mUnit.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
@@ -276,14 +276,14 @@ public class UnitResourceTest extends JerseyTest {
         assertEquals(200, okResponse.getStatus());
         mManager.refresh(mUnit);
         assertEquals("changedunit", mUnit.getName());
-        assertTrue(preUpdate.getTime() + " is not before " + mUnit.getUpdated().getTime(),
-                preUpdate.before(mUnit.getUpdated()));
+        assertTrue(preUpdate + " is not before " + mUnit.getUpdated(),
+                preUpdate.isBefore(mUnit.getUpdated()));
     }
 
     @Test
     public void testDeleteUnit() throws Exception {
         String url = "/groups/%d/units/%s";
-        Date preDelete = mUnit.getUpdated();
+        Instant preDelete = mUnit.getUpdated();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
                 mUnit.getUUID().toString())).request().delete();
@@ -323,6 +323,6 @@ public class UnitResourceTest extends JerseyTest {
         savedDeletedUnitQuery.setParameter("type", DeletedObject.Type.UNIT);
         List<DeletedObject> savedDeletedUnits = savedDeletedUnitQuery.getResultList();
         assertEquals(1, savedDeletedUnits.size());
-        assertTrue(preDelete.before(savedDeletedUnits.get(0).getTime()));
+        assertTrue(preDelete.isBefore(savedDeletedUnits.get(0).getTime().toInstant()));
     }
 }

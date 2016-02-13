@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -19,12 +20,12 @@ public class UnitController implements IUnitController{
 
     private EntityManager mManager;
 
-    public void add(int _groupId, UUID _newUUID, String _name, Date _created)
+    public void add(int _groupId, UUID _newUUID, String _name, Instant _created)
             throws ConflictException {
 
     }
 
-    public void update(int _groupId, UUID _uuid, String _name, Date _updated)
+    public void update(int _groupId, UUID _uuid, String _name, Instant _updated)
             throws ConflictException, NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -38,7 +39,7 @@ public class UnitController implements IUnitController{
             tx.rollback();
             throw new GoneException();
         }
-        if (toUpdate.getUpdated().after(_updated)) {
+        if (toUpdate.getUpdated().isAfter(_updated)) {
             tx.rollback();
             throw new ConflictException();
         }

@@ -23,6 +23,7 @@ import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +74,7 @@ public class UnitResource {
             TypedQuery<Unit> unitsQuery = manager.createQuery("select u from Unit u where " +
                     "u.group = :group and u.updated > :updated", Unit.class);
             unitsQuery.setParameter("group", group);
-            unitsQuery.setParameter("updated", changedSince);
+            unitsQuery.setParameter("updated", changedSince.toInstant());
             resultUnits = unitsQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedUnitsQuery = manager.createQuery("select do from " +
@@ -93,7 +94,7 @@ public class UnitResource {
             UnitInfo info = new UnitInfo().withDeleted(false);
             info.setName(current.getName());
             info.setUUID(current.getUUID());
-            info.setLastChanged(current.getUpdated());
+            info.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(info);
         }
         for (DeletedObject current: resultDeletedUnits) {
@@ -144,7 +145,7 @@ public class UnitResource {
         UnitInfo rtn = new UnitInfo().withDeleted(false);
         rtn.setName(resultUnit.getName());
         rtn.setUUID(resultUnit.getUUID());
-        rtn.setLastChanged(resultUnit.getUpdated());
+        rtn.setLastChanged(Date.from(resultUnit.getUpdated()));
 
         return ResponseFactory.generateOK(rtn);
     }
@@ -169,11 +170,14 @@ public class UnitResource {
         } catch(IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
-        Date changeDate = _entity.getLastChanged();
-        if (changeDate == null)
-            changeDate = new Date(System.currentTimeMillis());
-        else if (new Date(System.currentTimeMillis()).before(changeDate))
-            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        Instant changeDate;
+        if (_entity.getLastChanged() == null)
+            changeDate = Instant.now();
+        else {
+            changeDate = _entity.getLastChanged().toInstant();
+            if (Instant.now().isBefore(changeDate))
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        }
         if ((_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getUUID() != null && !_entity.getUUID().equals(_unitUUID)))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);

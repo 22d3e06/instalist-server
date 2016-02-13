@@ -7,6 +7,7 @@ import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import javax.ws.rs.NotFoundException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public interface IUnitController {
      * @throws ConflictException If a Unit with this UUID already exists or was deleted after
      * {@code _created}.
      */
-    void add(int _groupId, UUID _newUUID, String _name, Date _created) throws ConflictException;
+    void add(int _groupId, UUID _newUUID, String _name, Instant _created) throws ConflictException;
 
     /**
      * Updates a unit.
@@ -37,7 +38,7 @@ public interface IUnitController {
      * @throws NotFoundException If the Unit was not found.
      * @throws GoneException If the Unit was not found because it has been deleted before.
      */
-    void update(int _groupId, UUID _uuid, String _name, Date _updated) throws ConflictException,
+    void update(int _groupId, UUID _uuid, String _name, Instant _updated) throws ConflictException,
             NotFoundException, GoneException;
 
     /**

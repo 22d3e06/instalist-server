@@ -2,6 +2,7 @@ package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -12,13 +13,13 @@ public class Unit {
     private int         mId;
     private UUID        mUUID;
     private String      mName;
-    private Date        mUpdated;
+    private Instant     mUpdated;
     private DeviceGroup mGroup;
 
     private Set<Product> mProducts;
 
     public Unit() {
-        mUpdated = new Date(System.currentTimeMillis());
+        mUpdated = Instant.now();
     }
 
     @Id
@@ -65,22 +66,17 @@ public class Unit {
         return this;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false)
-    public Date getUpdated() {
-        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
-            Timestamp updated = (Timestamp) mUpdated;
-            return new Date(updated.getTime() + (updated.getNanos() / 1000000));
-        }
+    public Instant getUpdated() {
         return mUpdated;
     }
 
-    public void setUpdated(Date _updated) {
+    public void setUpdated(Instant _updated) {
         mUpdated = _updated;
     }
 
-    public Unit withUpdated(Date _updated) {
+    public Unit withUpdated(Instant _updated) {
         setUpdated(_updated);
         return this;
     }
