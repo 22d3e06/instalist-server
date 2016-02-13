@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -16,6 +17,8 @@ public class ShoppingList {
     private String      mName;
     private Instant     mUpdated;
     private DeviceGroup mGroup;
+
+    private Set<ListEntry> mEntries;
 
     public ShoppingList() {
         mUpdated = Instant.now();
@@ -108,5 +111,14 @@ public class ShoppingList {
     public ShoppingList withGroup(DeviceGroup _group) {
         setGroup(_group);
         return this;
+    }
+
+    @OneToMany(mappedBy = "list")
+    public Set<ListEntry> getEntries() {
+        return mEntries;
+    }
+
+    public void setEntries(Set<ListEntry> _entries) {
+        mEntries = _entries;
     }
 }

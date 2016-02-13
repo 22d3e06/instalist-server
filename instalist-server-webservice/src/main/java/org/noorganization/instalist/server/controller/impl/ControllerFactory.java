@@ -19,6 +19,10 @@ public class ControllerFactory {
         return new CategoryController(_manager);
     }
 
+    public static IEntryController getEntryController(EntityManager _manager) {
+        return new EntryController(_manager);
+    }
+
     public static IGroupController getGroupController(EntityManager _manager) {
         return new GroupController(_manager);
     }
@@ -27,8 +31,8 @@ public class ControllerFactory {
         return new ListController(_manager);
     }
 
-    public static IEntryController getEntryController(EntityManager _manager) {
-        return new EntryController(_manager);
+    public static IProductController getProductController(EntityManager _manager) {
+        return new ProductController(_manager);
     }
 
     public static IUnitController getUnitController(EntityManager _manager) {

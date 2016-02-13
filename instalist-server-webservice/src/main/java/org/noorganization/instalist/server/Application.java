@@ -2,10 +2,7 @@ package org.noorganization.instalist.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.noorganization.instalist.server.api.CategoriesResource;
-import org.noorganization.instalist.server.api.GroupsResource;
-import org.noorganization.instalist.server.api.ListResource;
-import org.noorganization.instalist.server.api.UnitResource;
+import org.noorganization.instalist.server.api.*;
 import org.noorganization.instalist.server.message.AppConfiguration;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
@@ -24,6 +21,7 @@ public class Application extends ResourceConfig {
         register(CategoriesResource.class);
         register(ListResource.class);
         register(UnitResource.class);
+        register(ProductResource.class);
 
         register(AuthenticationFilter.class);
     }

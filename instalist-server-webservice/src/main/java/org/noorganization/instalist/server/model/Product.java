@@ -1,9 +1,8 @@
 package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +16,8 @@ public class Product {
     private float       mStepAmount;
     private Instant     mUpdated;
     private DeviceGroup mGroup;
+
+    private Set<ListEntry> mEntries;
 
     public Product() {
         mUpdated       = Instant.now();
@@ -139,5 +140,14 @@ public class Product {
     public Product withGroup(DeviceGroup _group) {
         setGroup(_group);
         return this;
+    }
+
+    @OneToMany(mappedBy = "product")
+    public Set<ListEntry> getEntries() {
+        return mEntries;
+    }
+
+    public void setEntries(Set<ListEntry> _entries) {
+        mEntries = _entries;
     }
 }

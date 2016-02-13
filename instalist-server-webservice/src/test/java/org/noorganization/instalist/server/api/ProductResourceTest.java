@@ -57,14 +57,16 @@ public class ProductResourceTest extends JerseyTest {
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
 
+        Instant creation = Instant.now();
         mGroup = new DeviceGroup();
         mUnit = new Unit().withGroup(mGroup).withName("unit1").withUUID(UUID.randomUUID());
         mProduct = new Product().withGroup(mGroup).withName("product1").withUUID(UUID.randomUUID()).
-                withDefaultAmount(1f).withStepAmount(0.5f);
+                withDefaultAmount(1f).withStepAmount(0.5f).withUpdated(creation);
         mProductWU = new Product().withGroup(mGroup).withName("product2").withUnit(mUnit).
-                withUUID(UUID.randomUUID()).withDefaultAmount(2f).withStepAmount(2f);;
+                withUUID(UUID.randomUUID()).withDefaultAmount(2f).withStepAmount(2f).
+                withUpdated(creation);
         mDeletedProduct = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.PRODUCT);
+                withType(DeletedObject.Type.PRODUCT).withTime(Date.from(creation));
         mNAGroup = new DeviceGroup();
         mNAProduct = new Product().withGroup(mNAGroup).withName("product3").
                 withUUID(UUID.randomUUID());
@@ -106,7 +108,7 @@ public class ProductResourceTest extends JerseyTest {
     public void testGetProducts() throws Exception {
         String url = "/groups/%d/products";
 
-        Instant preQuery = Instant.now();
+        Instant preUpdate = Instant.now();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().get();
         assertEquals(401, notAuthorizedResponse.getStatus());
@@ -157,7 +159,7 @@ public class ProductResourceTest extends JerseyTest {
         mProduct.setUpdated(Instant.now());
         mManager.getTransaction().commit();
         Response okResponse2 = target(String.format(url, mGroup.getId())).
-                queryParam("changedsince", ISO8601Utils.format(Date.from(preQuery)), true).
+                queryParam("changedsince", ISO8601Utils.format(Date.from(preUpdate), true)).
                 request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse2.getStatus());
         ProductInfo[] oneProductInfo = okResponse2.readEntity(ProductInfo[].class);
@@ -201,9 +203,9 @@ public class ProductResourceTest extends JerseyTest {
         assertEquals(200, okResponse1.getStatus());
         ProductInfo returnedProductInfo = okResponse1.readEntity(ProductInfo.class);
         assertNotNull(returnedProductInfo);
-        assertEquals(mProduct.getUUID(), UUID.fromString(returnedProductInfo.getUUID()));
+        assertEquals(mProductWU.getUUID(), UUID.fromString(returnedProductInfo.getUUID()));
         assertEquals("product2", returnedProductInfo.getName());
-        assertEquals(mProduct.getUpdated(), returnedProductInfo.getLastChanged().toInstant());
+        assertEquals(mProductWU.getUpdated(), returnedProductInfo.getLastChanged().toInstant());
         assertNull(returnedProductInfo.getRemoveUnit());
         assertEquals(mUnit.getUUID(), UUID.fromString(returnedProductInfo.getUnitUUID()));
         assertEquals(2f, returnedProductInfo.getDefaultAmount(), 0.001f);
@@ -235,7 +237,7 @@ public class ProductResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).post(Entity.json(newProduct));
         assertEquals(409, goneResponse.getStatus());
         mManager.refresh(mProduct);
-        assertEquals("unit1", mProduct.getName());
+        assertEquals("product1", mProduct.getName());
 
         newProduct.setUUID(UUID.randomUUID());
         Response okResponse = target(String.format(url, mGroup.getId())).request().
@@ -255,7 +257,8 @@ public class ProductResourceTest extends JerseyTest {
     public void testPutProduct() throws Exception {
         String url = "/groups/%d/products/%s";
         Instant preUpdate = mProduct.getUpdated();
-        ProductInfo updatedProduct = new ProductInfo().withDeleted(false).withName("changedprod");
+        ProductInfo updatedProduct = new ProductInfo().withDeleted(false).
+                withName("changedproduct");
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
                 mProduct.getUUID().toString())).request().put(Entity.json(updatedProduct));

@@ -12,7 +12,7 @@ public class ListEntry {
     private int mId;
     private UUID mUUID;
     private ShoppingList mList;
-    //private Product mProduct;
+    private Product mProduct;
     private float mAmount;
     private boolean mStruck;
     private int mPriority;
@@ -56,6 +56,16 @@ public class ListEntry {
         mList = _list;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    public Product getProduct() {
+        return mProduct;
+    }
+
+    public void setProduct(Product _product) {
+        mProduct = _product;
+    }
+
     @Column(name = "amount", nullable = false)
     public float getAmount() {
         return mAmount;
@@ -65,7 +75,7 @@ public class ListEntry {
         mAmount = _amount;
     }
 
-    @Column(name = "struck", nullable = false)
+    @Column(name = "struck", columnDefinition = "TINYINT(1)", nullable = false)
     public boolean isStruck() {
         return mStruck;
     }

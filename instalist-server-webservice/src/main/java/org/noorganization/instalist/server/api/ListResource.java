@@ -48,80 +48,75 @@ public class ListResource {
     @Produces({ "application/json" })
     public Response getLists(@PathParam("groupid") int _groupId,
                              @QueryParam("changedsince") String _changedSince) throws Exception {
-        try {
 
-            List<ShoppingList> foundLists;
-            List<DeletedObject> foundDeleted;
-            EntityManager manager = DatabaseHelper.getInstance().getManager();
-            DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
+        List<ShoppingList> foundLists;
+        List<DeletedObject> foundDeleted;
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
-            if (_changedSince != null) {
-                Instant changedSince;
-                try {
-                    changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).
-                            toInstant();
-                } catch (ParseException _e) {
-                    manager.close();
-                    return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
-                }
-
-                TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
-                                "ShoppingList sl where sl.group = :group and sl.updated > :updated",
-                        ShoppingList.class);
-                foundListsQuery.setParameter("group", group);
-                foundListsQuery.setParameter("updated", changedSince);
-                foundLists = foundListsQuery.getResultList();
-
-                TypedQuery<DeletedObject> foundDeletedListsQuery =
-                        manager.createQuery("select do from" +
-                                        " DeletedObject do where do.group = :group and do.time > :updated and" +
-                                        " do.type = :type",
-                                DeletedObject.class);
-                foundDeletedListsQuery.setParameter("group", group);
-                foundDeletedListsQuery.setParameter("updated", Date.from(changedSince));
-                foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
-                foundDeleted = foundDeletedListsQuery.getResultList();
-            } else {
-                TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
-                        "ShoppingList sl where sl.group = :group", ShoppingList.class);
-                foundListsQuery.setParameter("group", group);
-                foundLists = foundListsQuery.getResultList();
-
-                TypedQuery<DeletedObject> foundDeletedListsQuery =
-                        manager.createQuery("select do from" +
-                                        " DeletedObject do where do.group = :group and do.type = :type",
-                                DeletedObject.class);
-                foundDeletedListsQuery.setParameter("group", group);
-                foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
-                foundDeleted = foundDeletedListsQuery.getResultList();
+        if (_changedSince != null) {
+            Instant changedSince;
+            try {
+                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).
+                        toInstant();
+            } catch (ParseException _e) {
+                manager.close();
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
             }
-            manager.close();
 
-            ArrayList<ListInfo> rtn =
-                    new ArrayList<ListInfo>(foundLists.size() + foundDeleted.size());
-            for (ShoppingList current : foundLists) {
-                ListInfo toAdd = new ListInfo();
-                toAdd.setUUID(current.getUUID());
-                toAdd.setName(current.getName());
-                if (current.getCategory() != null)
-                    toAdd.setCategoryUUID(current.getCategory().getUUID());
-                toAdd.setLastChanged(Date.from(current.getUpdated()));
-                toAdd.setDeleted(false);
-                rtn.add(toAdd);
-            }
-            for (DeletedObject current : foundDeleted) {
-                ListInfo toAdd = new ListInfo();
-                toAdd.setUUID(current.getUUID());
-                toAdd.setLastChanged(current.getTime());
-                toAdd.setDeleted(true);
-                rtn.add(toAdd);
-            }
+            TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
+                            "ShoppingList sl where sl.group = :group and sl.updated > :updated",
+                    ShoppingList.class);
+            foundListsQuery.setParameter("group", group);
+            foundListsQuery.setParameter("updated", changedSince);
+            foundLists = foundListsQuery.getResultList();
+
+            TypedQuery<DeletedObject> foundDeletedListsQuery =
+                    manager.createQuery("select do from" +
+                                    " DeletedObject do where do.group = :group and do.time > :updated and" +
+                                    " do.type = :type",
+                            DeletedObject.class);
+            foundDeletedListsQuery.setParameter("group", group);
+            foundDeletedListsQuery.setParameter("updated", Date.from(changedSince));
+            foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
+            foundDeleted = foundDeletedListsQuery.getResultList();
+        } else {
+            TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
+                    "ShoppingList sl where sl.group = :group", ShoppingList.class);
+            foundListsQuery.setParameter("group", group);
+            foundLists = foundListsQuery.getResultList();
+
+            TypedQuery<DeletedObject> foundDeletedListsQuery =
+                    manager.createQuery("select do from" +
+                                    " DeletedObject do where do.group = :group and do.type = :type",
+                            DeletedObject.class);
+            foundDeletedListsQuery.setParameter("group", group);
+            foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
+            foundDeleted = foundDeletedListsQuery.getResultList();
+        }
+        manager.close();
+
+        ArrayList<ListInfo> rtn =
+                new ArrayList<ListInfo>(foundLists.size() + foundDeleted.size());
+        for (ShoppingList current : foundLists) {
+            ListInfo toAdd = new ListInfo();
+            toAdd.setUUID(current.getUUID());
+            toAdd.setName(current.getName());
+            if (current.getCategory() != null)
+                toAdd.setCategoryUUID(current.getCategory().getUUID());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
+            toAdd.setDeleted(false);
+            rtn.add(toAdd);
+        }
+        for (DeletedObject current : foundDeleted) {
+            ListInfo toAdd = new ListInfo();
+            toAdd.setUUID(current.getUUID());
+            toAdd.setLastChanged(current.getTime());
+            toAdd.setDeleted(true);
+            rtn.add(toAdd);
+        }
 
         return ResponseFactory.generateOK(rtn);
-        } catch(Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
     }
 
     /**
