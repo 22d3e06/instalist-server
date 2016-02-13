@@ -12,15 +12,11 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.noorganization.instalist.server.message.Product;
+import org.noorganization.instalist.comm.message.ProductInfo;
+import org.noorganization.instalist.server.TokenSecured;
 
-
-/**
- * Collection of available products.
- * 
- */
-@Path("products")
-public interface ProductResource {
+@Path("/groups/{groupid}/products")
+public class ProductResource {
 
 
     /**
@@ -31,8 +27,12 @@ public interface ProductResource {
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    Response getProducts(@QueryParam("changedSince") Date changedSince) throws Exception;
+    public Response getProducts(@PathParam("groupid") int _groupId,
+                                @QueryParam("changedSince") String _changedSince) throws Exception {
+        return null;
+    }
 
     /**
      * Returns the product.
@@ -42,9 +42,13 @@ public interface ProductResource {
      *     
      */
     @GET
-    @Path("{productId}")
+    @TokenSecured
+    @Path("{productuuid}")
     @Produces({ "application/json" })
-    Response getProductById(@PathParam("productId") String productId) throws Exception;
+    public Response getProduct(@PathParam("groupid") int _groupId,
+                               @PathParam("productuuid") String _productUUID) throws Exception {
+        return null;
+    }
 
     /**
      * Updates the product.
@@ -56,11 +60,15 @@ public interface ProductResource {
      *      e.g. examples/product.example
      */
     @PUT
-    @Path("{productId}")
+    @TokenSecured
+    @Path("{productuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putProductById(@PathParam("productId") String productId, Product entity)
-            throws Exception;
+    public Response putProduct(@PathParam("groupid") int _groupId,
+                               @PathParam("productuuid") String _productUUID,
+                               ProductInfo _entity) throws Exception {
+        return null;
+    }
 
     /**
      * Creates the product.
@@ -72,11 +80,13 @@ public interface ProductResource {
      *      e.g. examples/product.example
      */
     @POST
-    @Path("{productId}")
+    @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postProductById(@PathParam("productId") String productId, Product entity)
-            throws Exception;
+    public Response postProduct(@PathParam("groupid") int _groupId,
+                                ProductInfo entity) throws Exception {
+        return null;
+    }
 
     /**
      * Deletes the product.
@@ -86,8 +96,13 @@ public interface ProductResource {
      *     
      */
     @DELETE
-    @Path("{productId}")
+    @TokenSecured
+    @Path("{productuuid}")
     @Produces({ "application/json" })
-    Response deleteProductById(@PathParam("productId") String productId) throws Exception;
+    public Response deleteProductById(@PathParam("groupid") int _groupId,
+                                      @PathParam("productuuid") String _productUUID)
+            throws Exception {
+        return null;
+    }
 
 }
