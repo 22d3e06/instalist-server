@@ -204,12 +204,8 @@ public class UnitResource {
 
     /**
      * Creates the unit.
-     * 
-     * 
-     * @param unitId
-     *     
-     * @param entity
-     *      e.g. examples/unit.example
+     * @param _groupId The group-id the new Unit should belong to.
+     * @param _entity Data of the new unit.
      */
     @POST
     @TokenSecured
@@ -217,15 +213,45 @@ public class UnitResource {
     @Produces({ "application/json" })
     public Response postUnit(@PathParam("groupid") int _groupId, UnitInfo _entity) throws
             Exception {
-        return null;
+        if (_entity.getUUID() == null ||
+                (_entity.getDeleted() != null && _entity.getDeleted()) ||
+                _entity.getName() == null || _entity.getName().length() == 0)
+            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+
+        UUID toInsert;
+        try {
+            toInsert = UUID.fromString(_entity.getUUID());
+        } catch(IllegalArgumentException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        Instant insertDate;
+        if (_entity.getLastChanged() == null)
+            insertDate = Instant.now();
+        else {
+            insertDate = _entity.getLastChanged().toInstant();
+            if (Instant.now().isBefore(insertDate))
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IUnitController unitController = ControllerFactory.getUnitController(manager);
+        try {
+            unitController.add(_groupId, toInsert, _entity.getName(), insertDate);
+        } catch (ConflictException _e) {
+            return ResponseFactory.generateConflict(new Error().withMessage("The sent data would " +
+                    "lead to a conflict with saved unit."));
+        } finally {
+            manager.close();
+        }
+
+        return ResponseFactory.generateCreated(null);
     }
 
     /**
      * Deletes the unit.
-     * 
-     * 
-     * @param unitId
-     *     
+     * @param _groupId The groups id containing the existing unit.
+     * @param _unitUUID The uuid of the unit to delete.
      */
     @DELETE
     @TokenSecured
@@ -233,7 +259,28 @@ public class UnitResource {
     @Produces({ "application/json" })
     public Response deleteUnit(@PathParam("groupid") int _groupId,
                                @PathParam("unituuid") String _unitUUID) throws Exception {
-        return null;
+        UUID toDelete;
+        try {
+            toDelete = UUID.fromString(_unitUUID);
+        } catch(IllegalArgumentException _e) {
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
+        }
+
+        EntityManager manager = DatabaseHelper.getInstance().getManager();
+        IUnitController unitController = ControllerFactory.getUnitController(manager);
+        try {
+            unitController.delete(_groupId, toDelete);
+        } catch (NotFoundException _e) {
+            return ResponseFactory.generateNotFound(new Error().withMessage("The unit was not " +
+                    "found."));
+        } catch (GoneException _e) {
+            return ResponseFactory.generateGone(new Error().withMessage("The unit has been " +
+                    "already deleted before."));
+        } finally {
+            manager.close();
+        }
+
+        return ResponseFactory.generateOK(null);
     }
 
 }

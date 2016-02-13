@@ -2,11 +2,12 @@ package org.noorganization.instalist.server.model;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
     private int         mId;
     private UUID        mUUID;
@@ -14,11 +15,11 @@ public class Product {
     private Unit        mUnit;
     private float       mDefaultAmount;
     private float       mStepAmount;
-    private Date        mUpdated;
+    private Instant     mUpdated;
     private DeviceGroup mGroup;
 
     public Product() {
-        mUpdated       = new Date(System.currentTimeMillis());
+        mUpdated       = Instant.now();
         mDefaultAmount = 1.0f;
         mStepAmount    = 1.0f;
     }
@@ -68,7 +69,7 @@ public class Product {
     }
 
     @ManyToOne
-    @JoinColumn(name = "unit_uuid", nullable = true)
+    @JoinColumn(name = "unit_id", nullable = true)
     public Unit getUnit() {
         return mUnit;
     }
@@ -110,22 +111,17 @@ public class Product {
         return this;
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
             nullable = false)
-    public Date getUpdated() {
-        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
-            Timestamp updated = (Timestamp) mUpdated;
-            return new Date(updated.getTime() + (updated.getNanos() / 1000000));
-        }
+    public Instant getUpdated() {
         return mUpdated;
     }
 
-    public void setUpdated(Date _updated) {
+    public void setUpdated(Instant _updated) {
         mUpdated = _updated;
     }
 
-    public Product withUpdated(Date _updated) {
+    public Product withUpdated(Instant _updated) {
         setUpdated(_updated);
         return this;
     }

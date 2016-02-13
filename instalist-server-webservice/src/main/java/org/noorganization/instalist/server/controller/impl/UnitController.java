@@ -22,7 +22,28 @@ public class UnitController implements IUnitController{
 
     public void add(int _groupId, UUID _newUUID, String _name, Instant _created)
             throws ConflictException {
+        EntityTransaction tx = mManager.getTransaction();
+        tx.begin();
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
+        Unit existingUnit = getUnitByGroupAndUUID(group, _newUUID);
+        if (existingUnit != null) {
+            tx.rollback();
+            throw new ConflictException();
+        }
+        DeletedObject deletedUnit = getDeletedUnitByGroupAndUUID(group, _newUUID);
+        if (deletedUnit != null && _created.isBefore(deletedUnit.getTime().toInstant())) {
+             tx.rollback();
+            throw new ConflictException();
+        }
+
+        Unit newUnit = new Unit().withGroup(group);
+        newUnit.setUUID(_newUUID);
+        newUnit.setName(_name);
+        newUnit.setUpdated(_created);
+        mManager.persist(newUnit);
+
+        tx.commit();
     }
 
     public void update(int _groupId, UUID _uuid, String _name, Instant _updated)
@@ -30,15 +51,8 @@ public class UnitController implements IUnitController{
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        Unit toUpdate = getUnitByGroupAndUUID(group, _uuid);
-        if (toUpdate == null) {
-            if (getDeletedUnitByGroupAndUUID(group, _uuid) == null) {
-                tx.rollback();
-                throw new NotFoundException();
-            }
-            tx.rollback();
-            throw new GoneException();
-        }
+
+        Unit toUpdate = getUnit(_uuid, tx, group);
         if (toUpdate.getUpdated().isAfter(_updated)) {
             tx.rollback();
             throw new ConflictException();
@@ -51,7 +65,34 @@ public class UnitController implements IUnitController{
     }
 
     public void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException {
+        // TODO: remove Unit from Products
+        EntityTransaction tx = mManager.getTransaction();
+        tx.begin();
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
+        DeletedObject oldUnit = new DeletedObject().withGroup(group);
+        Unit toDelete = getUnit(_uuid, tx, group);
+        oldUnit.setUUID(toDelete.getUUID());
+        oldUnit.setType(DeletedObject.Type.UNIT);
+        oldUnit.setTime(Date.from(Instant.now()));
+        mManager.persist(oldUnit);
+        mManager.remove(toDelete);
+
+        tx.commit();
+    }
+
+    private Unit getUnit(UUID _uuid, EntityTransaction _tx, DeviceGroup _group)
+            throws NotFoundException, GoneException {
+        Unit unit = getUnitByGroupAndUUID(_group, _uuid);
+        if (unit == null) {
+            if (getDeletedUnitByGroupAndUUID(_group, _uuid) == null) {
+                _tx.rollback();
+                throw new NotFoundException();
+            }
+            _tx.rollback();
+            throw new GoneException();
+        }
+        return unit;
     }
 
     public Unit getUnitByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
@@ -67,11 +108,13 @@ public class UnitController implements IUnitController{
 
     public DeletedObject getDeletedUnitByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delUnitQuery = mManager.createQuery("select do from " +
-                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type",
+                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type" +
+                " order by do.time desc",
                 DeletedObject.class);
         delUnitQuery.setParameter("group", _group);
         delUnitQuery.setParameter("uuid", _uuid);
         delUnitQuery.setParameter("type", DeletedObject.Type.UNIT);
+        delUnitQuery.setMaxResults(1);
         List<DeletedObject> delUnitResult = delUnitQuery.getResultList();
         if (delUnitResult.size() == 0)
             return null;
