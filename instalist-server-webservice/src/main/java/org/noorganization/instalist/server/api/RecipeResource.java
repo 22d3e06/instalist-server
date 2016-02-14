@@ -1,7 +1,6 @@
 
 package org.noorganization.instalist.server.api;
 
-import java.util.Date;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,51 +11,50 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.noorganization.instalist.server.message.Recipe;
+
+import org.noorganization.instalist.comm.message.RecipeInfo;
+import org.noorganization.instalist.server.TokenSecured;
 
 
 /**
  * Collection of available recipes.
  * 
  */
-@Path("recipes")
-public interface RecipesResource {
+@Path("/groups/{groupid}/recipes")
+public class RecipeResource {
 
 
     /**
      * Get a list of recipes.
      * 
      * 
-     * @param changedSince
+     * @param _changedSince
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    Response getRecipes(@QueryParam("changedSince") Date changedSince) throws Exception;
+    public Response getRecipes(@PathParam("groupid") int _groupId,
+                               @QueryParam("changedsince") String _changedSince) throws Exception {
+        return null;
+    }
 
     /**
      * Get a list of ingredients.
      * 
      * 
-     * @param changedSince
+     * @param _recipeUUID
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
-    @Path("ingredients")
+    @TokenSecured
+    @Path("{recipeuuid}")
     @Produces({ "application/json" })
-    Response getRecipeIngredients(@QueryParam("changedSince") Date changedSince) throws Exception;
-
-    /**
-     * Returns the recipe.
-     * 
-     * 
-     * @param recipeId
-     *     
-     */
-    @GET
-    @Path("{recipeId}")
-    @Produces({ "application/json" })
-    Response getRecipeById(@PathParam("recipeId") String recipeId) throws Exception;
+    public Response getRecipeIngredients(@PathParam("groupid") int _groupId,
+                                         @PathParam("recipeuuid") String _recipeUUID) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Updates the recipe.
@@ -68,10 +66,15 @@ public interface RecipesResource {
      *      e.g. examples/recipe.example
      */
     @PUT
-    @Path("{recipeId}")
+    @TokenSecured
+    @Path("{recipeuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putRecipeById(@PathParam("recipeId") String recipeId, Recipe entity) throws Exception;
+    public Response putRecipeById(@PathParam("groupid") int _groupId,
+                           @PathParam("recipeuuid") String _recipeUUID, RecipeInfo entity) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Creates the recipe.
@@ -83,10 +86,14 @@ public interface RecipesResource {
      *      e.g. examples/recipe.example
      */
     @POST
-    @Path("{recipeId}")
+    @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postRecipeById(@PathParam("recipeId") String recipeId, Recipe entity) throws Exception;
+    public Response postRecipeById(@PathParam("groupid") int _groupId,
+                            @PathParam("recipeuuid") String _recipeUUID, RecipeInfo entity) throws
+            Exception {
+        return null;
+    }
 
     /**
      * Deletes the recipe.
@@ -96,8 +103,12 @@ public interface RecipesResource {
      *     
      */
     @DELETE
-    @Path("{recipeId}")
+    @TokenSecured
+    @Path("{recipeuuid}")
     @Produces({ "application/json" })
-    Response deleteRecipeById(@PathParam("recipeId") String recipeId) throws Exception;
+    public Response deleteRecipeById(@PathParam("groupid") int _groupId,
+                              @PathParam("recipeuuid") String _recipeUUID) throws Exception {
+        return null;
+    }
 
 }

@@ -14,12 +14,14 @@ public class DeviceGroup {
     private Date   mUpdated;
     private Date   mCreated;
 
-    private Set<Device> mDevices;
     private Set<Category> mCategories;
-    private Set<ShoppingList> mLists;
     private Set<DeletedObject> mDeletedObjects;
+    private Set<Device> mDevices;
+    private Set<Ingredient> mIngredients;
+    private Set<ShoppingList> mLists;
     private Set<ListEntry> mListEntries;
     private Set<Product> mProducts;
+    private Set<Recipe> mRecipes;
     private Set<Unit> mUnits;
 
     public DeviceGroup() {
@@ -162,6 +164,24 @@ public class DeviceGroup {
 
     public void setProducts(Set<Product> _products) {
         mProducts = _products;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Recipe> getRecipes() {
+        return mRecipes;
+    }
+
+    public void setRecipes(Set<Recipe> _recipes) {
+        mRecipes = _recipes;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Ingredient> getIngredients() {
+        return mIngredients;
+    }
+
+    public void setIngredients(Set<Ingredient> _ingredients) {
+        mIngredients = _ingredients;
     }
 
 
