@@ -12,16 +12,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.noorganization.instalist.server.message.ListEntry;
+import org.noorganization.instalist.comm.message.EntryInfo;
+import org.noorganization.instalist.server.TokenSecured;
 
 
 /**
  * Collection of available listEntries.
  * 
  */
-@Path("listEntries")
-public interface ListEntriesResource {
-
+@Path("/groups/{groupid}/listentries")
+public class EntryResource {
 
     /**
      * Get a list of listEntries.
@@ -31,8 +31,12 @@ public interface ListEntriesResource {
      *     Requests only the elements that changed since the given date. ISO 8601 time e.g. 2016-01-19T11:54:07+01:00
      */
     @GET
+    @TokenSecured
     @Produces({ "application/json" })
-    Response getListEntries(@QueryParam("changedSince") Date changedSince) throws Exception;
+    public Response getEntries(@PathParam("groupid") int _groupId,
+                               @QueryParam("changedsince") String _changedSince) throws Exception {
+        return null;
+    }
 
     /**
      * Returns the listEntry.
@@ -42,9 +46,13 @@ public interface ListEntriesResource {
      *     
      */
     @GET
-    @Path("{listEntryId}")
+    @TokenSecured
+    @Path("{entryuuid}")
     @Produces({ "application/json" })
-    Response getListEntryById(@PathParam("listEntryId") String listEntryId) throws Exception;
+    public Response getEntry(@PathParam("groupid") int _groupId,
+                             @PathParam("entryuuid") String _entryUUID) throws Exception {
+        return null;
+    }
 
     /**
      * Updates the listEntry.
@@ -56,11 +64,15 @@ public interface ListEntriesResource {
      *      e.g. examples/shoppingList.example
      */
     @PUT
-    @Path("{listEntryId}")
+    @TokenSecured
+    @Path("{entryuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response putListEntryById(@PathParam("listEntryId") String listEntryId, ListEntry entity)
-            throws Exception;
+    public Response putListEntryById(@PathParam("groupid") int _groupId,
+                                     @PathParam("entryuuid") String _entryUUID,
+                                     EntryInfo _entity) throws Exception {
+        return null;
+    }
 
     /**
      * Creates the listEntry.
@@ -72,11 +84,12 @@ public interface ListEntriesResource {
      *      e.g. examples/shoppingList.example
      */
     @POST
-    @Path("{listEntryId}")
     @Consumes("application/json")
     @Produces({ "application/json" })
-    Response postListEntryById(@PathParam("listEntryId") String listEntryId, ListEntry entity)
-            throws Exception;
+    public Response postListEntryById(@PathParam("groupid") int _groupId, EntryInfo entity)
+            throws Exception {
+        return null;
+    }
 
     /**
      * Deletes the listEntry.
@@ -86,8 +99,12 @@ public interface ListEntriesResource {
      *     
      */
     @DELETE
-    @Path("{listEntryId}")
+    @Path("{entryuuid}")
     @Produces({ "application/json" })
-    Response deleteListEntryById(@PathParam("listEntryId") String listEntryId) throws Exception;
+    public Response deleteListEntryById(@PathParam("groupid") int _groupId,
+                                        @PathParam("entryuuid") String _entryUUID)
+            throws Exception {
+        return null;
+    }
 
 }

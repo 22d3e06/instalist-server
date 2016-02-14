@@ -19,6 +19,7 @@ public class DeviceGroup {
     private Set<ShoppingList> mLists;
     private Set<DeletedObject> mDeletedObjects;
     private Set<ListEntry> mListEntries;
+    private Set<Product> mProducts;
     private Set<Unit> mUnits;
 
     public DeviceGroup() {
@@ -152,6 +153,15 @@ public class DeviceGroup {
     public void setListEntries(
             Set<ListEntry> _listEntries) {
         mListEntries = _listEntries;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Product> getProducts() {
+        return mProducts;
+    }
+
+    public void setProducts(Set<Product> _products) {
+        mProducts = _products;
     }
 
 
