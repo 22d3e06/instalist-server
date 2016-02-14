@@ -326,7 +326,7 @@ resourceTypes:
       /{uuid}:
         type:  { collection-item: {exampleReturnItem : !include examples/recipeReturn.example, exampleSchema : recipe, exampleItem : !include examples/recipe.example } }
 
-    /taggedProducts:
+    /taggedproducts:
       type:  { collection: {exampleCollection : !include examples/taggedProductCollectionReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
       /{uuid}:
         type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example, exampleSchema : taggedProduct, exampleItem : !include examples/taggedProduct.example } }
@@ -336,7 +336,7 @@ resourceTypes:
       /{uuid}:
         type:  { collection-item: {exampleReturnItem : !include examples/tagReturn.example, exampleSchema : tag, exampleItem : !include examples/tag.example } }
 
-    /listEntries:
+    /listentries:
       type:  { collection: {exampleCollection : !include examples/listEntryCollectionReturn.example, exampleSchema : listEntry, exampleItem : !include examples/listEntry.example } }
       /{uuid}:
         type:  { collection-item: {exampleReturnItem : !include examples/listEntryReturn.example, exampleSchema : listEntry, exampleItem : !include examples/listEntry.example } }
