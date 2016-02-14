@@ -102,7 +102,7 @@ public class ListEntry {
     }
 
     @Column(name = "struck", columnDefinition = "TINYINT(1)", nullable = false)
-    public boolean isStruck() {
+    public boolean getStruck() {
         return mStruck;
     }
 

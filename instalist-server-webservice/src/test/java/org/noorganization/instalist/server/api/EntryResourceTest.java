@@ -137,7 +137,7 @@ public class EntryResourceTest extends JerseyTest {
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse1.getStatus());
         EntryInfo[] allEntryInfo = okResponse1.readEntity(EntryInfo[].class);
-        assertEquals(3, allEntryInfo.length);
+        assertEquals(2, allEntryInfo.length);
         for(EntryInfo current: allEntryInfo) {
             if (mEntry.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertEquals(mEntry.getUpdated(), current.getLastChanged().toInstant());
@@ -177,11 +177,11 @@ public class EntryResourceTest extends JerseyTest {
         String url = "/groups/%d/listentries/%s";
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
-                mProduct.getUUID().toString())).request().get();
+                mEntry.getUUID().toString())).request().get();
         assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId(),
-                mProduct.getUUID().toString())).request().
+                mEntry.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").get();
         assertEquals(401, wrongAuthResponse.getStatus());
 
@@ -201,7 +201,7 @@ public class EntryResourceTest extends JerseyTest {
         assertEquals(410, goneResponse.getStatus());
 
         Response okResponse1 = target(String.format(url, mGroup.getId(),
-                mProduct.getUUID().toString())).request().
+                mEntry.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).get();
         assertEquals(200, okResponse1.getStatus());
         EntryInfo returnedEntryInfo = okResponse1.readEntity(EntryInfo.class);
