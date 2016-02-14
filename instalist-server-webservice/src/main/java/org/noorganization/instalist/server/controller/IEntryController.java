@@ -54,13 +54,13 @@ public interface IEntryController {
             throws ConflictException, GoneException, NotFoundException, BadRequestException;
 
     /**
-     * Deletes a list and all entries.
-     * @param _groupId The id of the group containing the list.
-     * @param _listUUID The uuid of the list identifying it in the group.
+     * Deletes an entry.
+     * @param _groupId The id of the group containing the entry.
+     * @param _entryUUID The uuid of the entry identifying it in the group.
      * @throws GoneException If list was deleted before.
      * @throws NotFoundException If list was not found.
      */
-    void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException;
+    void delete(int _groupId, UUID _entryUUID) throws GoneException, NotFoundException;
 
     /**
      * Finds a list entry.

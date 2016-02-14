@@ -1,11 +1,9 @@
 package org.noorganization.instalist.server.controller.impl;
 
 import org.noorganization.instalist.server.controller.ICategoryController;
+import org.noorganization.instalist.server.controller.IEntryController;
 import org.noorganization.instalist.server.controller.IListController;
-import org.noorganization.instalist.server.model.Category;
-import org.noorganization.instalist.server.model.DeletedObject;
-import org.noorganization.instalist.server.model.DeviceGroup;
-import org.noorganization.instalist.server.model.ShoppingList;
+import org.noorganization.instalist.server.model.*;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 import javax.persistence.EntityManager;
@@ -92,8 +90,6 @@ public class ListController implements IListController {
     }
 
     public void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException {
-        // TODO: also delete entries.
-
         mManager.getTransaction().begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         ShoppingList listToDelete = getListByGroupAndUUID(group, _listUUID);
@@ -104,6 +100,13 @@ public class ListController implements IListController {
             }
             mManager.getTransaction().rollback();
             throw new NotFoundException();
+        }
+
+        IEntryController entryController = ControllerFactory.getEntryController(mManager);
+        for (ListEntry entry: listToDelete.getEntries()) {
+            try {
+                entryController.delete(_groupId, entry.getUUID());
+            } catch (Exception _e) {}
         }
 
         DeletedObject deletedList = new DeletedObject().withType(DeletedObject.Type.LIST);
