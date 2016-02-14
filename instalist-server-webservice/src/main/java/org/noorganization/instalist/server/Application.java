@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.noorganization.instalist.server.api.*;
 import org.noorganization.instalist.server.message.AppConfiguration;
+import org.noorganization.instalist.server.model.ListEntry;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
 import java.io.IOException;
@@ -22,6 +23,7 @@ public class Application extends ResourceConfig {
         register(ListResource.class);
         register(UnitResource.class);
         register(ProductResource.class);
+        register(EntryResource.class);
 
         register(AuthenticationFilter.class);
     }
