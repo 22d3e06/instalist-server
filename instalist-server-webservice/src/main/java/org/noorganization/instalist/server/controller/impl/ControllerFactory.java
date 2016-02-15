@@ -23,6 +23,10 @@ public class ControllerFactory {
         return new EntryController(_manager);
     }
 
+    public static IIngredientController getIngredientController(EntityManager _manager) {
+        return new IngredientController(_manager);
+    }
+
     public static IGroupController getGroupController(EntityManager _manager) {
         return new GroupController(_manager);
     }
@@ -33,6 +37,10 @@ public class ControllerFactory {
 
     public static IProductController getProductController(EntityManager _manager) {
         return new ProductController(_manager);
+    }
+
+    public static IRecipeController getRecipeController(EntityManager _manager) {
+        return new RecipeController(_manager);
     }
 
     public static IUnitController getUnitController(EntityManager _manager) {

@@ -18,12 +18,13 @@ public class Application extends ResourceConfig {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
         dbHelper.initialize("org.noorganization.instalist.server");
 
-        register(GroupsResource.class);
         register(CategoriesResource.class);
+        register(GroupsResource.class);
+        register(EntryResource.class);
+        register(ProductResource.class);
+        register(RecipeResource.class);
         register(ListResource.class);
         register(UnitResource.class);
-        register(ProductResource.class);
-        register(EntryResource.class);
 
         register(AuthenticationFilter.class);
     }

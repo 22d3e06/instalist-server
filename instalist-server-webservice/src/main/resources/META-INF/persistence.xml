@@ -4,16 +4,15 @@
              version="2.0">
 
     <persistence-unit name="org.noorganization.instalist.server">
-        <description>
-            Persistence unit for the JPA tutorial of the Hibernate Getting Started Guide
-        </description>
 
         <class>org.noorganization.instalist.server.model.DeviceGroup</class>
         <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
+        <class>org.noorganization.instalist.server.model.Ingredient</class>
         <class>org.noorganization.instalist.server.model.ListEntry</class>
         <class>org.noorganization.instalist.server.model.Product</class>
+        <class>org.noorganization.instalist.server.model.Recipe</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
         <class>org.noorganization.instalist.server.model.Unit</class>
 
@@ -36,8 +35,10 @@
         <class>org.noorganization.instalist.server.model.Category</class>
         <class>org.noorganization.instalist.server.model.DeletedObject</class>
         <class>org.noorganization.instalist.server.model.Device</class>
+        <class>org.noorganization.instalist.server.model.Ingredient</class>
         <class>org.noorganization.instalist.server.model.ListEntry</class>
         <class>org.noorganization.instalist.server.model.Product</class>
+        <class>org.noorganization.instalist.server.model.Recipe</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
         <class>org.noorganization.instalist.server.model.Unit</class>
 
