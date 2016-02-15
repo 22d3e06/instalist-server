@@ -1,13 +1,8 @@
 package org.noorganization.instalist.server;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.noorganization.instalist.server.api.*;
-import org.noorganization.instalist.server.message.AppConfiguration;
-import org.noorganization.instalist.server.model.ListEntry;
 import org.noorganization.instalist.server.support.DatabaseHelper;
-
-import java.io.IOException;
 
 /**
  * Created by damihe on 23.01.16.

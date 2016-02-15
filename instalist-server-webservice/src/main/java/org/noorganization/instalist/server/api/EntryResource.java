@@ -19,7 +19,7 @@ import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IEntryController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
-import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.comm.message.Error;
 import org.noorganization.instalist.server.model.*;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;

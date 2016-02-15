@@ -1,6 +1,6 @@
 package org.noorganization.instalist.server;
 
-import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.comm.message.Error;
 
 /**
  * Created by damihe on 31.01.16.

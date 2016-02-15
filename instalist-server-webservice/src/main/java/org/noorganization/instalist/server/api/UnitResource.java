@@ -12,7 +12,7 @@ import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IUnitController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
-import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.comm.message.Error;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.Unit;

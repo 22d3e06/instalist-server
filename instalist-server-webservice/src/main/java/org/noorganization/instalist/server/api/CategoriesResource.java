@@ -12,7 +12,7 @@ import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.comm.message.CategoryInfo;
 import org.noorganization.instalist.server.controller.ICategoryController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
-import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.comm.message.Error;
 import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;

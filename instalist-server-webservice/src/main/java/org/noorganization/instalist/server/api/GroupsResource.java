@@ -11,7 +11,7 @@ import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
-import org.noorganization.instalist.server.message.Error;
+import org.noorganization.instalist.comm.message.Error;
 import org.noorganization.instalist.server.model.Device;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.support.DatabaseHelper;
