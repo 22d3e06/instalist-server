@@ -1,29 +1,51 @@
 
 package org.noorganization.instalist.server.api;
 
-import org.noorganization.instalist.comm.message.EntryInfo;
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import org.noorganization.instalist.comm.message.Error;
+import org.noorganization.instalist.comm.message.IngredientInfo;
+import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
+import org.noorganization.instalist.server.controller.IIngredientController;
+import org.noorganization.instalist.server.controller.impl.ControllerFactory;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.model.Ingredient;
+import org.noorganization.instalist.server.support.DatabaseHelper;
+import org.noorganization.instalist.server.support.ResponseFactory;
+import org.noorganization.instalist.server.support.exceptions.ConflictException;
+import org.noorganization.instalist.server.support.exceptions.GoneException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 
 @Path("/groups/{groupid}/ingredients")
 public class IngredientResource {
 
     /**
-     * Get a list of listEntries.
-     * @param _groupId The id of the group containing various list-entries.
+     * Get a list of ingredients.
+     * @param _groupId The id of the group containing various ingredients.
      * @param _changedSince Limits the result to elements that changed since the given date. ISO
-     *                      8601 time e.g. 2016-01-19T11:54:07+0100
+     *                      8601 time e.g. 2016-01-19T11:54:07+0100. Optional.
      */
     @GET
     @TokenSecured
     @Produces({ "application/json" })
     public Response getIngredients(@PathParam("groupid") int _groupId,
-                               @QueryParam("changedsince") String _changedSince) throws Exception {
-        /*List<ListEntry> foundEntries;
-        List<DeletedObject> foundDeleted;
+                                   @QueryParam("changedsince") String _changedSince)
+            throws Exception {
+        List<Ingredient> ingedients;
+        List<DeletedObject> deletedIngredients;
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
@@ -37,61 +59,58 @@ public class IngredientResource {
                 return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
             }
 
-            TypedQuery<ListEntry> foundEntriesQuery = manager.createQuery("select le from " +
-                            "ListEntry le where le.group = :group and le.updated > :updated",
-                    ListEntry.class);
-            foundEntriesQuery.setParameter("group", group);
-            foundEntriesQuery.setParameter("updated", changedSince);
-            foundEntries = foundEntriesQuery.getResultList();
+            TypedQuery<Ingredient> IngredientsQuery = manager.createQuery("select i from " +
+                            "Ingredient i where i.group = :group and i.updated > :updated",
+                    Ingredient.class);
+            IngredientsQuery.setParameter("group", group);
+            IngredientsQuery.setParameter("updated", changedSince);
+            ingedients = IngredientsQuery.getResultList();
 
-            TypedQuery<DeletedObject> foundDeletedEntriesQuery = manager.createQuery("select do " +
+            TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do " +
                     "from DeletedObject do where do.group = :group and do.time > :updated and " +
                     "do.type = :type", DeletedObject.class);
-            foundDeletedEntriesQuery.setParameter("group", group);
-            foundDeletedEntriesQuery.setParameter("updated", Date.from(changedSince));
-            foundDeletedEntriesQuery.setParameter("type", DeletedObject.Type.LISTENTRY);
-            foundDeleted = foundDeletedEntriesQuery.getResultList();
+            deletedIngredientsQuery.setParameter("group", group);
+            deletedIngredientsQuery.setParameter("updated", Date.from(changedSince));
+            deletedIngredientsQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
+            deletedIngredients = deletedIngredientsQuery.getResultList();
         } else {
-            foundEntries = new ArrayList<ListEntry>(group.getListEntries());
+            ingedients = new ArrayList<Ingredient>(group.getIngredients());
 
-            TypedQuery<DeletedObject> deletedEntriesQuery = manager.createQuery("select do from " +
+            TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do from " +
                     "DeletedObject do where do.group = :group and do.type = :type",
                     DeletedObject.class);
-            deletedEntriesQuery.setParameter("group", group);
-            deletedEntriesQuery.setParameter("type", DeletedObject.Type.LISTENTRY);
-            foundDeleted = deletedEntriesQuery.getResultList();
+            deletedIngredientsQuery.setParameter("group", group);
+            deletedIngredientsQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
+            deletedIngredients = deletedIngredientsQuery.getResultList();
         }
         manager.close();
 
-        ArrayList<EntryInfo> rtn = new ArrayList<EntryInfo>(foundEntries.size() +
-                foundDeleted.size());
-        for (ListEntry current : foundEntries) {
-            EntryInfo toAdd = new EntryInfo().withDeleted(false);
+        ArrayList<IngredientInfo> rtn = new ArrayList<IngredientInfo>(ingedients.size() +
+                deletedIngredients.size());
+        for (Ingredient current : ingedients) {
+            IngredientInfo toAdd = new IngredientInfo().withDeleted(false);
             toAdd.setUUID(current.getUUID());
             toAdd.setProductUUID(current.getProduct().getUUID());
-            toAdd.setListUUID(current.getList().getUUID());
+            toAdd.setRecipeUUID(current.getRecipe().getUUID());
             toAdd.setAmount(current.getAmount());
-            toAdd.setPriority(current.getPriority());
-            toAdd.setStruck(current.getStruck());
             toAdd.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(toAdd);
         }
-        for (DeletedObject current : foundDeleted) {
-            EntryInfo toAdd = new EntryInfo();
+        for (DeletedObject current : deletedIngredients) {
+            IngredientInfo toAdd = new IngredientInfo();
             toAdd.setUUID(current.getUUID());
             toAdd.setLastChanged(current.getTime());
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }
 
-        return ResponseFactory.generateOK(rtn);*/
-        return null;
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
-     * Returns a single list-entry.
-     * @param _groupId The id of the group containing the entry.
-     * @param _entryUUID The uuid of the entry itself.
+     * Returns a single ingredient.
+     * @param _groupId The id of the group containing the ingredient.
+     * @param _entryUUID The uuid of the ingredient itself.
      */
     @GET
     @TokenSecured
@@ -99,7 +118,7 @@ public class IngredientResource {
     @Produces({ "application/json" })
     public Response getIngredient(@PathParam("groupid") int _groupId,
                              @PathParam("entryuuid") String _entryUUID) throws Exception {
-        /*UUID toFind;
+        UUID toFind;
         try {
             toFind = UUID.fromString(_entryUUID);
         } catch (IllegalArgumentException _e) {
@@ -108,62 +127,61 @@ public class IngredientResource {
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
-        IEntryController entryController = ControllerFactory.getEntryController(manager);
+        IIngredientController ingredientController = ControllerFactory.
+                getIngredientController(manager);
 
-        ListEntry foundEntry = entryController.getEntryByGroupAndUUID(group, toFind);
-        if (foundEntry == null) {
-            if (entryController.getDeletedEntryByGroupAndUUID(group, toFind) != null) {
+        Ingredient foundIngredient = ingredientController.getIngredientByGroupAndUUID(group,
+                toFind);
+        if (foundIngredient == null) {
+            if (ingredientController.getDeletedIngredientByGroupAndUUID(group, toFind) != null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +
-                        "listentry has been deleted."));
+                        "ingredient has been deleted."));
             }
             manager.close();
             return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
-                    "listentry was not found."));
+                    "ingredient was not found."));
         }
         manager.close();
 
-        EntryInfo rtn = new EntryInfo().withDeleted(false);
-        rtn.setUUID(foundEntry.getUUID());
-        rtn.setProductUUID(foundEntry.getProduct().getUUID());
-        rtn.setListUUID(foundEntry.getList().getUUID());
-        rtn.setAmount(foundEntry.getAmount());
-        rtn.setPriority(foundEntry.getPriority());
-        rtn.setStruck(foundEntry.getStruck());
-        rtn.setLastChanged(Date.from(foundEntry.getUpdated()));
+        IngredientInfo rtn = new IngredientInfo().withDeleted(false);
+        rtn.setUUID(foundIngredient.getUUID());
+        rtn.setProductUUID(foundIngredient.getProduct().getUUID());
+        rtn.setRecipeUUID(foundIngredient.getRecipe().getUUID());
+        rtn.setAmount(foundIngredient.getAmount());
+        rtn.setLastChanged(Date.from(foundIngredient.getUpdated()));
 
-        return ResponseFactory.generateOK(rtn);*/
-        return null;
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
-     * Updates an entry.
-     * @param _groupId The id of the group containing the entry.
-     * @param _entryUUID The uuid of the entry itself.
-     * @param _entity Data for updating the entry.
+     * Updates an ingredient.
+     * @param _groupId The id of the group containing the ingredient.
+     * @param _ingredientUUID The uuid of the ingredient itself.
+     * @param _entity Data for updating the ingredient.
      */
     @PUT
     @TokenSecured
-    @Path("{entryuuid}")
+    @Path("{ingredientuuid}")
     @Consumes("application/json")
     @Produces({ "application/json" })
     public Response putIngredient(@PathParam("groupid") int _groupId,
-                                  @PathParam("entryuuid") String _entryUUID,
-                                  EntryInfo _entity) throws Exception {
-        /*if ((_entity.getUUID() != null && !_entity.getUUID().equals(_entryUUID)) ||
+                                  @PathParam("ingredientuuid") String _ingredientUUID,
+                                  IngredientInfo _entity) throws Exception {
+        if ((_entity.getUUID() != null && !_entity.getUUID().equals(_ingredientUUID)) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getAmount() != null && _entity.getAmount() < 0.001f))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
 
         UUID toUpdate;
         UUID productUUID = null;
-        UUID listUUID = null;
+        UUID recipeUUID = null;
         try {
-            toUpdate = UUID.fromString(_entryUUID);
+            toUpdate = UUID.fromString(_ingredientUUID);
             if (_entity.getProductUUID() != null)
                 productUUID = UUID.fromString(_entity.getProductUUID());
-            if (_entity.getListUUID() != null)
-                listUUID = UUID.fromString(_entity.getListUUID());
+            if (_entity.getRecipeUUID() != null)
+                recipeUUID = UUID.fromString(_entity.getRecipeUUID());
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
@@ -176,42 +194,42 @@ public class IngredientResource {
             updated = Instant.now();
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IEntryController entryController = ControllerFactory.getEntryController(manager);
+        IIngredientController ingredientController = ControllerFactory.
+                getIngredientController(manager);
         try {
-            entryController.update(_groupId, toUpdate, productUUID, listUUID, _entity.getAmount(),
-                    _entity.getPriority(), _entity.getStruck(), updated);
+            ingredientController.update(_groupId, toUpdate, recipeUUID, productUUID,
+                    _entity.getAmount(), updated);
         } catch (NotFoundException _e) {
-            return ResponseFactory.generateNotFound(new Error().withMessage("The entry was not " +
-                    "found."));
+            return ResponseFactory.generateNotFound(new Error().withMessage("The ingredient was " +
+                    "not found."));
         } catch (GoneException _e) {
-            return ResponseFactory.generateGone(new Error().withMessage("The entry has been " +
+            return ResponseFactory.generateGone(new Error().withMessage("The ingredient has been " +
                     "deleted."));
         } catch (ConflictException _e) {
             return ResponseFactory.generateConflict(new Error().withMessage("The sent data would " +
-                    "conflict with saved list entry."));
+                    "conflict with saved ingredient."));
         } catch (BadRequestException _e) {
             return ResponseFactory.generateBadRequest(new Error().withMessage("The referenced " +
-                    "product or list was not found."));
+                    "product or recipe was not found."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateOK(null);*/
-        return null;
+        return ResponseFactory.generateOK(null);
     }
 
     /**
-     * Creates the listEntry.
-     * @param _groupId The id of the group containing the entry.
-     * @param _entity Data for created the entry.
+     * Creates the ingredient.
+     * @param _groupId The id of the group that will contain the ingredient.
+     * @param _entity Data for the created ingredient.
      */
     @POST
     @TokenSecured
     @Consumes("application/json")
     @Produces({ "application/json" })
-    public Response postIngredient(@PathParam("groupid") int _groupId, EntryInfo _entity)
+    public Response postIngredient(@PathParam("groupid") int _groupId, IngredientInfo _entity)
             throws Exception {
-        /*if (_entity.getUUID() == null || _entity.getListUUID() == null ||
+        if (_entity.getUUID() == null || _entity.getRecipeUUID() == null ||
                 _entity.getProductUUID() == null ||
                 (_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getAmount() != null && _entity.getAmount() < 0.001f))
@@ -219,11 +237,11 @@ public class IngredientResource {
 
         UUID toCreate;
         UUID productUUID;
-        UUID listUUID;
+        UUID recipeUUID;
         try {
             toCreate = UUID.fromString(_entity.getUUID());
             productUUID = UUID.fromString(_entity.getProductUUID());
-            listUUID = UUID.fromString(_entity.getListUUID());
+            recipeUUID = UUID.fromString(_entity.getRecipeUUID());
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
@@ -235,63 +253,59 @@ public class IngredientResource {
         } else
             created = Instant.now();
         float amount = (_entity.getAmount() != null ? _entity.getAmount() : 1f);
-        int priority = (_entity.getPriority() != null ? _entity.getPriority() : 0);
-        boolean struck = (_entity.getStruck() != null ? _entity.getStruck() : false);
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IEntryController entryController = ControllerFactory.getEntryController(manager);
+        IIngredientController ingredientController = ControllerFactory.getIngredientController(manager);
         try {
-            entryController.add(_groupId, toCreate, productUUID, listUUID, amount, priority, struck,
-                    created);
+            ingredientController.add(_groupId, toCreate, recipeUUID, productUUID, amount, created);
         } catch (ConflictException _e) {
             return ResponseFactory.generateConflict(new Error().withMessage("The sent data would " +
-                    "conflict with saved list entry."));
+                    "conflict with saved ingredient."));
         } catch (BadRequestException _e) {
             return ResponseFactory.generateBadRequest(new Error().withMessage("The referenced " +
-                    "product or list was not found."));
+                    "recipe or product was not found."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateCreated(null);*/
-        return null;
+        return ResponseFactory.generateCreated(null);
     }
 
     /**
-     * Deletes the entry.
-     * @param _groupId The id of the group containing the entry.
-     * @param _entryUUID The uuid of the entry itself.
+     * Deletes the ingredient.
+     * @param _groupId The id of the group still containing the ingredient.
+     * @param _ingredientUUID The uuid of the ingredient itself.
      */
     @DELETE
     @TokenSecured
-    @Path("{entryuuid}")
+    @Path("{ingredientuuid}")
     @Produces({ "application/json" })
     public Response deleteIngredient(@PathParam("groupid") int _groupId,
-                                     @PathParam("entryuuid") String _entryUUID)
+                                     @PathParam("ingredientuuid") String _ingredientUUID)
             throws Exception {
-        /*UUID toDelete;
+        UUID toDelete;
         try {
-            toDelete = UUID.fromString(_entryUUID);
+            toDelete = UUID.fromString(_ingredientUUID);
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IEntryController entryController = ControllerFactory.getEntryController(manager);
+        IIngredientController ingredientController = ControllerFactory.
+                getIngredientController(manager);
         try {
-            entryController.delete(_groupId, toDelete);
+            ingredientController.delete(_groupId, toDelete);
         } catch (NotFoundException _e) {
-            return ResponseFactory.generateNotFound(new Error().withMessage("The entry was not " +
-                    "found."));
+            return ResponseFactory.generateNotFound(new Error().withMessage("The ingredient was " +
+                    "not found."));
         } catch (GoneException _e) {
-            return ResponseFactory.generateGone(new Error().withMessage("The entry has been " +
+            return ResponseFactory.generateGone(new Error().withMessage("The ingredient has been " +
                     "deleted."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateOK(null);*/
-        return null;
+        return ResponseFactory.generateOK(null);
     }
 
 }

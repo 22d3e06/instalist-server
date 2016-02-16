@@ -47,7 +47,7 @@ public interface IIngredientController {
      * not be resolved.
      */
     void update(int _groupId, UUID _ingredientUUID, UUID _recipeUUID, UUID _productUUID,
-                float _amount, Instant _lastChanged) throws ConflictException, GoneException,
+                Float _amount, Instant _lastChanged) throws ConflictException, GoneException,
             NotFoundException, BadRequestException;
 
     /**

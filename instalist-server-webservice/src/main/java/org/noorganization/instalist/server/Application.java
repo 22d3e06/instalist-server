@@ -5,7 +5,7 @@ import org.noorganization.instalist.server.api.*;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
 /**
- * Created by damihe on 23.01.16.
+ * The Application defines all available resources and prepares the database connection.
  */
 public class Application extends ResourceConfig {
 
@@ -14,11 +14,12 @@ public class Application extends ResourceConfig {
         dbHelper.initialize("org.noorganization.instalist.server");
 
         register(CategoriesResource.class);
-        register(GroupsResource.class);
         register(EntryResource.class);
+        register(GroupsResource.class);
+        register(IngredientResource.class);
+        register(ListResource.class);
         register(ProductResource.class);
         register(RecipeResource.class);
-        register(ListResource.class);
         register(UnitResource.class);
 
         register(AuthenticationFilter.class);
