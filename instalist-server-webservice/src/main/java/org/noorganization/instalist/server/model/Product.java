@@ -18,6 +18,7 @@ public class Product {
     private DeviceGroup mGroup;
 
     private Set<ListEntry> mEntries;
+    private Set<Ingredient> mIngredients;
 
     public Product() {
         mUpdated       = Instant.now();
@@ -149,5 +150,14 @@ public class Product {
 
     public void setEntries(Set<ListEntry> _entries) {
         mEntries = _entries;
+    }
+
+    @OneToMany(mappedBy = "product")
+    public Set<Ingredient> getIngredients() {
+        return mIngredients;
+    }
+
+    public void setIngredients(Set<Ingredient> _ingredients) {
+        mIngredients = _ingredients;
     }
 }

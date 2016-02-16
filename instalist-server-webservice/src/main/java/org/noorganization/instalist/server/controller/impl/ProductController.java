@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller.impl;
 
 import org.noorganization.instalist.server.controller.IEntryController;
+import org.noorganization.instalist.server.controller.IIngredientController;
 import org.noorganization.instalist.server.controller.IProductController;
 import org.noorganization.instalist.server.controller.IUnitController;
 import org.noorganization.instalist.server.model.*;
@@ -108,6 +109,13 @@ class ProductController implements IProductController {
         for (ListEntry entry: toDelete.getEntries()) {
             try {
                 entryController.delete(_groupId, entry.getUUID());
+            } catch (Exception _e) {}
+        }
+        IIngredientController ingredientController = ControllerFactory.
+                getIngredientController(mManager);
+        for (Ingredient ingredient: toDelete.getIngredients()) {
+            try {
+                ingredientController.delete(_groupId, ingredient.getUUID());
             } catch (Exception _e) {}
         }
         DeletedObject oldProduct = new DeletedObject().withGroup(group);
