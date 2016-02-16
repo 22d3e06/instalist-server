@@ -1,11 +1,18 @@
 # Einkaufsliste Server
-
-Die Serverseite für das Plugin [InstalistSync](https://bitbucket.org/fhnoorg/instalistsynch). Dient vor allem zur 
-Synchronisation zwischen mehreren Geräten. 
+Die Serverseite für das Plugin [InstalistSync](https://bitbucket.org/fhnoorg/instalistsynch). Dient 
+vor allem zur Synchronisation zwischen mehreren Geräten. 
 
 ## Zustand
 [![Build Status](http://instalist.noorganization.org/jenkins/buildStatus/icon?job=Einkaufsliste-Server)](http://instalist.noorganization.org/jenkins/job/Einkaufsliste-Server/)
 Zumindest gilt das für den Build und die Tests.
+
+## Struktur
+Das Projekt ist in mehrere Module unterteilt (ebenfalls in IntelliJ sichtbar):
+ 
+ - `instalist-server-meta`: Das Projekt in dem alle serverseitigen Module enthalten sind.
+ - `instalist-server-webservice`: Die Serverseite selbst.
+ - `instalist-comm`: Klassen zur standardisierten Kommunikation mit dem Client. Dieses Projekt 
+ wird ebenfalls im Client benutzt.
 
 ## Setup
 Benötigt:
@@ -18,11 +25,18 @@ Benötigt:
 
 Dies ist ein Maven-Projekt. Mit
 
+    git clone ...
+    git submodule update --init
     mvn compile
     mvn package
     
-lässt es sich kompilieren bzw. in ein war-File verpacken.
+lässt es sich klonen, kompilieren bzw. in ein war-File verpacken.
 
-Vor dem deployen muss man die Datenbank mit den Zugangsdaten aus `src/main/resources/database/config.json` einrichten und dem Nutzer alle Rechte auf die Datenbank geben.
+Zum Testen wird keine externe Datenbank-Verbindung benötigt. Für den Einsatz nach dem deployen 
+auf dem Applikationsserver wird die Datenbank benötigt und muss erstellt, sowie die Tabellen 
+angelegt sein. Verwendete Zugangsdaten sind in 
+`instalist-server-webservice/src/main/resources/META-INF/persistence.xml` hinterlegt. Die 
+Datenbank-Tabellen können mit dem SQL-Skript in `doc/database-model.sql` initialisiert werden.
 
-Dieses Projekt enthält außerdem ein Projekt für IntelliJ IDEA, der Applikations-Server muss jedoch selbst eingebunden werden.
+Dieses Projekt enthält außerdem ein Projekt für IntelliJ IDEA, der Applikations-Server muss jedoch 
+selbst eingebunden werden.
