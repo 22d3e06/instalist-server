@@ -1,17 +1,15 @@
 package org.noorganization.instalist.server.model;
 
+import org.noorganization.instalist.server.model.generic.NamedItem;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
-/**
- * Created by damihe on 03.02.16.
- */
 @Entity
 @Table(name = "devices")
-public class Device {
+public class Device extends NamedItem<Device> {
     private int         mId;
-    private String      mName;
     private Date        mCreated;
     private boolean     mAuthorized;
     private String      mSecret;
@@ -30,20 +28,6 @@ public class Device {
 
     public Device withId(int _id) {
         setId(_id);
-        return this;
-    }
-
-    @Column(name = "name", nullable = false)
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String _name) {
-        mName = _name;
-    }
-
-    public Device withName(String _name) {
-        setName(_name);
         return this;
     }
 
@@ -123,7 +107,7 @@ public class Device {
             return false;
         if (mAuthorized != device.mAuthorized)
             return false;
-        if (mName != null ? !mName.equals(device.mName) : device.mName != null)
+        if (getName() != null ? !getName().equals(device.getName()) : device.getName() != null)
             return false;
         if (mCreated != null ? !mCreated.equals(device.mCreated) : device.mCreated != null)
             return false;
@@ -137,17 +121,5 @@ public class Device {
     @Override
     public int hashCode() {
         return mId;
-    }
-
-    @Override
-    public String toString() {
-        return "Device{" +
-                "mId=" + mId +
-                ", mName='" + mName + '\'' +
-                ", mCreated=" + mCreated +
-                ", mAuthorized=" + mAuthorized +
-                ", mSecret='" + mSecret + '\'' +
-                ", mGroup=" + mGroup +
-                '}';
     }
 }

@@ -1,5 +1,9 @@
 package org.noorganization.instalist.server.model;
 
+import org.noorganization.instalist.server.model.generic.BaseItem;
+import org.noorganization.instalist.server.model.generic.NamedBaseItem;
+import org.noorganization.instalist.server.model.generic.NamedItem;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -8,18 +12,14 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "categories")
-public class Category {
+public class Category extends NamedBaseItem<Category> {
 
     private int         mId;
-    private UUID        mUUID;
-    private DeviceGroup mGroup;
-    private String      mName;
-    private Date        mUpdated;
 
     private Set<ShoppingList> mLists;
 
     public Category() {
-        mUpdated = new Date(System.currentTimeMillis());
+        super();
     }
 
     @Id
@@ -35,71 +35,6 @@ public class Category {
 
     public Category withId(int _id) {
         setId(_id);
-        return this;
-    }
-
-    @Column(name = "uuid", nullable = false, columnDefinition = "BINARY(16)")
-    public UUID getUUID(){
-        return mUUID;
-    }
-
-    public void setUUID(UUID _uuid){
-        mUUID = _uuid;
-    }
-
-    public Category withUUID(UUID _uuid) {
-        setUUID(_uuid);
-        return this;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "devicegroup_id", nullable = false)
-    public DeviceGroup getGroup() {
-        return mGroup;
-    }
-
-    public void setGroup(DeviceGroup _group) {
-        mGroup = _group;
-    }
-
-    public Category withGroup(DeviceGroup _group) {
-        setGroup(_group);
-        return this;
-    }
-
-    @Column(name = "name", nullable = false)
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String _name) {
-        mName = _name;
-    }
-
-    public Category withName(String _name) {
-        setName(_name);
-        return this;
-    }
-
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
-            nullable = false)
-    public Date getUpdated() {
-        if (mUpdated != null && mUpdated.getClass() == Timestamp.class) {
-            Timestamp current = (Timestamp) mUpdated;
-            Date rtn = new Date(current.getTime() + (current.getNanos() / 1000000));
-            return rtn;
-        }
-        return mUpdated;
-    }
-
-    public void setUpdated(Date _updated) {
-        mUpdated = _updated;
-    }
-
-    public Category withUpdated(Date _updated) {
-        setUpdated(_updated);
         return this;
     }
 
@@ -123,13 +58,15 @@ public class Category {
 
         if (mId != category.mId)
             return false;
-        if (mUUID != null ? !mUUID.equals(category.mUUID) : category.mUUID != null)
+        if (getUUID() != null ? !getUUID().equals(category.getUUID()) : category.getUUID() != null)
             return false;
-        if (mGroup != null ? !mGroup.equals(category.mGroup) : category.mGroup != null)
+        if (getGroup() != null ? !getGroup().equals(category.getGroup()) :
+                category.getGroup() != null)
             return false;
-        if (mName != null ? !mName.equals(category.mName) : category.mName != null)
+        if (getName() != null ? !getName().equals(category.getName()) : category.getName() != null)
             return false;
-        return mUpdated != null ? mUpdated.equals(category.mUpdated) : category.mUpdated == null;
+        return getUpdated() != null ? getUpdated().equals(category.getUpdated()) :
+                category.getUpdated() == null;
     }
 
     @Override

@@ -12,7 +12,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ class CategoryController implements ICategoryController {
 
     private EntityManager mManager;
 
-    public Category add(int _groupId, UUID _uuid, String _name, Date _added) throws
+    public Category add(int _groupId, UUID _uuid, String _name, Instant _added) throws
             ClientErrorException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -30,7 +30,7 @@ class CategoryController implements ICategoryController {
             throw new ConflictException();
         }
         DeletedObject deletedCategory = getDeletedCategoryByGroupAndUUID(_groupId, _uuid);
-        if (deletedCategory != null && deletedCategory.getTime().after(_added)) {
+        if (deletedCategory != null && _added.isBefore(deletedCategory.getTime().toInstant())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -47,7 +47,7 @@ class CategoryController implements ICategoryController {
         return rtn;
     }
 
-    public void update(int _groupId, UUID _categoryUUID, String _name, Date _changed) throws
+    public void update(int _groupId, UUID _categoryUUID, String _name, Instant _changed) throws
             ClientErrorException {
         mManager.getTransaction().begin();
         Category catToEdit = getCategoryByGroupAndUUID(_groupId, _categoryUUID);
@@ -60,7 +60,7 @@ class CategoryController implements ICategoryController {
                 throw new GoneException();
             }
         }
-        if (catToEdit.getUpdated().after(_changed)) {
+        if (catToEdit.getUpdated().isAfter(_changed)) {
             mManager.getTransaction().rollback();
             throw new ConflictException();
         }

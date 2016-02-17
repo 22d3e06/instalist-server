@@ -23,6 +23,7 @@ import org.noorganization.instalist.server.support.ResponseFactory;
 
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,10 +51,13 @@ public class CategoriesResource {
     public Response getCategories(@PathParam("groupid") int _groupId,
                                   @QueryParam("changedsince") String _changedSince)
             throws Exception {
-        Date changedSince = null;
+        try {
+
+
+        Instant changedSince = null;
         if (_changedSince != null) {
             try {
-                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0));
+                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).toInstant();
             } catch (ParseException _e) {
                 return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
             }
@@ -79,7 +83,7 @@ public class CategoriesResource {
                                     "do.type = :type and do.time > :time",
                             DeletedObject.class);
             deletedCategoriesQuery.setParameter("groupid", group);
-            deletedCategoriesQuery.setParameter("time", changedSince);
+            deletedCategoriesQuery.setParameter("time", Date.from(changedSince));
             deletedCategoriesQuery.setParameter("type", DeletedObject.Type.CATEGORY);
             deletedCategories = deletedCategoriesQuery.getResultList();
         } else {
@@ -106,7 +110,7 @@ public class CategoriesResource {
             CategoryInfo info = new CategoryInfo();
             info.setUUID(currentCat.getUUID());
             info.setName(currentCat.getName());
-            info.setLastChanged(currentCat.getUpdated());
+            info.setLastChanged(Date.from(currentCat.getUpdated()));
             info.setDeleted(false);
             rtnPayload.add(info);
         }
@@ -119,6 +123,10 @@ public class CategoriesResource {
         }
 
         return ResponseFactory.generateOK(rtnPayload);
+        }catch (Exception _e) {
+            _e.printStackTrace();
+            throw _e;
+        }
     }
 
     /**
@@ -176,7 +184,7 @@ public class CategoriesResource {
         manager.close();
         CategoryInfo catInfo = new CategoryInfo();
         catInfo.setDeleted(false);
-        catInfo.setLastChanged(categories.get(0).getUpdated());
+        catInfo.setLastChanged(Date.from(categories.get(0).getUpdated()));
         catInfo.setName(categories.get(0).getName());
         catInfo.setUUID(categoryUUID);
 
@@ -196,19 +204,19 @@ public class CategoriesResource {
     public Response putCategory(@PathParam("groupid") int _groupId,
                                 @PathParam("categoryuuid") String _uuid,
                                 CategoryInfo _entity) throws Exception {
-        try{
-
         if (_entity.getName() == null)
             return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
         if ((_entity.getUUID() != null && !_entity.getUUID().equals(_uuid)) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
 
-        Date changedDate = _entity.getLastChanged();
-        if (_entity.getLastChanged() != null && changedDate.after(new Date())) {
-            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
-        } else
-            changedDate = new Date(System.currentTimeMillis());
+        Instant changedDate = Instant.now();
+        if (_entity.getLastChanged() != null) {
+            changedDate = _entity.getLastChanged().toInstant();
+            if (changedDate.isAfter(Instant.now()))
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        }
+
         UUID categoryUUID;
         try {
             categoryUUID = UUID.fromString(_uuid);
@@ -233,10 +241,6 @@ public class CategoriesResource {
         } finally {
             manager.close();
         }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
 
         return ResponseFactory.generateOK(null);
     }
@@ -257,11 +261,13 @@ public class CategoriesResource {
                 _entity.getName().length() == 0 || (_entity.getDeleted() != null &&
                 _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
-        Date lastChanged = _entity.getLastChanged();
-        if (lastChanged != null && lastChanged.after(new Date(System.currentTimeMillis()))) {
-            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+        Instant lastChanged;
+        if (_entity.getLastChanged() != null) {
+            lastChanged = _entity.getLastChanged().toInstant();
+            if (lastChanged.isAfter(Instant.now()))
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
         } else
-            lastChanged = new Date(System.currentTimeMillis());
+            lastChanged = Instant.now();
 
         UUID newCatUUID;
         try {

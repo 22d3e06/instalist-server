@@ -1,5 +1,7 @@
 package org.noorganization.instalist.server.model;
 
+import org.noorganization.instalist.server.model.generic.BaseItem;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -8,23 +10,20 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "list_entries")
-public class ListEntry {
+public class ListEntry extends BaseItem<ListEntry> {
 
     private int mId;
-    private UUID mUUID;
     private ShoppingList mList;
     private Product mProduct;
     private float mAmount;
     private boolean mStruck;
     private int mPriority;
-    private Instant mUpdated;
-    private DeviceGroup mGroup;
 
     public ListEntry() {
+        super();
         mAmount = 1.0f;
         mStruck = false;
         mPriority = 0;
-        mUpdated = Instant.now();
     }
 
     @Id
@@ -40,20 +39,6 @@ public class ListEntry {
 
     public ListEntry withId(int _id) {
         setId(_id);
-        return this;
-    }
-
-    @Column(name = "uuid", columnDefinition = "BINARY(16)", nullable = false)
-    public UUID getUUID() {
-        return mUUID;
-    }
-
-    public void setUUID(UUID _UUID) {
-        mUUID = _UUID;
-    }
-
-    public ListEntry withUUID(UUID _uuid) {
-        setUUID(_uuid);
         return this;
     }
 
@@ -129,33 +114,4 @@ public class ListEntry {
         return this;
     }
 
-    @Column(name = "updated", columnDefinition = "TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3)",
-            nullable = false)
-    public Instant getUpdated() {
-        return mUpdated;
-    }
-
-    public void setUpdated(Instant _updated) {
-        mUpdated = _updated;
-    }
-
-    public ListEntry withUpdated(Instant _updated) {
-        setUpdated(_updated);
-        return this;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "devicegroup_id", nullable = false)
-    public DeviceGroup getGroup() {
-        return mGroup;
-    }
-
-    public void setGroup(DeviceGroup _group) {
-        mGroup = _group;
-    }
-
-    public ListEntry withGroup(DeviceGroup _group) {
-        setGroup(_group);
-        return this;
-    }
 }

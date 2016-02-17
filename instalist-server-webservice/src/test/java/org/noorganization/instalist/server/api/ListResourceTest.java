@@ -62,7 +62,7 @@ public class ListResourceTest extends JerseyTest {
 
         mGroup = new DeviceGroup();
         mCat = new Category().withGroup(mGroup).withName("").withUUID(UUID.randomUUID()).
-                withUpdated(Date.from(mUpdate));
+                withUpdated(mUpdate);
         mListWC = new ShoppingList().withGroup(mGroup).withName("list1").withCategrory(mCat).
                 withUUID(UUID.randomUUID()).withUpdated(mUpdate);
         mListWOC = new ShoppingList().withGroup(mGroup).withName("list2").withUUID(UUID.

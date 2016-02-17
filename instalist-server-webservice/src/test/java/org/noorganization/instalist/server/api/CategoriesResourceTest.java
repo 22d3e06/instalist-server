@@ -24,6 +24,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -61,14 +62,15 @@ public class CategoriesResourceTest extends JerseyTest {
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
         mGroup = new DeviceGroup();
-        Date now = new Date(System.currentTimeMillis());
+        Instant now = Instant.now();
         Device aDev = new Device().withAuthorized(true).withGroup(mGroup).
                 withSecret(mData.mEncryptedSecret).withName("testDev");
         mCategory = new Category().withGroup(mGroup).withName("cat1").withUUID(UUID.randomUUID()).
                 withUpdated(now);
         mDeletedCategory = new DeletedObject().withGroup(mGroup).
-                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID()).withTime(now);
-        mNotAccessibleGroup = new DeviceGroup().withUpdated(now);
+                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID()).withTime(Date
+                .from(now));
+        mNotAccessibleGroup = new DeviceGroup().withUpdated(Date.from(now));
         mNotAccessibleCategory = new Category().withGroup(mNotAccessibleGroup).withName("cat2").
                 withUUID(UUID.randomUUID()).withUpdated(now);
 
@@ -128,7 +130,7 @@ public class CategoriesResourceTest extends JerseyTest {
             } else if (mCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertEquals("cat1", allCategories[i].getName());
                 assertFalse(allCategories[i].getDeleted());
-                assertEquals(mCategory.getUpdated(), allCategories[i].getLastChanged());
+                assertEquals(mCategory.getUpdated(), allCategories[i].getLastChanged().toInstant());
             } else {
                 fail("Got wrong category.");
             }
@@ -174,25 +176,25 @@ public class CategoriesResourceTest extends JerseyTest {
         assertEquals("cat1", mCategory.getName());
         assertEquals("cat2", mNotAccessibleCategory.getName());
 
-        Date beforeChange = new Date(System.currentTimeMillis());
-        Thread.sleep(1000);
+        Instant beforeChange = Instant.now();
+        Thread.sleep(200);
         Response validCatResponse = target(String.format(url, mGroup.getId(), mCategory.getUUID().
                 toString())).request().header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("dev111")));
         assertEquals(200, validCatResponse.getStatus());
         mManager.refresh(mCategory);
         assertEquals("dev111", mCategory.getName());
-        assertTrue(beforeChange.before(mCategory.getUpdated()));
+        assertTrue(beforeChange.isBefore(mCategory.getUpdated()));
 
         Response conflictCatResponse = target(String.format(url, mGroup.getId(), mCategory.
                 getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
                 put(Entity.json(new CategoryInfo().withName("cat1").
-                        withLastChanged(beforeChange)));
+                        withLastChanged(Date.from(beforeChange))));
         assertEquals(409, conflictCatResponse.getStatus());
         mManager.refresh(mCategory);
         assertEquals("dev111", mCategory.getName());
-        assertTrue(beforeChange.before(mCategory.getUpdated()));
+        assertTrue(beforeChange.isBefore(mCategory.getUpdated()));
     }
 
     @Test

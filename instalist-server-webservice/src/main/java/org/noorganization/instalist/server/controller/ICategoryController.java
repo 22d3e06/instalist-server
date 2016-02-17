@@ -4,9 +4,8 @@ import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
-import javax.persistence.EntityManager;
 import javax.ws.rs.NotFoundException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -24,18 +23,19 @@ public interface ICategoryController {
      * @return The created Category.
      * @throws ConflictException If there is already a category with same uuid for the group.
      */
-    Category add(int _groupId, UUID _uuid, String _name, Date _added) throws ConflictException;
+    Category add(int _groupId, UUID _uuid, String _name, Instant _added) throws ConflictException;
 
     /**
      * Updates a category.
      * @param _id The id of the group.
      * @param _categoryUUID The uuid of the category to update.
      * @param _name The new name of the category.
+     * @param _change The time of change.
      * @throws GoneException If category was deleted before.
      * @throws NotFoundException If category was not found.
      * @throws ConflictException If a change made after this occurred before.
      */
-    void update(int _id, UUID _categoryUUID, String _name, Date _change)
+    void update(int _id, UUID _categoryUUID, String _name, Instant _change)
             throws GoneException, NotFoundException, ConflictException;
 
     /**
