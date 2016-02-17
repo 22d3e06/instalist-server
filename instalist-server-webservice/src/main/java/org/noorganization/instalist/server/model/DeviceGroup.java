@@ -22,6 +22,7 @@ public class DeviceGroup {
     private Set<ListEntry> mListEntries;
     private Set<Product> mProducts;
     private Set<Recipe> mRecipes;
+    private Set<Tag> mTags;
     private Set<Unit> mUnits;
 
     public DeviceGroup() {
@@ -182,6 +183,15 @@ public class DeviceGroup {
 
     public void setIngredients(Set<Ingredient> _ingredients) {
         mIngredients = _ingredients;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "group", orphanRemoval = true)
+    public Set<Tag> getTags() {
+        return mTags;
+    }
+
+    public void setTags(Set<Tag> _tags) {
+        mTags = _tags;
     }
 
 
