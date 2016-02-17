@@ -70,7 +70,7 @@ public class TaggedProductResourceTest extends JerseyTest {
         mTaggedProduct = new TaggedProduct().withGroup(mGroup).withUUID(UUID.randomUUID()).
                 withUpdated(creation).withProduct(mProduct).withTag(mTag);
         mDeletedIngredient = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.INGREDIENT).withTime(Date.from(creation));
+                withType(DeletedObject.Type.TAGGEDPRODUCT).withTime(Date.from(creation));
         mNAGroup = new DeviceGroup();
         mNATag = new Tag().withName("tag2").withUUID(UUID.randomUUID()).withGroup(mNAGroup);
         mNAProduct = new Product().withGroup(mNAGroup).withUUID(UUID.randomUUID()).

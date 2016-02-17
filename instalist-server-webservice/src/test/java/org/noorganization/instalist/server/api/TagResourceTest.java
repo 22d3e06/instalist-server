@@ -63,7 +63,7 @@ public class TagResourceTest extends JerseyTest {
                 withUpdated(creation);
 
         mDeletedTag = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.RECIPE).withTime(Date.from(creation));
+                withType(DeletedObject.Type.TAG).withTime(Date.from(creation));
         mNAGroup = new DeviceGroup();
         mNATag = new Tag().withGroup(mNAGroup).withName("tag2").withUUID(UUID.randomUUID());
 

@@ -43,6 +43,14 @@ public class ControllerFactory {
         return new RecipeController(_manager);
     }
 
+    public static ITagController getTagController(EntityManager _manager) {
+        return new TagController(_manager);
+    }
+
+    public static ITaggedProductController getTaggedProductController(EntityManager _manager) {
+        return new TaggedProductController(_manager);
+    }
+
     public static IUnitController getUnitController(EntityManager _manager) {
         return new UnitController(_manager);
     }

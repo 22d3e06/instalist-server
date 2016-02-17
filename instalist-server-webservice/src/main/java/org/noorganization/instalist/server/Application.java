@@ -2,6 +2,8 @@ package org.noorganization.instalist.server;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.noorganization.instalist.server.api.*;
+import org.noorganization.instalist.server.model.Tag;
+import org.noorganization.instalist.server.model.TaggedProduct;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 
 /**
@@ -20,6 +22,8 @@ public class Application extends ResourceConfig {
         register(ListResource.class);
         register(ProductResource.class);
         register(RecipeResource.class);
+        register(Tag.class);
+        register(TaggedProduct.class);
         register(UnitResource.class);
 
         register(AuthenticationFilter.class);

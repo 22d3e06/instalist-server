@@ -8,6 +8,7 @@ import org.noorganization.instalist.comm.message.TaggedProductInfo;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IIngredientController;
+import org.noorganization.instalist.server.controller.ITaggedProductController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
@@ -46,8 +47,8 @@ public class TaggedProductResource {
     public Response getTaggedProducts(@PathParam("groupid") int _groupId,
                                       @QueryParam("changedsince") String _changedSince)
             throws Exception {
-        /*List<Ingredient> ingedients;
-        List<DeletedObject> deletedIngredients;
+        List<TaggedProduct> taggedProducts;
+        List<DeletedObject> deletedTaggedProducts;
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
@@ -61,53 +62,51 @@ public class TaggedProductResource {
                 return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
             }
 
-            TypedQuery<Ingredient> IngredientsQuery = manager.createQuery("select i from " +
-                            "Ingredient i where i.group = :group and i.updated > :updated",
-                    Ingredient.class);
-            IngredientsQuery.setParameter("group", group);
-            IngredientsQuery.setParameter("updated", changedSince);
-            ingedients = IngredientsQuery.getResultList();
+            TypedQuery<TaggedProduct> taggedProductQuery = manager.createQuery("select tp from " +
+                    "TaggedProduct tp where tp.group = :group and tp.updated > :updated",
+                    TaggedProduct.class);
+            taggedProductQuery.setParameter("group", group);
+            taggedProductQuery.setParameter("updated", changedSince);
+            taggedProducts = taggedProductQuery.getResultList();
 
-            TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do " +
+            TypedQuery<DeletedObject> deletedTaggedProductQuery = manager.createQuery("select do " +
                     "from DeletedObject do where do.group = :group and do.time > :updated and " +
                     "do.type = :type", DeletedObject.class);
-            deletedIngredientsQuery.setParameter("group", group);
-            deletedIngredientsQuery.setParameter("updated", Date.from(changedSince));
-            deletedIngredientsQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
-            deletedIngredients = deletedIngredientsQuery.getResultList();
+            deletedTaggedProductQuery.setParameter("group", group);
+            deletedTaggedProductQuery.setParameter("updated", Date.from(changedSince));
+            deletedTaggedProductQuery.setParameter("type", DeletedObject.Type.TAGGEDPRODUCT);
+            deletedTaggedProducts = deletedTaggedProductQuery.getResultList();
         } else {
-            ingedients = new ArrayList<Ingredient>(group.getIngredients());
+            taggedProducts = new ArrayList<TaggedProduct>(group.getTaggedProducts());
 
-            TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do from " +
-                    "DeletedObject do where do.group = :group and do.type = :type",
+            TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do " +
+                    "from DeletedObject do where do.group = :group and do.type = :type",
                     DeletedObject.class);
             deletedIngredientsQuery.setParameter("group", group);
-            deletedIngredientsQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
-            deletedIngredients = deletedIngredientsQuery.getResultList();
+            deletedIngredientsQuery.setParameter("type", DeletedObject.Type.TAGGEDPRODUCT);
+            deletedTaggedProducts = deletedIngredientsQuery.getResultList();
         }
         manager.close();
 
-        ArrayList<IngredientInfo> rtn = new ArrayList<IngredientInfo>(ingedients.size() +
-                deletedIngredients.size());
-        for (Ingredient current : ingedients) {
-            IngredientInfo toAdd = new IngredientInfo().withDeleted(false);
+        ArrayList<TaggedProductInfo> rtn = new ArrayList<TaggedProductInfo>(taggedProducts.size() +
+                deletedTaggedProducts.size());
+        for (TaggedProduct current : taggedProducts) {
+            TaggedProductInfo toAdd = new TaggedProductInfo().withDeleted(false);
             toAdd.setUUID(current.getUUID());
             toAdd.setProductUUID(current.getProduct().getUUID());
-            toAdd.setRecipeUUID(current.getRecipe().getUUID());
-            toAdd.setAmount(current.getAmount());
+            toAdd.setTagUUID(current.getTag().getUUID());
             toAdd.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(toAdd);
         }
-        for (DeletedObject current : deletedIngredients) {
-            IngredientInfo toAdd = new IngredientInfo();
+        for (DeletedObject current : deletedTaggedProducts) {
+            TaggedProductInfo toAdd = new TaggedProductInfo();
             toAdd.setUUID(current.getUUID());
             toAdd.setLastChanged(current.getTime());
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }
 
-        return ResponseFactory.generateOK(rtn);*/
-        return null;
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
@@ -122,41 +121,40 @@ public class TaggedProductResource {
     public Response getTaggedProduct(@PathParam("groupid") int _groupId,
                                      @PathParam("tpuuid") String _taggedProductUUID)
             throws Exception {
-        /*UUID toFind;
+        UUID toFind;
         try {
-            toFind = UUID.fromString(_entryUUID);
+            toFind = UUID.fromString(_taggedProductUUID);
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
-        IIngredientController ingredientController = ControllerFactory.
-                getIngredientController(manager);
+        ITaggedProductController taggedProductController = ControllerFactory.
+                getTaggedProductController(manager);
 
-        Ingredient foundIngredient = ingredientController.getIngredientByGroupAndUUID(group,
-                toFind);
-        if (foundIngredient == null) {
-            if (ingredientController.getDeletedIngredientByGroupAndUUID(group, toFind) != null) {
+        TaggedProduct foundTaggedProduct = taggedProductController.
+                getTaggedProductByGroupAndUUID(group, toFind);
+        if (foundTaggedProduct == null) {
+            if (taggedProductController.getDeletedTaggedProductByGroupAndUUID(group, toFind) !=
+                    null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +
-                        "ingredient has been deleted."));
+                        "tagged product has been deleted."));
             }
             manager.close();
             return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
-                    "ingredient was not found."));
+                    "tagged product was not found."));
         }
         manager.close();
 
-        IngredientInfo rtn = new IngredientInfo().withDeleted(false);
-        rtn.setUUID(foundIngredient.getUUID());
-        rtn.setProductUUID(foundIngredient.getProduct().getUUID());
-        rtn.setRecipeUUID(foundIngredient.getRecipe().getUUID());
-        rtn.setAmount(foundIngredient.getAmount());
-        rtn.setLastChanged(Date.from(foundIngredient.getUpdated()));
+        TaggedProductInfo rtn = new TaggedProductInfo().withDeleted(false);
+        rtn.setUUID(foundTaggedProduct.getUUID());
+        rtn.setProductUUID(foundTaggedProduct.getProduct().getUUID());
+        rtn.setTagUUID(foundTaggedProduct.getTag().getUUID());
+        rtn.setLastChanged(Date.from(foundTaggedProduct.getUpdated()));
 
-        return ResponseFactory.generateOK(rtn);*/
-        return null;
+        return ResponseFactory.generateOK(rtn);
     }
 
     /**
@@ -175,20 +173,19 @@ public class TaggedProductResource {
     public Response putTaggedProduct(@PathParam("groupid") int _groupId,
                                      @PathParam("tpuuid") String _taggedProductUUID,
                                      TaggedProductInfo _entity) throws Exception {
-        /*if ((_entity.getUUID() != null && !_entity.getUUID().equals(_ingredientUUID)) ||
-                (_entity.getDeleted() != null && _entity.getDeleted()) ||
-                (_entity.getAmount() != null && _entity.getAmount() < 0.001f))
+        if ((_entity.getUUID() != null && !_entity.getUUID().equals(_taggedProductUUID)) ||
+                (_entity.getDeleted() != null && _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
 
         UUID toUpdate;
         UUID productUUID = null;
-        UUID recipeUUID = null;
+        UUID tagUUID = null;
         try {
-            toUpdate = UUID.fromString(_ingredientUUID);
+            toUpdate = UUID.fromString(_taggedProductUUID);
             if (_entity.getProductUUID() != null)
                 productUUID = UUID.fromString(_entity.getProductUUID());
-            if (_entity.getRecipeUUID() != null)
-                recipeUUID = UUID.fromString(_entity.getRecipeUUID());
+            if (_entity.getTagUUID() != null)
+                tagUUID = UUID.fromString(_entity.getTagUUID());
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
@@ -201,29 +198,27 @@ public class TaggedProductResource {
             updated = Instant.now();
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IIngredientController ingredientController = ControllerFactory.
-                getIngredientController(manager);
+        ITaggedProductController taggedProductController = ControllerFactory.
+                getTaggedProductController(manager);
         try {
-            ingredientController.update(_groupId, toUpdate, recipeUUID, productUUID,
-                    _entity.getAmount(), updated);
+            taggedProductController.update(_groupId, toUpdate, tagUUID, productUUID, updated);
         } catch (NotFoundException _e) {
-            return ResponseFactory.generateNotFound(new Error().withMessage("The ingredient was " +
-                    "not found."));
+            return ResponseFactory.generateNotFound(new Error().withMessage("The tagged product " +
+                    "was not found."));
         } catch (GoneException _e) {
-            return ResponseFactory.generateGone(new Error().withMessage("The ingredient has been " +
-                    "deleted."));
+            return ResponseFactory.generateGone(new Error().withMessage("The tagged product has " +
+                    "been deleted."));
         } catch (ConflictException _e) {
             return ResponseFactory.generateConflict(new Error().withMessage("The sent data would " +
-                    "conflict with saved ingredient."));
+                    "conflict with saved tagged product."));
         } catch (BadRequestException _e) {
             return ResponseFactory.generateBadRequest(new Error().withMessage("The referenced " +
-                    "product or recipe was not found."));
+                    "product or tag was not found."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateOK(null);*/
-        return null;
+        return ResponseFactory.generateOK(null);
     }
 
     /**
@@ -237,19 +232,18 @@ public class TaggedProductResource {
     @Produces({ "application/json" })
     public Response postTaggedProduct(@PathParam("groupid") int _groupId,
                                       TaggedProductInfo _entity) throws Exception {
-        /*if (_entity.getUUID() == null || _entity.getRecipeUUID() == null ||
+        if (_entity.getUUID() == null || _entity.getTagUUID() == null ||
                 _entity.getProductUUID() == null ||
-                (_entity.getDeleted() != null && _entity.getDeleted()) ||
-                (_entity.getAmount() != null && _entity.getAmount() < 0.001f))
+                (_entity.getDeleted() != null && _entity.getDeleted()))
             return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
 
         UUID toCreate;
         UUID productUUID;
-        UUID recipeUUID;
+        UUID tagUUID;
         try {
             toCreate = UUID.fromString(_entity.getUUID());
             productUUID = UUID.fromString(_entity.getProductUUID());
-            recipeUUID = UUID.fromString(_entity.getRecipeUUID());
+            tagUUID = UUID.fromString(_entity.getTagUUID());
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
@@ -260,24 +254,23 @@ public class TaggedProductResource {
                 return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
         } else
             created = Instant.now();
-        float amount = (_entity.getAmount() != null ? _entity.getAmount() : 1f);
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IIngredientController ingredientController = ControllerFactory.getIngredientController(manager);
+        ITaggedProductController taggedProductController = ControllerFactory.
+                getTaggedProductController(manager);
         try {
-            ingredientController.add(_groupId, toCreate, recipeUUID, productUUID, amount, created);
+            taggedProductController.add(_groupId, toCreate, tagUUID, productUUID, created);
         } catch (ConflictException _e) {
             return ResponseFactory.generateConflict(new Error().withMessage("The sent data would " +
-                    "conflict with saved ingredient."));
+                    "conflict with saved tagged product."));
         } catch (BadRequestException _e) {
             return ResponseFactory.generateBadRequest(new Error().withMessage("The referenced " +
-                    "recipe or product was not found."));
+                    "recipe or tag was not found."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateCreated(null);*/
-        return null;
+        return ResponseFactory.generateCreated(null);
     }
 
     /**
@@ -292,30 +285,29 @@ public class TaggedProductResource {
     public Response deleteTaggedProduct(@PathParam("groupid") int _groupId,
                                         @PathParam("tpuuid") String _taggedProductUUID)
             throws Exception {
-        /*UUID toDelete;
+        UUID toDelete;
         try {
-            toDelete = UUID.fromString(_ingredientUUID);
+            toDelete = UUID.fromString(_taggedProductUUID);
         } catch (IllegalArgumentException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_UUID);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
-        IIngredientController ingredientController = ControllerFactory.
-                getIngredientController(manager);
+        ITaggedProductController taggedProductController = ControllerFactory.
+                getTaggedProductController(manager);
         try {
-            ingredientController.delete(_groupId, toDelete);
+            taggedProductController.delete(_groupId, toDelete);
         } catch (NotFoundException _e) {
-            return ResponseFactory.generateNotFound(new Error().withMessage("The ingredient was " +
-                    "not found."));
+            return ResponseFactory.generateNotFound(new Error().withMessage("The tagged product " +
+                    "was not found."));
         } catch (GoneException _e) {
-            return ResponseFactory.generateGone(new Error().withMessage("The ingredient has been " +
-                    "deleted."));
+            return ResponseFactory.generateGone(new Error().withMessage("The tagged product has " +
+                    "been deleted."));
         } finally {
             manager.close();
         }
 
-        return ResponseFactory.generateOK(null);*/
-        return null;
+        return ResponseFactory.generateOK(null);
     }
 
 }
