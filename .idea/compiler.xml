@@ -23,8 +23,14 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="instalist-comm" />
-        <module name="instalist-server-webservice" />
         <module name="webservice" />
+      </profile>
+      <profile default="false" name="Annotation profile for instalist-server-webservice" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="instalist-server-webservice" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
