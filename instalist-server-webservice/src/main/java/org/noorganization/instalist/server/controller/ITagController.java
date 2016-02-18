@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.Recipe;
@@ -14,7 +15,7 @@ import java.util.UUID;
 /**
  * A controller for changing tags.
  */
-public interface ITagController {
+public interface ITagController extends IFinder<Tag> {
     /**
      * Creates a tag.
      * @param _groupId The id of the group that should contain the tag.
@@ -48,20 +49,4 @@ public interface ITagController {
      * @throws NotFoundException If tag was not found.
      */
     void delete(int _groupId, UUID _tagUUID) throws GoneException, NotFoundException;
-
-    /**
-     * Finds a tag.
-     * @param _group The group containing the tag.
-     * @param _uuid The tag's existing UUID.
-     * @return Either the found Tag or null, if not found.
-     */
-    Tag getTagByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted tag.
-     * @param _group The group containing the deleted tag.
-     * @param _uuid The tag's old UUID.
-     * @return Either the found tag as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedTagByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

@@ -14,7 +14,6 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +21,7 @@ class ProductController implements IProductController {
 
     private EntityManager mManager;
 
+    @Override
     public void add(int _groupId, UUID _newUUID, String _name, float _defaultAmount,
                     float _stepAmount, UUID _unitUUID, Instant _created)
             throws ConflictException, BadRequestException {
@@ -29,12 +29,12 @@ class ProductController implements IProductController {
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        Product toCheck = getProductByGroupAndUUID(group, _newUUID);
+        Product toCheck = findByGroupAndUUID(group, _newUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedProductByGroupAndUUID(group, _newUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _newUUID);
         if (previousDeleted != null && _created.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
@@ -42,7 +42,7 @@ class ProductController implements IProductController {
         Unit newUnit = null;
         if (_unitUUID != null) {
             IUnitController unitController = ControllerFactory.getUnitController(mManager);
-            newUnit = unitController.getUnitByGroupAndUUID(group, _unitUUID);
+            newUnit = unitController.findByGroupAndUUID(group, _unitUUID);
             if (newUnit == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -61,6 +61,7 @@ class ProductController implements IProductController {
         tx.commit();
     }
 
+    @Override
     public void update(int _groupId, UUID _uuid, String _name, Float _defaultAmount,
                        Float _stepAmount, UUID _unitUUID, boolean _removeUnit, Instant _updated)
             throws ConflictException, NotFoundException, GoneException, BadRequestException {
@@ -76,7 +77,7 @@ class ProductController implements IProductController {
         Unit newUnit = null;
         if (!_removeUnit && _unitUUID != null) {
             IUnitController unitController = ControllerFactory.getUnitController(mManager);
-            newUnit = unitController.getUnitByGroupAndUUID(group, _unitUUID);
+            newUnit = unitController.findByGroupAndUUID(group, _unitUUID);
             if (newUnit == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -98,6 +99,7 @@ class ProductController implements IProductController {
         tx.commit();
     }
 
+    @Override
     public void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -127,42 +129,15 @@ class ProductController implements IProductController {
         tx.commit();
     }
 
-    public Product getProductByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<Product> productQuery = mManager.createQuery("select p from Product p where " +
-                "p.UUID = :uuid and p.group = :group", Product.class);
-        productQuery.setParameter("uuid", _uuid);
-        productQuery.setParameter("group", _group);
-        productQuery.setMaxResults(1);
-        List<Product> products = productQuery.getResultList();
-        if (products.size() == 0)
-            return null;
-        return products.get(0);
-    }
-
-    public DeletedObject getDeletedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delProductQuery = mManager.createQuery("select do from " +
-                "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delProductQuery.setParameter("group", _group);
-        delProductQuery.setParameter("uuid", _uuid);
-        delProductQuery.setParameter("type", DeletedObject.Type.PRODUCT);
-        delProductQuery.setMaxResults(1);
-        List<DeletedObject> delProductResult = delProductQuery.getResultList();
-        if (delProductResult.size() == 0)
-            return null;
-        return delProductResult.get(0);
-    }
-
     ProductController(EntityManager _manager) {
         mManager = _manager;
     }
 
     private Product getProduct(DeviceGroup _group, UUID _uuid, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        Product rtn = getProductByGroupAndUUID(_group, _uuid);
+        Product rtn = findByGroupAndUUID(_group, _uuid);
         if (rtn == null) {
-            if (getDeletedProductByGroupAndUUID(_group, _uuid) == null) {
+            if (findDeletedByGroupAndUUID(_group, _uuid) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -170,5 +145,15 @@ class ProductController implements IProductController {
             throw new GoneException();
         }
         return rtn;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<Product> getManagedType() {
+        return Product.class;
     }
 }

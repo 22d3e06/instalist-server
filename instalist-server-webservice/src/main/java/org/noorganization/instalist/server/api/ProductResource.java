@@ -135,9 +135,9 @@ public class ProductResource {
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
         IProductController productController = ControllerFactory.getProductController(manager);
 
-        Product foundProduct = productController.getProductByGroupAndUUID(group, toFind);
+        Product foundProduct = productController.findByGroupAndUUID(group, toFind);
         if (foundProduct == null) {
-            if (productController.getDeletedProductByGroupAndUUID(group, toFind) != null) {
+            if (productController.findDeletedByGroupAndUUID(group, toFind) != null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +
                         "product has been deleted."));

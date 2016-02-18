@@ -125,9 +125,9 @@ public class RecipeResource {
         IRecipeController recipeController = ControllerFactory.getRecipeController(manager);
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
-        Recipe current = recipeController.getRecipeByGroupAndUUID(group, toFind);
+        Recipe current = recipeController.findByGroupAndUUID(group, toFind);
         if (current == null) {
-            if (recipeController.getDeletedRecipeByGroupAndUUID(group, toFind) == null) {
+            if (recipeController.findDeletedByGroupAndUUID(group, toFind) == null) {
                 manager.close();
                 return ResponseFactory.generateNotFound(new Error().withMessage("Recipe was not " +
                         "found."));

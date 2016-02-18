@@ -118,6 +118,9 @@ public class UnitResource {
     @Produces({ "application/json" })
     public Response getUnit(@PathParam("groupid") int _groupId,
                             @PathParam("unituuid") String _unitUUID) throws Exception {
+        try {
+
+
         UUID toFind;
         try {
             toFind = UUID.fromString(_unitUUID);
@@ -129,9 +132,9 @@ public class UnitResource {
         IUnitController unitController = ControllerFactory.getUnitController(manager);
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
-        Unit resultUnit = unitController.getUnitByGroupAndUUID(group, toFind);
+        Unit resultUnit = unitController.findByGroupAndUUID(group, toFind);
         if (resultUnit == null) {
-            if (unitController.getDeletedUnitByGroupAndUUID(group,toFind) == null) {
+            if (unitController.findDeletedByGroupAndUUID(group,toFind) == null) {
                 manager.close();
                 return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
                         "unit was not found."));
@@ -148,6 +151,10 @@ public class UnitResource {
         rtn.setLastChanged(Date.from(resultUnit.getUpdated()));
 
         return ResponseFactory.generateOK(rtn);
+        } catch (Exception _e) {
+            _e.printStackTrace();
+            throw _e;
+        }
     }
 
     /**

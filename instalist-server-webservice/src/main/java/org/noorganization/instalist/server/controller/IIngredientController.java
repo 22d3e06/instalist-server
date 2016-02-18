@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.Ingredient;
@@ -15,7 +16,7 @@ import java.util.UUID;
 /**
  * A controller for changing recipes.
  */
-public interface IIngredientController {
+public interface IIngredientController extends IFinder<Ingredient> {
     /**
      * Creates a ingredient.
      * @param _groupId The id of the group that should contain the ingredient.
@@ -58,20 +59,4 @@ public interface IIngredientController {
      * @throws NotFoundException If ingredient was not found.
      */
     void delete(int _groupId, UUID _ingredientUUID) throws GoneException, NotFoundException;
-
-    /**
-     * Finds a ingredient.
-     * @param _group The group containing the recipe.
-     * @param _uuid The recipe's existing UUID.
-     * @return Either the found Recipe or null, if not found.
-     */
-    Ingredient getIngredientByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted ingredient.
-     * @param _group The group containing the deleted recipe.
-     * @param _uuid The recipe's old UUID.
-     * @return Either the found recipe as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedIngredientByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

@@ -20,16 +20,18 @@ class CategoryController implements ICategoryController {
 
     private EntityManager mManager;
 
+    @Override
     public Category add(int _groupId, UUID _uuid, String _name, Instant _added) throws
             ClientErrorException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
-        Category existingCategory = getCategoryByGroupAndUUID(_groupId, _uuid);
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        Category existingCategory = findByGroupAndUUID(group, _uuid);
         if (existingCategory != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject deletedCategory = getDeletedCategoryByGroupAndUUID(_groupId, _uuid);
+        DeletedObject deletedCategory = findDeletedByGroupAndUUID(group, _uuid);
         if (deletedCategory != null && _added.isBefore(deletedCategory.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
@@ -38,7 +40,7 @@ class CategoryController implements ICategoryController {
         Category rtn = new Category();
         rtn.setUUID(_uuid);
         rtn.setName(_name);
-        rtn.setGroup(mManager.find(DeviceGroup.class, _groupId));
+        rtn.setGroup(group);
         rtn.setUpdated(_added);
         mManager.persist(rtn);
         tx.commit();
@@ -47,12 +49,14 @@ class CategoryController implements ICategoryController {
         return rtn;
     }
 
+    @Override
     public void update(int _groupId, UUID _categoryUUID, String _name, Instant _changed) throws
             ClientErrorException {
         mManager.getTransaction().begin();
-        Category catToEdit = getCategoryByGroupAndUUID(_groupId, _categoryUUID);
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        Category catToEdit = findByGroupAndUUID(group, _categoryUUID);
         if (catToEdit == null) {
-            if (getDeletedCategoryByGroupAndUUID(_groupId, _categoryUUID) == null) {
+            if (findDeletedByGroupAndUUID(group, _categoryUUID) == null) {
                 mManager.getTransaction().rollback();
                 throw new NotFoundException();
             } else {
@@ -69,14 +73,15 @@ class CategoryController implements ICategoryController {
         mManager.getTransaction().commit();
     }
 
-
+    @Override
     public void delete(int _groupId, UUID _categoryUUID) throws ConflictException,
             NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
-        Category catToDelete = getCategoryByGroupAndUUID(_groupId, _categoryUUID);
+        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
+        Category catToDelete = findByGroupAndUUID(group, _categoryUUID);
         if (catToDelete == null) {
-            if (getDeletedCategoryByGroupAndUUID(_groupId, _categoryUUID) == null) {
+            if (findDeletedByGroupAndUUID(group, _categoryUUID) == null) {
                 tx.rollback();
                 throw new NotFoundException();
             } else {
@@ -97,33 +102,17 @@ class CategoryController implements ICategoryController {
         tx.commit();
     }
 
-    public Category getCategoryByGroupAndUUID(int _groupId, UUID _catUUID) {
-        TypedQuery<Category> categoryToChangeQuery = mManager.createQuery("select c from " +
-                "Category c where c.group = :group and c.UUID = :uuid", Category.class);
-        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        categoryToChangeQuery.setParameter("group", group);
-        categoryToChangeQuery.setParameter("uuid", _catUUID);
-        List<Category> foundCategory = categoryToChangeQuery.getResultList();
-        if (foundCategory.size() == 1)
-            return foundCategory.get(0);
-        return null;
-    }
-
-    private DeletedObject getDeletedCategoryByGroupAndUUID(int _groupId, UUID _catUUID) {
-        TypedQuery<DeletedObject> deletedCategoryQuery = mManager.createQuery("select do from" +
-                        " DeletedObject do where do.group = :group and do.UUID = :uuid order by " +
-                        "do.updated desc",
-                DeletedObject.class);
-        DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        deletedCategoryQuery.setParameter("group", group);
-        deletedCategoryQuery.setParameter("uuid", _catUUID);
-        List<DeletedObject> delCat = deletedCategoryQuery.getResultList();
-        if (delCat.size() == 0)
-            return null;
-        return delCat.get(0);
-    }
-
     CategoryController(EntityManager _manager) {
         this.mManager = _manager;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<Category> getManagedType() {
+        return Category.class;
     }
 }

@@ -1,5 +1,6 @@
 package org.noorganization.instalist.server.controller;
 
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.Category;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
@@ -12,7 +13,7 @@ import java.util.UUID;
  * Controller for managing categories. This is a controller for managing real contents.
  * Created by damihe on 07.02.16.
  */
-public interface ICategoryController {
+public interface ICategoryController extends IFinder<Category> {
 
     /**
      * Adds a new category to the group.
@@ -47,9 +48,4 @@ public interface ICategoryController {
     void delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
             NotFoundException;
 
-    /**
-     * Finds a category by it's uuid and group.
-     * @return Either the found Category or null, if nothing found.
-     */
-    Category getCategoryByGroupAndUUID(int _groupId, UUID _catUUID);
 }

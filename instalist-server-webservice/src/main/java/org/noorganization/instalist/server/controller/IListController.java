@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.ShoppingList;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * A controller for changing lists.
  * Created by damihe on 09.02.16.
  */
-public interface IListController {
+public interface IListController extends IFinder<ShoppingList> {
     /**
      * Creates a list.
      * @param _groupId The id of the group containing the list.
@@ -52,8 +53,4 @@ public interface IListController {
      * @throws NotFoundException If list was not found.
      */
     void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException;
-
-    ShoppingList getListByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

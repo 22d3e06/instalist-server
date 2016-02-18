@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +20,7 @@ public class EntryController implements IEntryController {
 
     private EntityManager mManager;
 
+    @Override
     public void add(int _groupId, UUID _entryUUID, UUID _productUUID, UUID _listUUID,
                     float _amount, int _priority, boolean _struck, Instant _lastChanged)
             throws ConflictException, BadRequestException {
@@ -28,20 +28,20 @@ public class EntryController implements IEntryController {
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        ListEntry toCheck = getEntryByGroupAndUUID(group, _entryUUID);
+        ListEntry toCheck = findByGroupAndUUID(group, _entryUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedEntryByGroupAndUUID(group, _entryUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _entryUUID);
         if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
         IListController listController = ControllerFactory.getListController(mManager);
-        ShoppingList newList = listController.getListByGroupAndUUID(group, _listUUID);
+        ShoppingList newList = listController.findByGroupAndUUID(group, _listUUID);
         IProductController productController = ControllerFactory.getProductController(mManager);
-        Product newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+        Product newProduct = productController.findByGroupAndUUID(group, _productUUID);
         if (newProduct == null || newList == null) {
             tx.rollback();
             throw new BadRequestException();
@@ -60,6 +60,7 @@ public class EntryController implements IEntryController {
         tx.commit();
     }
 
+    @Override
     public void update(int _groupId, UUID _entryUUID, UUID _productUUID,
                        UUID _listUUID, Float _amount, Integer _priority, Boolean _struck,
                        Instant _lastChanged)
@@ -76,7 +77,7 @@ public class EntryController implements IEntryController {
         ShoppingList newList = null;
         if (_listUUID != null) {
             IListController listController = ControllerFactory.getListController(mManager);
-            newList = listController.getListByGroupAndUUID(group, _listUUID);
+            newList = listController.findByGroupAndUUID(group, _listUUID);
             if (newList == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -85,7 +86,7 @@ public class EntryController implements IEntryController {
         Product newProduct = null;
         if (_productUUID != null) {
             IProductController productController = ControllerFactory.getProductController(mManager);
-            newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+            newProduct = productController.findByGroupAndUUID(group, _productUUID);
             if (newProduct == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -107,6 +108,7 @@ public class EntryController implements IEntryController {
         tx.commit();
     }
 
+    @Override
     public void delete(int _groupId, UUID _entryUUID) throws GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -123,41 +125,15 @@ public class EntryController implements IEntryController {
         tx.commit();
     }
 
-    public ListEntry getEntryByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<ListEntry> entryQuery = mManager.createQuery("select le from ListEntry le " +
-                "where le.UUID = :uuid and le.group = :group", ListEntry.class);
-        entryQuery.setParameter("uuid", _uuid);
-        entryQuery.setParameter("group", _group);
-        List<ListEntry> entryResult = entryQuery.getResultList();
-        if (entryResult.size() == 0)
-            return null;
-        return entryResult.get(0);
-    }
-
-    public DeletedObject getDeletedEntryByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delEntryQuery = mManager.createQuery("select do from " +
-                        "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delEntryQuery.setParameter("group", _group);
-        delEntryQuery.setParameter("uuid", _uuid);
-        delEntryQuery.setParameter("type", DeletedObject.Type.LISTENTRY);
-        delEntryQuery.setMaxResults(1);
-        List<DeletedObject> delEntryResult = delEntryQuery.getResultList();
-        if (delEntryResult.size() == 0)
-            return null;
-        return delEntryResult.get(0);
-    }
-
     EntryController(EntityManager _manager) {
         mManager = _manager;
     }
 
     private ListEntry getEntry(DeviceGroup _group, UUID _entryUUID, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        ListEntry entry = getEntryByGroupAndUUID(_group, _entryUUID);
+        ListEntry entry = findByGroupAndUUID(_group, _entryUUID);
         if (entry == null) {
-            if (getDeletedEntryByGroupAndUUID(_group, _entryUUID) == null) {
+            if (findDeletedByGroupAndUUID(_group, _entryUUID) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -165,5 +141,15 @@ public class EntryController implements IEntryController {
             throw new GoneException();
         }
         return entry;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<ListEntry> getManagedType() {
+        return ListEntry.class;
     }
 }

@@ -131,9 +131,9 @@ public class TaggedProductResource {
                 getTaggedProductController(manager);
 
         TaggedProduct foundTaggedProduct = taggedProductController.
-                getTaggedProductByGroupAndUUID(group, toFind);
+                findByGroupAndUUID(group, toFind);
         if (foundTaggedProduct == null) {
-            if (taggedProductController.getDeletedTaggedProductByGroupAndUUID(group, toFind) !=
+            if (taggedProductController.findDeletedByGroupAndUUID(group, toFind) !=
                     null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +

@@ -28,11 +28,9 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="EinkaufslisteServer" target="1.5" />
       <module name="instalist-comm" target="1.5" />
       <module name="instalist-server-meta" target="1.5" />
-      <module name="instalist-server-webservice" target="1.5" />
-      <module name="webservice" target="1.5" />
+      <module name="instalist-server-webservice" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -55,4 +55,27 @@ public class DeletedObject extends BaseItem<DeletedObject> {
         setType(_type);
         return this;
     }
+
+    @Transient
+    public static Type mapType(Class _class) {
+        if (_class == Category.class)
+            return Type.CATEGORY;
+        if (_class == Ingredient.class)
+            return Type.INGREDIENT;
+        if (_class == ShoppingList.class)
+            return Type.LIST;
+        if (_class == ListEntry.class)
+            return Type.LISTENTRY;
+        if (_class == Product.class)
+            return Type.PRODUCT;
+        if (_class == Recipe.class)
+            return Type.RECIPE;
+        if (_class == Tag.class)
+            return Type.TAG;
+        if (_class == TaggedProduct.class)
+            return Type.TAGGEDPRODUCT;
+        if (_class == Unit.class)
+            return Type.UNIT;
+        return null;
+    }
 }

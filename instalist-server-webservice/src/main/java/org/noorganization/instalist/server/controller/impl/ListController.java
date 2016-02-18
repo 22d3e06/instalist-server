@@ -8,12 +8,9 @@ import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class ListController implements IListController {
@@ -31,8 +28,8 @@ public class ListController implements IListController {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        ShoppingList found = getListByGroupAndUUID(group, _listUUID);
-        DeletedObject deletedList = getDeletedListByGroupAndUUID(group, _listUUID);
+        ShoppingList found = findByGroupAndUUID(group, _listUUID);
+        DeletedObject deletedList = findDeletedByGroupAndUUID(group, _listUUID);
         if (found != null || (deletedList != null && deletedList.getUpdated().
                 isAfter(_lastChanged))) {
             tx.rollback();
@@ -40,7 +37,7 @@ public class ListController implements IListController {
         }
         Category cat = null;
         if (_category != null) {
-            cat = getCategory(_groupId, _category, categoryController, tx);
+            cat = getCategory(group, _category, categoryController, tx);
         }
 
         ShoppingList newList = new ShoppingList().withGroup(group);
@@ -60,9 +57,9 @@ public class ListController implements IListController {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        ShoppingList listToUpdate = getListByGroupAndUUID(group, _listUUID);
+        ShoppingList listToUpdate = findByGroupAndUUID(group, _listUUID);
         if (listToUpdate == null) {
-            if (getDeletedListByGroupAndUUID(group, _listUUID) != null) {
+            if (findDeletedByGroupAndUUID(group, _listUUID) != null) {
                 tx.rollback();
                 throw new GoneException();
             }
@@ -76,7 +73,7 @@ public class ListController implements IListController {
 
         Category cat = null;
         if (_category != null)
-            cat = getCategory(_groupId, _category, categoryController, tx);
+            cat = getCategory(group, _category, categoryController, tx);
 
         if (_name != null)
             listToUpdate.setName(_name);
@@ -92,9 +89,9 @@ public class ListController implements IListController {
     public void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException {
         mManager.getTransaction().begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        ShoppingList listToDelete = getListByGroupAndUUID(group, _listUUID);
+        ShoppingList listToDelete = findByGroupAndUUID(group, _listUUID);
         if (listToDelete == null) {
-            if (getDeletedListByGroupAndUUID(group, _listUUID) != null) {
+            if (findDeletedByGroupAndUUID(group, _listUUID) != null) {
                 mManager.getTransaction().rollback();
                 throw new GoneException();
             }
@@ -118,40 +115,25 @@ public class ListController implements IListController {
         mManager.getTransaction().commit();
     }
 
-    public ShoppingList getListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<ShoppingList> listQuery = mManager.createQuery("select sl from ShoppingList sl" +
-                " where sl.group = :group and sl.UUID = :uuid", ShoppingList.class);
-        listQuery.setParameter("group", _group);
-        listQuery.setParameter("uuid", _uuid);
-        List<ShoppingList> lists = listQuery.getResultList();
-        if (lists.size() == 0)
-            return null;
-        return lists.get(0);
-    }
-
-    public DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> listQuery = mManager.createQuery("select do from " +
-                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type "+
-                "order by do.updated desc",
-                DeletedObject.class);
-        listQuery.setParameter("group", _group);
-        listQuery.setParameter("uuid", _uuid);
-        listQuery.setParameter("type", DeletedObject.Type.LIST);
-        List<DeletedObject> lists = listQuery.getResultList();
-        if (lists.size() == 0)
-            return null;
-        return lists.get(0);
-    }
-
-    private Category getCategory(int _groupId, UUID _category,
+    private Category getCategory(DeviceGroup _group, UUID _category,
                                  ICategoryController _categoryController, EntityTransaction _tx)
             throws BadRequestException  {
         Category cat;
-        cat = _categoryController.getCategoryByGroupAndUUID(_groupId, _category);
+        cat = _categoryController.findByGroupAndUUID(_group, _category);
         if (cat == null) {
             _tx.rollback();
             throw new BadRequestException();
         }
         return cat;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<ShoppingList> getManagedType() {
+        return ShoppingList.class;
     }
 }

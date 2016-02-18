@@ -11,7 +11,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,18 +18,19 @@ class TagController implements ITagController {
 
     private EntityManager mManager;
 
+    @Override
     public void add(int _groupId, UUID _tagUUID, String _name, Instant _lastChanged)
             throws ConflictException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        Tag toCheck = getTagByGroupAndUUID(group, _tagUUID);
+        Tag toCheck = findByGroupAndUUID(group, _tagUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedTagByGroupAndUUID(group, _tagUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _tagUUID);
         if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
@@ -45,6 +45,7 @@ class TagController implements ITagController {
         tx.commit();
     }
 
+    @Override
     public void update(int _groupId, UUID _recipeUUID, String _name, Instant _lastChanged)
             throws ConflictException, GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
@@ -64,6 +65,7 @@ class TagController implements ITagController {
         tx.commit();
     }
 
+    @Override
     public void delete(int _groupId, UUID _recipeUUID) throws GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -87,42 +89,15 @@ class TagController implements ITagController {
         tx.commit();
     }
 
-    public Tag getTagByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<Tag> recipeQuery = mManager.createQuery("select t from Tag t where " +
-                "t.UUID = :uuid and t.group = :group", Tag.class);
-        recipeQuery.setParameter("uuid", _uuid);
-        recipeQuery.setParameter("group", _group);
-        recipeQuery.setMaxResults(1);
-        List<Tag> recipes = recipeQuery.getResultList();
-        if (recipes.size() == 0)
-            return null;
-        return recipes.get(0);
-    }
-
-    public DeletedObject getDeletedTagByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delTagQuery = mManager.createQuery("select do from " +
-                        "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delTagQuery.setParameter("group", _group);
-        delTagQuery.setParameter("uuid", _uuid);
-        delTagQuery.setParameter("type", DeletedObject.Type.TAG);
-        delTagQuery.setMaxResults(1);
-        List<DeletedObject> delTagResult = delTagQuery.getResultList();
-        if (delTagResult.size() == 0)
-            return null;
-        return delTagResult.get(0);
-    }
-
     TagController(EntityManager _manager) {
         mManager = _manager;
     }
 
     private Tag getTag(DeviceGroup _group, UUID _uuid, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        Tag rtn = getTagByGroupAndUUID(_group, _uuid);
+        Tag rtn = findByGroupAndUUID(_group, _uuid);
         if (rtn == null) {
-            if (getDeletedTagByGroupAndUUID(_group, _uuid) == null) {
+            if (findDeletedByGroupAndUUID(_group, _uuid) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -130,5 +105,15 @@ class TagController implements ITagController {
             throw new GoneException();
         }
         return rtn;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<Tag> getManagedType() {
+        return Tag.class;
     }
 }

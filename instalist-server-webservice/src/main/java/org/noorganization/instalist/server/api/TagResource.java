@@ -123,9 +123,9 @@ public class TagResource {
         ITagController tagController = ControllerFactory.getTagController(manager);
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
 
-        Tag current = tagController.getTagByGroupAndUUID(group, toFind);
+        Tag current = tagController.findByGroupAndUUID(group, toFind);
         if (current == null) {
-            if (tagController.getDeletedTagByGroupAndUUID(group, toFind) == null) {
+            if (tagController.findDeletedByGroupAndUUID(group, toFind) == null) {
                 manager.close();
                 return ResponseFactory.generateNotFound(new Error().withMessage("Tag was not " +
                         "found."));

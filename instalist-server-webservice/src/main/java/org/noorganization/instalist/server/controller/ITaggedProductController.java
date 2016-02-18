@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.Ingredient;
@@ -15,7 +16,7 @@ import java.util.UUID;
 /**
  * A controller for changing tagged products.
  */
-public interface ITaggedProductController {
+public interface ITaggedProductController extends IFinder<TaggedProduct> {
     /**
      * Creates a tagged product.
      * @param _groupId The id of the group that should contain the ingredient.
@@ -56,20 +57,4 @@ public interface ITaggedProductController {
      * @throws NotFoundException If tagged product was not found.
      */
     void delete(int _groupId, UUID _tpUUID) throws GoneException, NotFoundException;
-
-    /**
-     * Finds a tagged product.
-     * @param _group The group containing the tagged product.
-     * @param _uuid The tagged product's existing UUID.
-     * @return Either the found TaggedProduct or null, if not found.
-     */
-    TaggedProduct getTaggedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted tagged product.
-     * @param _group The group containing the deleted recipe.
-     * @param _uuid The tagged product's old UUID.
-     * @return Either the found tagged product as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedTaggedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

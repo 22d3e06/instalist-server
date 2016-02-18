@@ -1,5 +1,6 @@
 package org.noorganization.instalist.server.controller;
 
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.Product;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * This controller is written for making all write operations on products. Additional it should make
  * finding them easier.
  */
-public interface IProductController {
+public interface IProductController extends IFinder<Product> {
 
     /**
      * Create a new product.
@@ -64,20 +65,4 @@ public interface IProductController {
      * @throws GoneException If the product was not found because it has been deleted before.
      */
     void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException;
-
-    /**
-     * Finds a product.
-     * @param _group The group containing the product.
-     * @param _uuid The product's existing UUID.
-     * @return Either the found Product or null, if not found.
-     */
-    Product getProductByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted Product.
-     * @param _group The group containing the deleted Product.
-     * @param _uuid The product's old UUID.
-     * @return Either the found product as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

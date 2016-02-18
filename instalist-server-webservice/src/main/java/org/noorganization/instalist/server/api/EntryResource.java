@@ -132,9 +132,9 @@ public class EntryResource {
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
         IEntryController entryController = ControllerFactory.getEntryController(manager);
 
-        ListEntry foundEntry = entryController.getEntryByGroupAndUUID(group, toFind);
+        ListEntry foundEntry = entryController.findByGroupAndUUID(group, toFind);
         if (foundEntry == null) {
-            if (entryController.getDeletedEntryByGroupAndUUID(group, toFind) != null) {
+            if (entryController.findDeletedByGroupAndUUID(group, toFind) != null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +
                         "listentry has been deleted."));

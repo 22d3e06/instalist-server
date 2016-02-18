@@ -1,21 +1,19 @@
 package org.noorganization.instalist.server.controller;
 
-import org.noorganization.instalist.server.model.DeletedObject;
-import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.Unit;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.UUID;
 
 /**
  * This controller is written for making all write operations on Units. Additional it should make
  * finding Units easier.
  */
-public interface IUnitController {
+public interface IUnitController extends IFinder<Unit> {
 
     /**
      * Create a new Unit.
@@ -50,20 +48,4 @@ public interface IUnitController {
      * @throws GoneException If the Unit was not found because it has been deleted before.
      */
     void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException;
-
-    /**
-     * Finds a Unit.
-     * @param _group The group containing the Unit.
-     * @param _uuid The Unit's existing UUID.
-     * @return Either the found Unit or null, if not found.
-     */
-    Unit getUnitByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted Unit.
-     * @param _group The group containing the Unit.
-     * @param _uuid The Unit's old UUID.
-     * @return Either the found Unit as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedUnitByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

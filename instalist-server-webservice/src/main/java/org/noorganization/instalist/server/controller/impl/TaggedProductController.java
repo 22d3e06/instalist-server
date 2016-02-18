@@ -9,18 +9,16 @@ import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 public class TaggedProductController implements ITaggedProductController {
 
     private EntityManager mManager;
 
+    @Override
     public void add(int _groupId, UUID _tpUUID, UUID _tagUUID, UUID _productUUID,
                     Instant _lastChanged)
             throws ConflictException, BadRequestException {
@@ -28,20 +26,20 @@ public class TaggedProductController implements ITaggedProductController {
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        TaggedProduct toCheck = getTaggedProductByGroupAndUUID(group, _tpUUID);
+        TaggedProduct toCheck = findByGroupAndUUID(group, _tpUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedTaggedProductByGroupAndUUID(group, _tpUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _tpUUID);
         if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
         ITagController tagController = ControllerFactory.getTagController(mManager);
-        Tag newTag = tagController.getTagByGroupAndUUID(group, _tagUUID);
+        Tag newTag = tagController.findByGroupAndUUID(group, _tagUUID);
         IProductController productController = ControllerFactory.getProductController(mManager);
-        Product newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+        Product newProduct = productController.findByGroupAndUUID(group, _productUUID);
         if (newProduct == null || newTag == null) {
             tx.rollback();
             throw new BadRequestException();
@@ -57,6 +55,7 @@ public class TaggedProductController implements ITaggedProductController {
         tx.commit();
     }
 
+    @Override
     public void update(int _groupId, UUID _tpUUID, UUID _tagUUID, UUID _productUUID,
                        Instant _lastChanged)
             throws ConflictException, GoneException, NotFoundException, BadRequestException {
@@ -72,7 +71,7 @@ public class TaggedProductController implements ITaggedProductController {
         Tag newTag = null;
         if (_tagUUID != null) {
             ITagController tagController = ControllerFactory.getTagController(mManager);
-            newTag = tagController.getTagByGroupAndUUID(group, _tagUUID);
+            newTag = tagController.findByGroupAndUUID(group, _tagUUID);
             if (newTag == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -81,7 +80,7 @@ public class TaggedProductController implements ITaggedProductController {
         Product newProduct = null;
         if (_productUUID != null) {
             IProductController productController = ControllerFactory.getProductController(mManager);
-            newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+            newProduct = productController.findByGroupAndUUID(group, _productUUID);
             if (newProduct == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -97,6 +96,7 @@ public class TaggedProductController implements ITaggedProductController {
         tx.commit();
     }
 
+    @Override
     public void delete(int _groupId, UUID _tpUUID) throws GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -112,33 +112,6 @@ public class TaggedProductController implements ITaggedProductController {
         tx.commit();
     }
 
-    public TaggedProduct getTaggedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<TaggedProduct> taggedProductQuery = mManager.createQuery("select tp from " +
-                "TaggedProduct tp where tp.UUID = :uuid and tp.group = :group",
-                TaggedProduct.class);
-        taggedProductQuery.setParameter("uuid", _uuid);
-        taggedProductQuery.setParameter("group", _group);
-        List<TaggedProduct> taggedProductResult = taggedProductQuery.getResultList();
-        if (taggedProductResult.size() == 0)
-            return null;
-        return taggedProductResult.get(0);
-    }
-
-    public DeletedObject getDeletedTaggedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delTaggedProductQuery = mManager.createQuery("select do from " +
-                        "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delTaggedProductQuery.setParameter("group", _group);
-        delTaggedProductQuery.setParameter("uuid", _uuid);
-        delTaggedProductQuery.setParameter("type", DeletedObject.Type.TAGGEDPRODUCT);
-        delTaggedProductQuery.setMaxResults(1);
-        List<DeletedObject> delTaggedProductResult = delTaggedProductQuery.getResultList();
-        if (delTaggedProductResult.size() == 0)
-            return null;
-        return delTaggedProductResult.get(0);
-    }
-
     TaggedProductController(EntityManager _manager) {
         mManager = _manager;
     }
@@ -146,9 +119,9 @@ public class TaggedProductController implements ITaggedProductController {
     private TaggedProduct getTP(DeviceGroup _group, UUID _ingredientUUID,
                                 EntityTransaction _tx)
             throws GoneException, NotFoundException {
-        TaggedProduct rtn = getTaggedProductByGroupAndUUID(_group, _ingredientUUID);
+        TaggedProduct rtn = findByGroupAndUUID(_group, _ingredientUUID);
         if (rtn == null) {
-            if (getDeletedTaggedProductByGroupAndUUID(_group, _ingredientUUID) == null) {
+            if (findDeletedByGroupAndUUID(_group, _ingredientUUID) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -156,5 +129,15 @@ public class TaggedProductController implements ITaggedProductController {
             throw new GoneException();
         }
         return rtn;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<TaggedProduct> getManagedType() {
+        return TaggedProduct.class;
     }
 }

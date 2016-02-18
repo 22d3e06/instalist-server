@@ -140,9 +140,9 @@ public class ListResource {
         DeviceGroup group = manager.find(DeviceGroup.class, _groupId);
         IListController listController = ControllerFactory.getListController(manager);
 
-        ShoppingList foundList = listController.getListByGroupAndUUID(group, listUUID);
+        ShoppingList foundList = listController.findByGroupAndUUID(group, listUUID);
         if (foundList == null) {
-            if (listController.getDeletedListByGroupAndUUID(group, listUUID) == null) {
+            if (listController.findDeletedByGroupAndUUID(group, listUUID) == null) {
                 manager.close();
                 return ResponseFactory.generateNotFound(new Error().withMessage("The requested " +
                         "list was not found."));

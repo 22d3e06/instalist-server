@@ -11,7 +11,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,18 +18,19 @@ class RecipeController implements IRecipeController {
 
     private EntityManager mManager;
 
+    @Override
     public void add(int _groupId, UUID _recipeUUID, String _name, Instant _lastChanged)
             throws ConflictException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        Recipe toCheck = getRecipeByGroupAndUUID(group, _recipeUUID);
+        Recipe toCheck = findByGroupAndUUID(group, _recipeUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedRecipeByGroupAndUUID(group, _recipeUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _recipeUUID);
         if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
@@ -45,6 +45,7 @@ class RecipeController implements IRecipeController {
         tx.commit();
     }
 
+    @Override
     public void update(int _groupId, UUID _recipeUUID, String _name, Instant _lastChanged)
             throws ConflictException, GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
@@ -64,6 +65,7 @@ class RecipeController implements IRecipeController {
         tx.commit();
     }
 
+    @Override
     public void delete(int _groupId, UUID _recipeUUID) throws GoneException, NotFoundException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -87,42 +89,15 @@ class RecipeController implements IRecipeController {
         tx.commit();
     }
 
-    public Recipe getRecipeByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<Recipe> recipeQuery = mManager.createQuery("select r from Recipe r where " +
-                "r.UUID = :uuid and r.group = :group", Recipe.class);
-        recipeQuery.setParameter("uuid", _uuid);
-        recipeQuery.setParameter("group", _group);
-        recipeQuery.setMaxResults(1);
-        List<Recipe> recipes = recipeQuery.getResultList();
-        if (recipes.size() == 0)
-            return null;
-        return recipes.get(0);
-    }
-
-    public DeletedObject getDeletedRecipeByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delRecipeQuery = mManager.createQuery("select do from " +
-                        "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delRecipeQuery.setParameter("group", _group);
-        delRecipeQuery.setParameter("uuid", _uuid);
-        delRecipeQuery.setParameter("type", DeletedObject.Type.RECIPE);
-        delRecipeQuery.setMaxResults(1);
-        List<DeletedObject> delRecipeResult = delRecipeQuery.getResultList();
-        if (delRecipeResult.size() == 0)
-            return null;
-        return delRecipeResult.get(0);
-    }
-
     RecipeController(EntityManager _manager) {
         mManager = _manager;
     }
 
     private Recipe getRecipe(DeviceGroup _group, UUID _uuid, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        Recipe rtn = getRecipeByGroupAndUUID(_group, _uuid);
+        Recipe rtn = findByGroupAndUUID(_group, _uuid);
         if (rtn == null) {
-            if (getDeletedRecipeByGroupAndUUID(_group, _uuid) == null) {
+            if (findDeletedByGroupAndUUID(_group, _uuid) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -130,5 +105,15 @@ class RecipeController implements IRecipeController {
             throw new GoneException();
         }
         return rtn;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<Recipe> getManagedType() {
+        return Recipe.class;
     }
 }

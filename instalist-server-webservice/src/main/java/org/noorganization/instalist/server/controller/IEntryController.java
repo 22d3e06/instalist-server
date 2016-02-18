@@ -1,6 +1,7 @@
 package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
+import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.ListEntry;
@@ -15,7 +16,7 @@ import java.util.UUID;
  * A controller for changing lists entries.
  * Created by damihe on 09.02.16.
  */
-public interface IEntryController {
+public interface IEntryController extends IFinder<ListEntry> {
     /**
      * Creates a list.
      * @param _groupId The id of the group that should contain the entry.
@@ -61,20 +62,4 @@ public interface IEntryController {
      * @throws NotFoundException If list was not found.
      */
     void delete(int _groupId, UUID _entryUUID) throws GoneException, NotFoundException;
-
-    /**
-     * Finds a list entry.
-     * @param _group The group containing the entry.
-     * @param _uuid The entry's existing UUID.
-     * @return Either the found ListEntry or null, if not found.
-     */
-    ListEntry getEntryByGroupAndUUID(DeviceGroup _group, UUID _uuid);
-
-    /**
-     * Finds a deleted entry.
-     * @param _group The group containing the deleted ListEntry.
-     * @param _uuid The entry's old UUID.
-     * @return Either the found ListEntry as DeletedObject or null, if not found.
-     */
-    DeletedObject getDeletedEntryByGroupAndUUID(DeviceGroup _group, UUID _uuid);
 }

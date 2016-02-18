@@ -130,10 +130,10 @@ public class IngredientResource {
         IIngredientController ingredientController = ControllerFactory.
                 getIngredientController(manager);
 
-        Ingredient foundIngredient = ingredientController.getIngredientByGroupAndUUID(group,
+        Ingredient foundIngredient = ingredientController.findByGroupAndUUID(group,
                 toFind);
         if (foundIngredient == null) {
-            if (ingredientController.getDeletedIngredientByGroupAndUUID(group, toFind) != null) {
+            if (ingredientController.findDeletedByGroupAndUUID(group, toFind) != null) {
                 manager.close();
                 return ResponseFactory.generateGone(new Error().withMessage("The requested " +
                         "ingredient has been deleted."));

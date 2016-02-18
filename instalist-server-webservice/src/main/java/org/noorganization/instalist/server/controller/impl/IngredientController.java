@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,20 +27,20 @@ public class IngredientController implements IIngredientController {
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
-        Ingredient toCheck = getIngredientByGroupAndUUID(group, _ingredientUUID);
+        Ingredient toCheck = findByGroupAndUUID(group, _ingredientUUID);
         if (toCheck != null) {
             tx.rollback();
             throw new ConflictException();
         }
-        DeletedObject previousDeleted = getDeletedIngredientByGroupAndUUID(group, _ingredientUUID);
+        DeletedObject previousDeleted = findDeletedByGroupAndUUID(group, _ingredientUUID);
         if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
         IRecipeController recipeController = ControllerFactory.getRecipeController(mManager);
-        Recipe newRecipe = recipeController.getRecipeByGroupAndUUID(group, _recipeUUID);
+        Recipe newRecipe = recipeController.findByGroupAndUUID(group, _recipeUUID);
         IProductController productController = ControllerFactory.getProductController(mManager);
-        Product newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+        Product newProduct = productController.findByGroupAndUUID(group, _productUUID);
         if (newProduct == null || newRecipe == null) {
             tx.rollback();
             throw new BadRequestException();
@@ -73,7 +72,7 @@ public class IngredientController implements IIngredientController {
         Recipe newRecipe = null;
         if (_recipeUUID != null) {
             IRecipeController recipeController = ControllerFactory.getRecipeController(mManager);
-            newRecipe = recipeController.getRecipeByGroupAndUUID(group, _recipeUUID);
+            newRecipe = recipeController.findByGroupAndUUID(group, _recipeUUID);
             if (newRecipe == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -82,7 +81,7 @@ public class IngredientController implements IIngredientController {
         Product newProduct = null;
         if (_productUUID != null) {
             IProductController productController = ControllerFactory.getProductController(mManager);
-            newProduct = productController.getProductByGroupAndUUID(group, _productUUID);
+            newProduct = productController.findByGroupAndUUID(group, _productUUID);
             if (newProduct == null) {
                 tx.rollback();
                 throw new BadRequestException();
@@ -115,32 +114,6 @@ public class IngredientController implements IIngredientController {
         tx.commit();
     }
 
-    public Ingredient getIngredientByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<Ingredient> ingredientQuery = mManager.createQuery("select i from Ingredient i "+
-                "where i.UUID = :uuid and i.group = :group", Ingredient.class);
-        ingredientQuery.setParameter("uuid", _uuid);
-        ingredientQuery.setParameter("group", _group);
-        List<Ingredient> ingredientResult = ingredientQuery.getResultList();
-        if (ingredientResult.size() == 0)
-            return null;
-        return ingredientResult.get(0);
-    }
-
-    public DeletedObject getDeletedIngredientByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
-        TypedQuery<DeletedObject> delIngredientQuery = mManager.createQuery("select do from " +
-                        "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.updated desc",
-                DeletedObject.class);
-        delIngredientQuery.setParameter("group", _group);
-        delIngredientQuery.setParameter("uuid", _uuid);
-        delIngredientQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
-        delIngredientQuery.setMaxResults(1);
-        List<DeletedObject> delEntryResult = delIngredientQuery.getResultList();
-        if (delEntryResult.size() == 0)
-            return null;
-        return delEntryResult.get(0);
-    }
-
     IngredientController(EntityManager _manager) {
         mManager = _manager;
     }
@@ -148,9 +121,9 @@ public class IngredientController implements IIngredientController {
     private Ingredient getIngredient(DeviceGroup _group, UUID _ingredientUUID,
                                      EntityTransaction _tx)
             throws GoneException, NotFoundException {
-        Ingredient ingredient = getIngredientByGroupAndUUID(_group, _ingredientUUID);
+        Ingredient ingredient = findByGroupAndUUID(_group, _ingredientUUID);
         if (ingredient == null) {
-            if (getDeletedIngredientByGroupAndUUID(_group, _ingredientUUID) == null) {
+            if (findDeletedByGroupAndUUID(_group, _ingredientUUID) == null) {
                 _tx.rollback();
                 throw new NotFoundException();
             }
@@ -158,5 +131,15 @@ public class IngredientController implements IIngredientController {
             throw new GoneException();
         }
         return ingredient;
+    }
+
+    @Override
+    public EntityManager getManager() {
+        return mManager;
+    }
+
+    @Override
+    public Class<Ingredient> getManagedType() {
+        return Ingredient.class;
     }
 }
