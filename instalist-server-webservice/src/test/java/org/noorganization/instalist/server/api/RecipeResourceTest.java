@@ -97,7 +97,7 @@ public class RecipeResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testGetUnits() throws Exception {
+    public void testGetRecipes() throws Exception {
         String url = "/groups/%d/recipes";
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().get();
@@ -146,7 +146,7 @@ public class RecipeResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testGetUnit() throws Exception {
+    public void testGetRecipe() throws Exception {
         String url = "/groups/%d/recipes/%s";
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId(),
@@ -186,7 +186,7 @@ public class RecipeResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testPostUnit() throws Exception {
+    public void testPostRecipe() throws Exception {
         String url = "/groups/%d/recipes";
         RecipeInfo newRecipe = new RecipeInfo().withUUID(mRecipe.getUUID()).withName("recipe3");
         Instant preInsert = Instant.now();
@@ -225,7 +225,7 @@ public class RecipeResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testPutUnit() throws Exception {
+    public void testPutRecipe() throws Exception {
         String url = "/groups/%d/recipes/%s";
         Instant preUpdate = mRecipe.getUpdated();
         RecipeInfo updatedList = new RecipeInfo().withDeleted(false).withName("changedrecipe");
@@ -282,7 +282,7 @@ public class RecipeResourceTest extends JerseyTest {
     }
 
     @Test
-    public void testDeleteUnit() throws Exception {
+    public void testDeleteRecipe() throws Exception {
         String url = "/groups/%d/recipes/%s";
         Instant preDelete = mRecipe.getUpdated();
 
