@@ -122,7 +122,7 @@ public class UnitResourceTest extends JerseyTest {
                 assertFalse(current.getDeleted());
             } else if (mDeletedUnit.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
-                assertEquals(mDeletedUnit.getTime(), current.getLastChanged());
+                assertEquals(mDeletedUnit.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected unit.");
@@ -323,6 +323,6 @@ public class UnitResourceTest extends JerseyTest {
         savedDeletedUnitQuery.setParameter("type", DeletedObject.Type.UNIT);
         List<DeletedObject> savedDeletedUnits = savedDeletedUnitQuery.getResultList();
         assertEquals(1, savedDeletedUnits.size());
-        assertTrue(preDelete.isBefore(savedDeletedUnits.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedUnits.get(0).getUpdated()));
     }
 }

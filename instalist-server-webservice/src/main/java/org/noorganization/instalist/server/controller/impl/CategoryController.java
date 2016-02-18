@@ -30,7 +30,7 @@ class CategoryController implements ICategoryController {
             throw new ConflictException();
         }
         DeletedObject deletedCategory = getDeletedCategoryByGroupAndUUID(_groupId, _uuid);
-        if (deletedCategory != null && _added.isBefore(deletedCategory.getTime().toInstant())) {
+        if (deletedCategory != null && _added.isBefore(deletedCategory.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -112,7 +112,7 @@ class CategoryController implements ICategoryController {
     private DeletedObject getDeletedCategoryByGroupAndUUID(int _groupId, UUID _catUUID) {
         TypedQuery<DeletedObject> deletedCategoryQuery = mManager.createQuery("select do from" +
                         " DeletedObject do where do.group = :group and do.UUID = :uuid order by " +
-                        "do.time desc",
+                        "do.updated desc",
                 DeletedObject.class);
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         deletedCategoryQuery.setParameter("group", group);

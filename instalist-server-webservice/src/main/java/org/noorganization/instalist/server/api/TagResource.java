@@ -3,16 +3,13 @@ package org.noorganization.instalist.server.api;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.noorganization.instalist.comm.message.Error;
-import org.noorganization.instalist.comm.message.RecipeInfo;
 import org.noorganization.instalist.comm.message.TagInfo;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
-import org.noorganization.instalist.server.controller.IRecipeController;
 import org.noorganization.instalist.server.controller.ITagController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
-import org.noorganization.instalist.server.model.Recipe;
 import org.noorganization.instalist.server.model.Tag;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
@@ -68,10 +65,10 @@ public class TagResource {
             tags = tagQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedRecipesQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and " +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and " +
                     "do.type = :type", DeletedObject.class);
             deletedRecipesQuery.setParameter("group", group);
-            deletedRecipesQuery.setParameter("updated", Date.from(changedSince));
+            deletedRecipesQuery.setParameter("updated", changedSince);
             deletedRecipesQuery.setParameter("type", DeletedObject.Type.TAG);
             deletedTags = deletedRecipesQuery.getResultList();
         } else {
@@ -97,7 +94,7 @@ public class TagResource {
         for (DeletedObject current: deletedTags) {
             TagInfo toAdd = new TagInfo().withDeleted(true);
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(toAdd);
         }
 

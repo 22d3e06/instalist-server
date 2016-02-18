@@ -67,10 +67,10 @@ public class IngredientResource {
             ingedients = IngredientsQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedIngredientsQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and " +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and " +
                     "do.type = :type", DeletedObject.class);
             deletedIngredientsQuery.setParameter("group", group);
-            deletedIngredientsQuery.setParameter("updated", Date.from(changedSince));
+            deletedIngredientsQuery.setParameter("updated", changedSince);
             deletedIngredientsQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
             deletedIngredients = deletedIngredientsQuery.getResultList();
         } else {
@@ -99,7 +99,7 @@ public class IngredientResource {
         for (DeletedObject current : deletedIngredients) {
             IngredientInfo toAdd = new IngredientInfo();
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }

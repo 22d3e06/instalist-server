@@ -33,7 +33,7 @@ public class ListController implements IListController {
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
         ShoppingList found = getListByGroupAndUUID(group, _listUUID);
         DeletedObject deletedList = getDeletedListByGroupAndUUID(group, _listUUID);
-        if (found != null || (deletedList != null && deletedList.getTime().toInstant().
+        if (found != null || (deletedList != null && deletedList.getUpdated().
                 isAfter(_lastChanged))) {
             tx.rollback();
             throw new ConflictException();
@@ -111,7 +111,6 @@ public class ListController implements IListController {
 
         DeletedObject deletedList = new DeletedObject().withType(DeletedObject.Type.LIST);
         deletedList.setUUID(_listUUID);
-        deletedList.setTime(new Date(System.currentTimeMillis()));
         deletedList.setGroup(group);
         mManager.persist(deletedList);
         mManager.remove(listToDelete);
@@ -132,7 +131,8 @@ public class ListController implements IListController {
 
     public DeletedObject getDeletedListByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> listQuery = mManager.createQuery("select do from " +
-                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type",
+                "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type "+
+                "order by do.updated desc",
                 DeletedObject.class);
         listQuery.setParameter("group", _group);
         listQuery.setParameter("uuid", _uuid);

@@ -7,7 +7,6 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.noorganization.instalist.comm.message.RecipeInfo;
 import org.noorganization.instalist.comm.message.TagInfo;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
@@ -63,7 +62,7 @@ public class TagResourceTest extends JerseyTest {
                 withUpdated(creation);
 
         mDeletedTag = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.TAG).withTime(Date.from(creation));
+                withType(DeletedObject.Type.TAG).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNATag = new Tag().withGroup(mNAGroup).withName("tag2").withUUID(UUID.randomUUID());
 
@@ -123,7 +122,7 @@ public class TagResourceTest extends JerseyTest {
                 assertFalse(current.getDeleted());
             } else if (mDeletedTag.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
-                assertEquals(mDeletedTag.getTime(), current.getLastChanged());
+                assertEquals(mDeletedTag.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected tag.");
@@ -324,6 +323,6 @@ public class TagResourceTest extends JerseyTest {
         savedDeletedTagQuery.setParameter("type", DeletedObject.Type.TAG);
         List<DeletedObject> savedDeletedTags = savedDeletedTagQuery.getResultList();
         assertEquals(1, savedDeletedTags.size());
-        assertTrue(preDelete.isBefore(savedDeletedTags.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedTags.get(0).getUpdated()));
     }
 }

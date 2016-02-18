@@ -73,11 +73,11 @@ public class ListResource {
 
             TypedQuery<DeletedObject> foundDeletedListsQuery =
                     manager.createQuery("select do from" +
-                                    " DeletedObject do where do.group = :group and do.time > :updated and" +
-                                    " do.type = :type",
+                            " DeletedObject do where do.group = :group and " +
+                            "do.updated > :updated and do.type = :type",
                             DeletedObject.class);
             foundDeletedListsQuery.setParameter("group", group);
-            foundDeletedListsQuery.setParameter("updated", Date.from(changedSince));
+            foundDeletedListsQuery.setParameter("updated", changedSince);
             foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
             foundDeleted = foundDeletedListsQuery.getResultList();
         } else {
@@ -86,10 +86,9 @@ public class ListResource {
             foundListsQuery.setParameter("group", group);
             foundLists = foundListsQuery.getResultList();
 
-            TypedQuery<DeletedObject> foundDeletedListsQuery =
-                    manager.createQuery("select do from" +
-                                    " DeletedObject do where do.group = :group and do.type = :type",
-                            DeletedObject.class);
+            TypedQuery<DeletedObject> foundDeletedListsQuery = manager.createQuery("select do " +
+                    "from DeletedObject do where do.group = :group and do.type = :type",
+                    DeletedObject.class);
             foundDeletedListsQuery.setParameter("group", group);
             foundDeletedListsQuery.setParameter("type", DeletedObject.Type.LIST);
             foundDeleted = foundDeletedListsQuery.getResultList();
@@ -111,7 +110,7 @@ public class ListResource {
         for (DeletedObject current : foundDeleted) {
             ListInfo toAdd = new ListInfo();
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }

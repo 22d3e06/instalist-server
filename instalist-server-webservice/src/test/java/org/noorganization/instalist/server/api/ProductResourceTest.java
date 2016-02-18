@@ -66,7 +66,7 @@ public class ProductResourceTest extends JerseyTest {
                 withUUID(UUID.randomUUID()).withDefaultAmount(2f).withStepAmount(2f).
                 withUpdated(creation);
         mDeletedProduct = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.PRODUCT).withTime(Date.from(creation));
+                withType(DeletedObject.Type.PRODUCT).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNAProduct = new Product().withGroup(mNAGroup).withName("product3").
                 withUUID(UUID.randomUUID());
@@ -149,7 +149,7 @@ public class ProductResourceTest extends JerseyTest {
                 assertNull(current.getUnitUUID());
                 assertNull(current.getDefaultAmount());
                 assertNull(current.getStepAmount());
-                assertEquals(mDeletedProduct.getTime(), current.getLastChanged());
+                assertEquals(mDeletedProduct.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected unit.");
@@ -357,6 +357,6 @@ public class ProductResourceTest extends JerseyTest {
         savedDeletedProductQuery.setParameter("type", DeletedObject.Type.PRODUCT);
         List<DeletedObject> savedDeletedUnits = savedDeletedProductQuery.getResultList();
         assertEquals(1, savedDeletedUnits.size());
-        assertTrue(preDelete.isBefore(savedDeletedUnits.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedUnits.get(0).getUpdated()));
     }
 }

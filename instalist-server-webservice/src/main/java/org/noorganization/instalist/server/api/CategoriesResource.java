@@ -80,10 +80,10 @@ public class CategoriesResource {
             TypedQuery<DeletedObject> deletedCategoriesQuery =
                     manager.createQuery("select do " +
                                     "from DeletedObject do where do.group = :groupid and " +
-                                    "do.type = :type and do.time > :time",
+                                    "do.type = :type and do.updated > :updated",
                             DeletedObject.class);
             deletedCategoriesQuery.setParameter("groupid", group);
-            deletedCategoriesQuery.setParameter("time", Date.from(changedSince));
+            deletedCategoriesQuery.setParameter("updated", changedSince);
             deletedCategoriesQuery.setParameter("type", DeletedObject.Type.CATEGORY);
             deletedCategories = deletedCategoriesQuery.getResultList();
         } else {
@@ -117,7 +117,7 @@ public class CategoriesResource {
         for (DeletedObject currentCat: deletedCategories) {
             CategoryInfo info = new CategoryInfo();
             info.setUUID(currentCat.getUUID());
-            info.setLastChanged(currentCat.getTime());
+            info.setLastChanged(Date.from(currentCat.getUpdated()));
             info.setDeleted(true);
             rtnPayload.add(info);
         }
@@ -173,7 +173,7 @@ public class CategoriesResource {
             if (deletedCategories.size() == 1) {
                 CategoryInfo catInfo = new CategoryInfo();
                 catInfo.setDeleted(true);
-                catInfo.setLastChanged(deletedCategories.get(0).getTime());
+                catInfo.setLastChanged(Date.from(deletedCategories.get(0).getUpdated()));
                 catInfo.setUUID(categoryUUID);
                 return ResponseFactory.generateGone(catInfo);
             } else {

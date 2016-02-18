@@ -32,7 +32,7 @@ public class UnitController implements IUnitController{
             throw new ConflictException();
         }
         DeletedObject deletedUnit = getDeletedUnitByGroupAndUUID(group, _newUUID);
-        if (deletedUnit != null && _created.isBefore(deletedUnit.getTime().toInstant())) {
+        if (deletedUnit != null && _created.isBefore(deletedUnit.getUpdated())) {
              tx.rollback();
             throw new ConflictException();
         }
@@ -74,7 +74,6 @@ public class UnitController implements IUnitController{
         Unit toDelete = getUnit(_uuid, tx, group);
         oldUnit.setUUID(toDelete.getUUID());
         oldUnit.setType(DeletedObject.Type.UNIT);
-        oldUnit.setTime(Date.from(Instant.now()));
         mManager.persist(oldUnit);
         mManager.remove(toDelete);
 
@@ -109,7 +108,7 @@ public class UnitController implements IUnitController{
     public DeletedObject getDeletedUnitByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delUnitQuery = mManager.createQuery("select do from " +
                 "DeletedObject do where do.group = :group and do.UUID = :uuid and do.type = :type" +
-                " order by do.time desc",
+                " order by do.updated desc",
                 DeletedObject.class);
         delUnitQuery.setParameter("group", _group);
         delUnitQuery.setParameter("uuid", _uuid);

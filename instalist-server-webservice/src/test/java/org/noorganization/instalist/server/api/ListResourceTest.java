@@ -68,7 +68,7 @@ public class ListResourceTest extends JerseyTest {
         mListWOC = new ShoppingList().withGroup(mGroup).withName("list2").withUUID(UUID.
                 randomUUID()).withUpdated(mUpdate);
         mDeletedList = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.LIST).withTime(Date.from(mUpdate));
+                withType(DeletedObject.Type.LIST).withUpdated(mUpdate);
         mNAGroup = new DeviceGroup().withUpdated(Date.from(mUpdate));
         mNAList = new ShoppingList().withGroup(mNAGroup).withName("list3").withUUID(UUID.
                 randomUUID()).withUpdated(mUpdate);
@@ -346,8 +346,8 @@ public class ListResourceTest extends JerseyTest {
         savedDeletedListQuery.setParameter("uuid", mListWC.getUUID());
         List<DeletedObject> savedDeletedLists = savedDeletedListQuery.getResultList();
         assertEquals(1, savedDeletedLists.size());
-        assertTrue(preDelete.toEpochMilli() + " vs. " + savedDeletedLists.get(0).getTime().getTime(),
-                preDelete.isBefore(savedDeletedLists.get(0).getTime().toInstant()));
+        assertTrue(preDelete + " vs. " + savedDeletedLists.get(0).getUpdated(),
+                preDelete.isBefore(savedDeletedLists.get(0).getUpdated()));
 
     }
 }

@@ -33,7 +33,6 @@ import static org.junit.Assert.*;
 
 public class CategoriesResourceTest extends JerseyTest {
 
-    private CommonData    mData;
     private EntityManager mManager;
     private DeviceGroup   mGroup;
     private DeviceGroup   mNotAccessibleGroup;
@@ -57,19 +56,18 @@ public class CategoriesResourceTest extends JerseyTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        mData = new CommonData();
+        CommonData data = new CommonData();
 
         mManager = DatabaseHelper.getInstance().getManager();
         mManager.getTransaction().begin();
         mGroup = new DeviceGroup();
         Instant now = Instant.now();
         Device aDev = new Device().withAuthorized(true).withGroup(mGroup).
-                withSecret(mData.mEncryptedSecret).withName("testDev");
+                withSecret(data.mEncryptedSecret).withName("testDev");
         mCategory = new Category().withGroup(mGroup).withName("cat1").withUUID(UUID.randomUUID()).
                 withUpdated(now);
         mDeletedCategory = new DeletedObject().withGroup(mGroup).
-                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID()).withTime(Date
-                .from(now));
+                withType(DeletedObject.Type.CATEGORY).withUUID(UUID.randomUUID()).withUpdated(now);
         mNotAccessibleGroup = new DeviceGroup().withUpdated(Date.from(now));
         mNotAccessibleCategory = new Category().withGroup(mNotAccessibleGroup).withName("cat2").
                 withUUID(UUID.randomUUID()).withUpdated(now);
@@ -90,7 +88,7 @@ public class CategoriesResourceTest extends JerseyTest {
         mManager.refresh(mNotAccessibleCategory);
 
         mToken = ControllerFactory.getAuthController().getTokenByHttpAuth(mManager, aDev.getId(),
-                mData .mSecret);
+                data.mSecret);
         assertNotNull(mToken);
     }
 
@@ -126,7 +124,8 @@ public class CategoriesResourceTest extends JerseyTest {
             if (mDeletedCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertNull(allCategories[i].getName());
                 assertTrue(allCategories[i].getDeleted());
-                assertEquals(mDeletedCategory.getTime(), allCategories[i].getLastChanged());
+                assertEquals(mDeletedCategory.getUpdated(), allCategories[i].getLastChanged().
+                        toInstant());
             } else if (mCategory.getUUID().equals(UUID.fromString(allCategories[i].getUUID()))) {
                 assertEquals("cat1", allCategories[i].getName());
                 assertFalse(allCategories[i].getDeleted());
@@ -156,7 +155,7 @@ public class CategoriesResourceTest extends JerseyTest {
         Response wrongGroupResponse = target(String.format(url, mNotAccessibleGroup.getId(),
                 mCategory.getUUID().toString())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token " + mToken).
-                put(Entity.json(new CategoryInfo().withName("dev111")));;
+                put(Entity.json(new CategoryInfo().withName("dev111")));
         assertEquals(401, wrongGroupResponse.getStatus());
 
         Response wrongCatResponse = target(String.format(url, mGroup.getId(),

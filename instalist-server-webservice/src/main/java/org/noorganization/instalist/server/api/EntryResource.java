@@ -68,10 +68,10 @@ public class EntryResource {
             foundEntries = foundEntriesQuery.getResultList();
 
             TypedQuery<DeletedObject> foundDeletedEntriesQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and " +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and " +
                     "do.type = :type", DeletedObject.class);
             foundDeletedEntriesQuery.setParameter("group", group);
-            foundDeletedEntriesQuery.setParameter("updated", Date.from(changedSince));
+            foundDeletedEntriesQuery.setParameter("updated", changedSince);
             foundDeletedEntriesQuery.setParameter("type", DeletedObject.Type.LISTENTRY);
             foundDeleted = foundDeletedEntriesQuery.getResultList();
         } else {
@@ -102,7 +102,7 @@ public class EntryResource {
         for (DeletedObject current : foundDeleted) {
             EntryInfo toAdd = new EntryInfo();
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }

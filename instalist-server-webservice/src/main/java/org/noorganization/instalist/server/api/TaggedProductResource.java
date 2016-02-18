@@ -3,16 +3,13 @@ package org.noorganization.instalist.server.api;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.noorganization.instalist.comm.message.Error;
-import org.noorganization.instalist.comm.message.IngredientInfo;
 import org.noorganization.instalist.comm.message.TaggedProductInfo;
 import org.noorganization.instalist.server.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
-import org.noorganization.instalist.server.controller.IIngredientController;
 import org.noorganization.instalist.server.controller.ITaggedProductController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
-import org.noorganization.instalist.server.model.Ingredient;
 import org.noorganization.instalist.server.model.TaggedProduct;
 import org.noorganization.instalist.server.support.DatabaseHelper;
 import org.noorganization.instalist.server.support.ResponseFactory;
@@ -70,10 +67,10 @@ public class TaggedProductResource {
             taggedProducts = taggedProductQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedTaggedProductQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and " +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and " +
                     "do.type = :type", DeletedObject.class);
             deletedTaggedProductQuery.setParameter("group", group);
-            deletedTaggedProductQuery.setParameter("updated", Date.from(changedSince));
+            deletedTaggedProductQuery.setParameter("updated", changedSince);
             deletedTaggedProductQuery.setParameter("type", DeletedObject.Type.TAGGEDPRODUCT);
             deletedTaggedProducts = deletedTaggedProductQuery.getResultList();
         } else {
@@ -101,7 +98,7 @@ public class TaggedProductResource {
         for (DeletedObject current : deletedTaggedProducts) {
             TaggedProductInfo toAdd = new TaggedProductInfo();
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }

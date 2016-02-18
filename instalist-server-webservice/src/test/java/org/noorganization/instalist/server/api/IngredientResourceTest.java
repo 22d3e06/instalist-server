@@ -68,7 +68,7 @@ public class IngredientResourceTest extends JerseyTest {
         mIngredient = new Ingredient().withGroup(mGroup).withUUID(UUID.randomUUID()).withAmount(1f).
                 withUpdated(creation).withProduct(mProduct).withRecipe(mRecipe);
         mDeletedIngredient = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.INGREDIENT).withTime(Date.from(creation));
+                withType(DeletedObject.Type.INGREDIENT).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNARecipe = new Recipe().withName("recipe2").withUUID(UUID.randomUUID()).
                 withGroup(mNAGroup);
@@ -147,7 +147,7 @@ public class IngredientResourceTest extends JerseyTest {
                 assertNull(current.getRecipeUUID());
                 assertNull(current.getProductUUID());
                 assertNull(current.getAmount());
-                assertEquals(mDeletedIngredient.getTime(), current.getLastChanged());
+                assertEquals(mDeletedIngredient.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected Entry.");
@@ -347,6 +347,6 @@ public class IngredientResourceTest extends JerseyTest {
         savedDeletedEntryQuery.setParameter("type", DeletedObject.Type.INGREDIENT);
         List<DeletedObject> savedDeletedEntries = savedDeletedEntryQuery.getResultList();
         assertEquals(1, savedDeletedEntries.size());
-        assertTrue(preDelete.isBefore(savedDeletedEntries.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedEntries.get(0).getUpdated()));
     }
 }

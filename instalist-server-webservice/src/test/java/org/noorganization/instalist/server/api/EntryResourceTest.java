@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.noorganization.instalist.comm.message.EntryInfo;
-import org.noorganization.instalist.comm.message.ProductInfo;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
@@ -24,7 +23,6 @@ import javax.ws.rs.core.Response;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
@@ -70,7 +68,7 @@ public class EntryResourceTest extends JerseyTest {
         mEntry = new ListEntry().withGroup(mGroup).withUUID(UUID.randomUUID()).withAmount(1f).
                 withPriority(2).withUpdated(creation).withProduct(mProduct).withList(mList);
         mDeletedEntry = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.LISTENTRY).withTime(Date.from(creation));
+                withType(DeletedObject.Type.LISTENTRY).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNAList = new ShoppingList().withName("list2").withUUID(UUID.randomUUID()).
                 withGroup(mNAGroup);
@@ -153,7 +151,7 @@ public class EntryResourceTest extends JerseyTest {
                 assertNull(current.getAmount());
                 assertNull(current.getPriority());
                 assertNull(current.getStruck());
-                assertEquals(mDeletedEntry.getTime(), current.getLastChanged());
+                assertEquals(mDeletedEntry.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected Entry.");
@@ -355,6 +353,6 @@ public class EntryResourceTest extends JerseyTest {
         savedDeletedEntryQuery.setParameter("type", DeletedObject.Type.LISTENTRY);
         List<DeletedObject> savedDeletedEntries = savedDeletedEntryQuery.getResultList();
         assertEquals(1, savedDeletedEntries.size());
-        assertTrue(preDelete.isBefore(savedDeletedEntries.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedEntries.get(0).getUpdated()));
     }
 }

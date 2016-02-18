@@ -66,10 +66,10 @@ public class RecipeResource {
             recipes = recipeQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedRecipesQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and " +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and " +
                     "do.type = :type", DeletedObject.class);
             deletedRecipesQuery.setParameter("group", group);
-            deletedRecipesQuery.setParameter("updated", Date.from(changedSince));
+            deletedRecipesQuery.setParameter("updated", changedSince);
             deletedRecipesQuery.setParameter("type", DeletedObject.Type.RECIPE);
             deletedRecipes = deletedRecipesQuery.getResultList();
         } else {
@@ -96,7 +96,7 @@ public class RecipeResource {
         for (DeletedObject current: deletedRecipes) {
             RecipeInfo toAdd = new RecipeInfo().withDeleted(true);
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(toAdd);
         }
 

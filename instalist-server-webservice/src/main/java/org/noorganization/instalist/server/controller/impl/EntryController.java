@@ -34,7 +34,7 @@ public class EntryController implements IEntryController {
             throw new ConflictException();
         }
         DeletedObject previousDeleted = getDeletedEntryByGroupAndUUID(group, _entryUUID);
-        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getTime().toInstant())) {
+        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -116,7 +116,7 @@ public class EntryController implements IEntryController {
         DeletedObject oldProduct = new DeletedObject().withGroup(group);
         oldProduct.setUUID(_entryUUID);
         oldProduct.setType(DeletedObject.Type.LISTENTRY);
-        oldProduct.setTime(Date.from(Instant.now()));
+        oldProduct.setUpdated(Instant.now());
         mManager.persist(oldProduct);
         mManager.remove(toDelete);
 
@@ -137,7 +137,7 @@ public class EntryController implements IEntryController {
     public DeletedObject getDeletedEntryByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delEntryQuery = mManager.createQuery("select do from " +
                         "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.time desc",
+                        "do.type = :type order by do.updated desc",
                 DeletedObject.class);
         delEntryQuery.setParameter("group", _group);
         delEntryQuery.setParameter("uuid", _uuid);

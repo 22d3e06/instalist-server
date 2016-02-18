@@ -35,7 +35,7 @@ class ProductController implements IProductController {
             throw new ConflictException();
         }
         DeletedObject previousDeleted = getDeletedProductByGroupAndUUID(group, _newUUID);
-        if (previousDeleted != null && _created.isBefore(previousDeleted.getTime().toInstant())) {
+        if (previousDeleted != null && _created.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -121,7 +121,6 @@ class ProductController implements IProductController {
         DeletedObject oldProduct = new DeletedObject().withGroup(group);
         oldProduct.setUUID(_uuid);
         oldProduct.setType(DeletedObject.Type.PRODUCT);
-        oldProduct.setTime(Date.from(Instant.now()));
         mManager.persist(oldProduct);
         mManager.remove(toDelete);
 
@@ -143,7 +142,7 @@ class ProductController implements IProductController {
     public DeletedObject getDeletedProductByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delProductQuery = mManager.createQuery("select do from " +
                 "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                "do.type = :type order by do.time desc",
+                "do.type = :type order by do.updated desc",
                 DeletedObject.class);
         delProductQuery.setParameter("group", _group);
         delProductQuery.setParameter("uuid", _uuid);

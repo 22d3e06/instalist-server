@@ -1,7 +1,5 @@
 package org.noorganization.instalist.server.controller.impl;
 
-import org.noorganization.instalist.server.controller.IIngredientController;
-import org.noorganization.instalist.server.controller.IRecipeController;
 import org.noorganization.instalist.server.controller.ITagController;
 import org.noorganization.instalist.server.controller.ITaggedProductController;
 import org.noorganization.instalist.server.model.*;
@@ -33,8 +31,7 @@ class TagController implements ITagController {
             throw new ConflictException();
         }
         DeletedObject previousDeleted = getDeletedTagByGroupAndUUID(group, _tagUUID);
-        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getTime().
-                toInstant())) {
+        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -84,7 +81,6 @@ class TagController implements ITagController {
         DeletedObject oldRecipe = new DeletedObject().withGroup(group);
         oldRecipe.setUUID(_recipeUUID);
         oldRecipe.setType(DeletedObject.Type.TAG);
-        oldRecipe.setTime(Date.from(Instant.now()));
         mManager.persist(oldRecipe);
         mManager.remove(toDelete);
 
@@ -106,7 +102,7 @@ class TagController implements ITagController {
     public DeletedObject getDeletedTagByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delTagQuery = mManager.createQuery("select do from " +
                         "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.time desc",
+                        "do.type = :type order by do.updated desc",
                 DeletedObject.class);
         delTagQuery.setParameter("group", _group);
         delTagQuery.setParameter("uuid", _uuid);

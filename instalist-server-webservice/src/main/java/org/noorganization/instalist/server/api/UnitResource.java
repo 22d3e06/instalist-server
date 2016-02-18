@@ -49,10 +49,10 @@ public class UnitResource {
     @Produces({ "application/json" })
     public Response getUnits(@PathParam("groupid") int _groupId,
                              @QueryParam("changedsince") String _changedSince) throws Exception {
-        Date changedSince = null;
+        Instant changedSince = null;
         try {
             if (_changedSince != null)
-                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0));
+                changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).toInstant();
         } catch(ParseException _e) {
             return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
         }
@@ -74,12 +74,12 @@ public class UnitResource {
             TypedQuery<Unit> unitsQuery = manager.createQuery("select u from Unit u where " +
                     "u.group = :group and u.updated > :updated", Unit.class);
             unitsQuery.setParameter("group", group);
-            unitsQuery.setParameter("updated", changedSince.toInstant());
+            unitsQuery.setParameter("updated", changedSince);
             resultUnits = unitsQuery.getResultList();
 
             TypedQuery<DeletedObject> deletedUnitsQuery = manager.createQuery("select do from " +
                             "DeletedObject do where do.group = :group and do.type = :type and " +
-                            "do.time > :updated",
+                            "do.updated > :updated",
                     DeletedObject.class);
             deletedUnitsQuery.setParameter("group", group);
             deletedUnitsQuery.setParameter("type", DeletedObject.Type.UNIT);
@@ -100,7 +100,7 @@ public class UnitResource {
         for (DeletedObject current: resultDeletedUnits) {
             UnitInfo info = new UnitInfo().withDeleted(true);
             info.setUUID(current.getUUID());
-            info.setLastChanged(current.getTime());
+            info.setLastChanged(Date.from(current.getUpdated()));
             rtn.add(info);
         }
 

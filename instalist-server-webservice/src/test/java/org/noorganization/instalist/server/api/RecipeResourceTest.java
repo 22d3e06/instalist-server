@@ -8,7 +8,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.noorganization.instalist.comm.message.RecipeInfo;
-import org.noorganization.instalist.comm.message.UnitInfo;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
@@ -63,7 +62,7 @@ public class RecipeResourceTest extends JerseyTest {
                 withUpdated(creation);
 
         mDeletedRecipe = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.RECIPE).withTime(Date.from(creation));
+                withType(DeletedObject.Type.RECIPE).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNARecipe = new Recipe().withGroup(mNAGroup).withName("recipe2").withUUID(
                 UUID.randomUUID());
@@ -124,7 +123,7 @@ public class RecipeResourceTest extends JerseyTest {
                 assertFalse(current.getDeleted());
             } else if (mDeletedRecipe.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getName());
-                assertEquals(mDeletedRecipe.getTime(), current.getLastChanged());
+                assertEquals(mDeletedRecipe.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected recipe.");
@@ -325,6 +324,6 @@ public class RecipeResourceTest extends JerseyTest {
         savedDeletedUnitQuery.setParameter("type", DeletedObject.Type.RECIPE);
         List<DeletedObject> savedDeletedRecipes = savedDeletedUnitQuery.getResultList();
         assertEquals(1, savedDeletedRecipes.size());
-        assertTrue(preDelete.isBefore(savedDeletedRecipes.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedRecipes.get(0).getUpdated()));
     }
 }

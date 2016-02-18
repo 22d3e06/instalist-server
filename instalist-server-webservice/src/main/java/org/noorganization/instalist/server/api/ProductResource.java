@@ -66,11 +66,11 @@ public class ProductResource {
             foundProducts = foundProductsQuery.getResultList();
 
             TypedQuery<DeletedObject> foundDeletedListsQuery = manager.createQuery("select do " +
-                    "from DeletedObject do where do.group = :group and do.time > :updated and" +
+                    "from DeletedObject do where do.group = :group and do.updated > :updated and" +
                     " do.type = :type",
                             DeletedObject.class);
             foundDeletedListsQuery.setParameter("group", group);
-            foundDeletedListsQuery.setParameter("updated", Date.from(changedSince));
+            foundDeletedListsQuery.setParameter("updated", changedSince);
             foundDeletedListsQuery.setParameter("type", DeletedObject.Type.PRODUCT);
             foundDeleted = foundDeletedListsQuery.getResultList();
         } else {
@@ -105,7 +105,7 @@ public class ProductResource {
         for (DeletedObject current : foundDeleted) {
             ProductInfo toAdd = new ProductInfo();
             toAdd.setUUID(current.getUUID());
-            toAdd.setLastChanged(current.getTime());
+            toAdd.setLastChanged(Date.from(current.getUpdated()));
             toAdd.setDeleted(true);
             rtn.add(toAdd);
         }

@@ -1,9 +1,7 @@
 package org.noorganization.instalist.server.controller.impl;
 
-import org.noorganization.instalist.server.controller.IEntryController;
 import org.noorganization.instalist.server.controller.IIngredientController;
 import org.noorganization.instalist.server.controller.IRecipeController;
-import org.noorganization.instalist.server.controller.IUnitController;
 import org.noorganization.instalist.server.model.*;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
@@ -11,7 +9,6 @@ import org.noorganization.instalist.server.support.exceptions.GoneException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
 import java.util.Date;
@@ -34,8 +31,7 @@ class RecipeController implements IRecipeController {
             throw new ConflictException();
         }
         DeletedObject previousDeleted = getDeletedRecipeByGroupAndUUID(group, _recipeUUID);
-        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getTime().
-                toInstant())) {
+        if (previousDeleted != null && _lastChanged.isBefore(previousDeleted.getUpdated())) {
             tx.rollback();
             throw new ConflictException();
         }
@@ -85,7 +81,6 @@ class RecipeController implements IRecipeController {
         DeletedObject oldRecipe = new DeletedObject().withGroup(group);
         oldRecipe.setUUID(_recipeUUID);
         oldRecipe.setType(DeletedObject.Type.RECIPE);
-        oldRecipe.setTime(Date.from(Instant.now()));
         mManager.persist(oldRecipe);
         mManager.remove(toDelete);
 
@@ -107,7 +102,7 @@ class RecipeController implements IRecipeController {
     public DeletedObject getDeletedRecipeByGroupAndUUID(DeviceGroup _group, UUID _uuid) {
         TypedQuery<DeletedObject> delRecipeQuery = mManager.createQuery("select do from " +
                         "DeletedObject do where do.group = :group and do.UUID = :uuid and " +
-                        "do.type = :type order by do.time desc",
+                        "do.type = :type order by do.updated desc",
                 DeletedObject.class);
         delRecipeQuery.setParameter("group", _group);
         delRecipeQuery.setParameter("uuid", _uuid);

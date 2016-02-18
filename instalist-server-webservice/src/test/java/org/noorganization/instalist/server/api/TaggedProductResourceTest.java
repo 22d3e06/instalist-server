@@ -7,8 +7,6 @@ import org.glassfish.jersey.test.TestProperties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.noorganization.instalist.comm.message.IngredientInfo;
-import org.noorganization.instalist.comm.message.TagInfo;
 import org.noorganization.instalist.comm.message.TaggedProductInfo;
 import org.noorganization.instalist.server.AuthenticationFilter;
 import org.noorganization.instalist.server.CommonData;
@@ -70,7 +68,7 @@ public class TaggedProductResourceTest extends JerseyTest {
         mTaggedProduct = new TaggedProduct().withGroup(mGroup).withUUID(UUID.randomUUID()).
                 withUpdated(creation).withProduct(mProduct).withTag(mTag);
         mDeletedIngredient = new DeletedObject().withGroup(mGroup).withUUID(UUID.randomUUID()).
-                withType(DeletedObject.Type.TAGGEDPRODUCT).withTime(Date.from(creation));
+                withType(DeletedObject.Type.TAGGEDPRODUCT).withUpdated(creation);
         mNAGroup = new DeviceGroup();
         mNATag = new Tag().withName("tag2").withUUID(UUID.randomUUID()).withGroup(mNAGroup);
         mNAProduct = new Product().withGroup(mNAGroup).withUUID(UUID.randomUUID()).
@@ -147,7 +145,7 @@ public class TaggedProductResourceTest extends JerseyTest {
             } else if (mDeletedIngredient.getUUID().equals(UUID.fromString(current.getUUID()))) {
                 assertNull(current.getTagUUID());
                 assertNull(current.getProductUUID());
-                assertEquals(mDeletedIngredient.getTime(), current.getLastChanged());
+                assertEquals(mDeletedIngredient.getUpdated(), current.getLastChanged().toInstant());
                 assertTrue(current.getDeleted());
             } else
                 fail("Unexpected TaggedProduct.");
@@ -354,6 +352,6 @@ public class TaggedProductResourceTest extends JerseyTest {
         savedDeletedTPQuery.setParameter("type", DeletedObject.Type.TAGGEDPRODUCT);
         List<DeletedObject> savedDeletedTaggedProducts = savedDeletedTPQuery.getResultList();
         assertEquals(1, savedDeletedTaggedProducts.size());
-        assertTrue(preDelete.isBefore(savedDeletedTaggedProducts.get(0).getTime().toInstant()));
+        assertTrue(preDelete.isBefore(savedDeletedTaggedProducts.get(0).getUpdated()));
     }
 }
