@@ -38,7 +38,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Accepted. This Response should be only used in POST, PUT
+     * Generates a response with HTTP-Code Accepted. This Response should be only used in POST, PUT
      * or DELETE-requests for indicating a change will be executed. The result may be visible later.
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -52,7 +52,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Bad Request. May be used for indicating there was an
+     * Generates a response with HTTP-Code Bad Request. May be used for indicating there was an
      * error in the request-format. Please use more specific codes if possible.
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -66,7 +66,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Not Authorized. May be used for indicating that
+     * Generates a response with HTTP-Code Not Authorized. May be used for indicating that
      * authorization is missing.
      * @param _entity Optional json-entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -81,7 +81,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Not Authorized. May be used for indicating that
+     * Generates a response with HTTP-Code Not Authorized. May be used for indicating that
      * authorization is missing. This variant also send an Auth-Basic requirement.
      * @param _entity Optional json-entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -98,7 +98,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Not Found. Use this if the requested object was not found
+     * Generates a response with HTTP-Code Not Found. Use this if the requested object was not found
      * and wasn't deleted (then use {@link #generateGone(Object)}).
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -112,7 +112,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Conflict. Use this if the requested change is in conflict
+     * Generates a response with HTTP-Code Conflict. Use this if the requested change is in conflict
      * with the saved state on server.
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
@@ -126,7 +126,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Gone. May be used when a deleted object is requested.
+     * Generates a response with HTTP-Code Gone. May be used when a deleted object is requested.
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
      */
@@ -139,7 +139,7 @@ public class ResponseFactory {
     }
 
     /**
-     * Generates a resopnse with HTTP-Code Internal Server Error. May be used when a strange error
+     * Generates a response with HTTP-Code Internal Server Error. May be used when a strange error
      * happens. Only use in unexpected situations.
      * @param _entity Optional entity (body). If null, no body will be added to the response.
      * @return The generated Response.
