@@ -49,7 +49,7 @@ public class TagResource {
                 changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).
                     toInstant();
         } catch (ParseException _e) {
-            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
@@ -161,7 +161,7 @@ public class TagResource {
         if ((_entity.getUUID() != null && !_entity.getUUID().equals(_tagUUID)) ||
                 (_entity.getName() != null && _entity.getName().length() == 0) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toUpdate;
         try {
@@ -173,7 +173,7 @@ public class TagResource {
         if (_entity.getLastChanged() != null) {
             updated = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(updated))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             updated = Instant.now();
 
@@ -211,7 +211,7 @@ public class TagResource {
         if (_entity.getUUID() == null ||
                 (_entity.getName() != null && _entity.getName().length() == 0) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toCreate;
         try {
@@ -223,7 +223,7 @@ public class TagResource {
         if (_entity.getLastChanged() != null) {
             created = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(created))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             created = Instant.now();
 

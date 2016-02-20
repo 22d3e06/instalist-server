@@ -61,7 +61,7 @@ public class ListResource {
                         toInstant();
             } catch (ParseException _e) {
                 manager.close();
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
             }
 
             TypedQuery<ShoppingList> foundListsQuery = manager.createQuery("select sl from " +
@@ -180,7 +180,7 @@ public class ListResource {
         if ((_listInfo.getDeleted() != null && _listInfo.getDeleted()) ||
                 (_listInfo.getName() != null && _listInfo.getName().length() == 0) ||
                 (_listInfo.getUUID() != null && !_listInfo.getUUID().equals(_listUUID)))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID listUUID;
         UUID categoryUUID = null;
@@ -199,7 +199,7 @@ public class ListResource {
         if (_listInfo.getLastChanged() != null) {
             updated = _listInfo.getLastChanged().toInstant();
             if (now.isBefore(updated))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             updated = now;
 
@@ -218,7 +218,7 @@ public class ListResource {
             return ResponseFactory.generateGone(new Error().withMessage("The list was " +
                     "deleted already."));
         } catch(BadRequestException _e) {
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
         } finally {
             manager.close();
         }
@@ -239,7 +239,7 @@ public class ListResource {
         if ((_listInfo.getDeleted() != null && _listInfo.getDeleted()) ||
                 _listInfo.getName() == null || _listInfo.getName().length() == 0 ||
                 _listInfo.getUUID() == null)
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID listUUID;
         UUID categoryUUID = null;
@@ -254,7 +254,7 @@ public class ListResource {
         if (_listInfo.getLastChanged() != null) {
             created = _listInfo.getLastChanged().toInstant();
             if (created.isAfter(Instant.now()))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             created = Instant.now();
 

@@ -7,18 +7,18 @@ import org.noorganization.instalist.comm.message.Error;
  * Created by Michael Wodniok on 2016-01-31.
  */
 public class CommonEntity {
-    public static final Error sNotAuthorized;
-    public static final Error sNoData;
-    public static final Error sInvalidData;
+    public static final Error NOT_AUTHORIZED;
+    public static final Error NO_DATA_RECVD;
+    public static final Error INVALID_DATA;
     public static final Error INVALID_UUID;
-    public static final Error INVALID_DATE;
+    public static final Error INVALID_CHANGEDATE;
 
     static {
-        sNotAuthorized = new Error().withMessage("Not authorized.");
-        sNoData = new Error().withMessage("No data was sent.");
-        sInvalidData = new Error().withMessage("Sent data was invalid.");
-        INVALID_UUID = new Error().withMessage("Requested UUID was in wrong format.");
-        INVALID_DATE = new Error().withMessage("Change date was either not in expected format or " +
-                "in future.");
+        NOT_AUTHORIZED = new Error().withMessage("Not authorized.");
+        NO_DATA_RECVD = new Error().withMessage("No data was sent.");
+        INVALID_DATA = new Error().withMessage("Sent data was invalid.");
+        INVALID_UUID = new Error().withMessage("UUID was in wrong format.");
+        INVALID_CHANGEDATE = new Error().withMessage("Change date was either not in expected " +
+                "format or in future.");
     }
 }

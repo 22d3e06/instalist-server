@@ -59,7 +59,7 @@ public class CategoriesResource {
             try {
                 changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).toInstant();
             } catch (ParseException _e) {
-                return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
             }
         }
 
@@ -205,16 +205,16 @@ public class CategoriesResource {
                                 @PathParam("categoryuuid") String _uuid,
                                 CategoryInfo _entity) throws Exception {
         if (_entity.getName() == null)
-            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+            return ResponseFactory.generateBadRequest(CommonEntity.NO_DATA_RECVD);
         if ((_entity.getUUID() != null && !_entity.getUUID().equals(_uuid)) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         Instant changedDate = Instant.now();
         if (_entity.getLastChanged() != null) {
             changedDate = _entity.getLastChanged().toInstant();
             if (changedDate.isAfter(Instant.now()))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         }
 
         UUID categoryUUID;
@@ -260,12 +260,12 @@ public class CategoriesResource {
         if (_entity.getUUID() == null || _entity.getName() == null ||
                 _entity.getName().length() == 0 || (_entity.getDeleted() != null &&
                 _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
         Instant lastChanged;
         if (_entity.getLastChanged() != null) {
             lastChanged = _entity.getLastChanged().toInstant();
             if (lastChanged.isAfter(Instant.now()))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             lastChanged = Instant.now();
 

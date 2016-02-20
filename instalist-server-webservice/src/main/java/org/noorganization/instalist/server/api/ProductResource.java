@@ -55,7 +55,7 @@ public class ProductResource {
                         toInstant();
             } catch (ParseException _e) {
                 manager.close();
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
             }
 
             TypedQuery<Product> foundProductsQuery = manager.createQuery("select p from " +
@@ -180,7 +180,7 @@ public class ProductResource {
                 (_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getDefaultAmount() != null && _entity.getDefaultAmount() < 0.001f) ||
                 (_entity.getStepAmount() != null && _entity.getStepAmount() < 0.001f))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toUpdate;
         UUID unitUUID = null;
@@ -196,7 +196,7 @@ public class ProductResource {
         if (_entity.getLastChanged() != null) {
             updated = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(updated))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             updated = Instant.now();
 
@@ -241,7 +241,7 @@ public class ProductResource {
                 (_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getDefaultAmount() != null && _entity.getDefaultAmount() < 0.001f) ||
                 (_entity.getStepAmount() != null && _entity.getStepAmount() < 0.001f))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toCreate;
         UUID unitUUID = null;
@@ -257,7 +257,7 @@ public class ProductResource {
         if (_entity.getLastChanged() != null) {
             created = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(created))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             created = Instant.now();
         float defaultAmount = (_entity.getDefaultAmount() != null ? _entity.getDefaultAmount() :

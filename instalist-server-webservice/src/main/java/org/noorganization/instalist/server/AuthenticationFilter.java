@@ -35,7 +35,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("X-Token "))
             throw new NotAuthorizedException(ResponseFactory.
-                    generateNotAuthorized(CommonEntity.sNotAuthorized));
+                    generateNotAuthorized(CommonEntity.NOT_AUTHORIZED));
 
         MultivaluedMap<String, String> parameters = requestContext.getUriInfo().getPathParameters();
         int groupId;
@@ -52,6 +52,6 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         if (authenticatedDev == null || authenticatedDev.getGroup().getId() != groupId ||
                 !authenticatedDev.getAuthorized())
             throw new NotAuthorizedException(ResponseFactory.
-                    generateNotAuthorized(CommonEntity.sNotAuthorized));
+                    generateNotAuthorized(CommonEntity.NOT_AUTHORIZED));
     }
 }

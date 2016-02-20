@@ -56,7 +56,7 @@ public class TaggedProductResource {
                         toInstant();
             } catch (ParseException _e) {
                 manager.close();
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
             }
 
             TypedQuery<TaggedProduct> taggedProductQuery = manager.createQuery("select tp from " +
@@ -172,7 +172,7 @@ public class TaggedProductResource {
                                      TaggedProductInfo _entity) throws Exception {
         if ((_entity.getUUID() != null && !_entity.getUUID().equals(_taggedProductUUID)) ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toUpdate;
         UUID productUUID = null;
@@ -190,7 +190,7 @@ public class TaggedProductResource {
         if (_entity.getLastChanged() != null) {
             updated = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(updated))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             updated = Instant.now();
 
@@ -232,7 +232,7 @@ public class TaggedProductResource {
         if (_entity.getUUID() == null || _entity.getTagUUID() == null ||
                 _entity.getProductUUID() == null ||
                 (_entity.getDeleted() != null && _entity.getDeleted()))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toCreate;
         UUID productUUID;
@@ -248,7 +248,7 @@ public class TaggedProductResource {
         if (_entity.getLastChanged() != null) {
             created = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(created))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         } else
             created = Instant.now();
 

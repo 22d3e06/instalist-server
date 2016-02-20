@@ -188,9 +188,9 @@ public class GroupsResource {
                               DeviceInfo _deviceToUpdate) throws Exception {
         if ((_deviceToUpdate.getId() != null && _deviceId != _deviceToUpdate.getId()) ||
                 (_deviceToUpdate.getName() != null && _deviceToUpdate.getName().length() == 0))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
         if (_deviceToUpdate.getName() == null && _deviceToUpdate.getAuthorized() == null)
-            return ResponseFactory.generateBadRequest(CommonEntity.sNoData);
+            return ResponseFactory.generateBadRequest(CommonEntity.NO_DATA_RECVD);
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         Device toUpdate = manager.find(Device.class, _deviceId);

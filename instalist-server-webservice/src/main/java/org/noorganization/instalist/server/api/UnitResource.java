@@ -54,7 +54,7 @@ public class UnitResource {
             if (_changedSince != null)
                 changedSince = ISO8601Utils.parse(_changedSince, new ParsePosition(0)).toInstant();
         } catch(ParseException _e) {
-            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
@@ -183,11 +183,11 @@ public class UnitResource {
         else {
             changeDate = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(changeDate))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         }
         if ((_entity.getDeleted() != null && _entity.getDeleted()) ||
                 (_entity.getUUID() != null && !_entity.getUUID().equals(_unitUUID)))
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
         IUnitController unitController = ControllerFactory.getUnitController(manager);
@@ -223,7 +223,7 @@ public class UnitResource {
         if (_entity.getUUID() == null ||
                 (_entity.getDeleted() != null && _entity.getDeleted()) ||
                 _entity.getName() == null || _entity.getName().length() == 0)
-            return ResponseFactory.generateBadRequest(CommonEntity.sInvalidData);
+            return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATA);
 
         UUID toInsert;
         try {
@@ -238,7 +238,7 @@ public class UnitResource {
         else {
             insertDate = _entity.getLastChanged().toInstant();
             if (Instant.now().isBefore(insertDate))
-                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_DATE);
+                return ResponseFactory.generateBadRequest(CommonEntity.INVALID_CHANGEDATE);
         }
 
         EntityManager manager = DatabaseHelper.getInstance().getManager();
