@@ -13,7 +13,7 @@ import javax.ws.rs.NotFoundException;
 import java.time.Instant;
 import java.util.UUID;
 
-public class ListController implements IListController {
+class ListController implements IListController {
 
     private EntityManager mManager;
 

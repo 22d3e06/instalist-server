@@ -16,7 +16,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-public class IngredientController implements IIngredientController {
+class IngredientController implements IIngredientController {
 
     private EntityManager mManager;
 

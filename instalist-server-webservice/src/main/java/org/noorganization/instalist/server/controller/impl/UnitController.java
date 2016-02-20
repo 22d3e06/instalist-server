@@ -13,7 +13,7 @@ import javax.ws.rs.NotFoundException;
 import java.time.Instant;
 import java.util.UUID;
 
-public class UnitController implements IUnitController {
+class UnitController implements IUnitController {
 
     private EntityManager mManager;
 
