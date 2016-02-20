@@ -2,8 +2,6 @@ package org.noorganization.instalist.server.controller;
 
 import javassist.NotFoundException;
 import org.noorganization.instalist.server.controller.generic.IFinder;
-import org.noorganization.instalist.server.model.DeletedObject;
-import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.model.ListEntry;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
@@ -14,11 +12,12 @@ import java.util.UUID;
 
 /**
  * A controller for changing lists entries.
- * Created by damihe on 09.02.16.
+ *
+ * Created by damihe on 2016-02-02.
  */
 public interface IEntryController extends IFinder<ListEntry> {
     /**
-     * Creates a list.
+     * Creates a list entry.
      * @param _groupId The id of the group that should contain the entry.
      * @param _entryUUID The uuid of the entry identifying it in the group.
      * @param _productUUID The product of the entry.
@@ -27,7 +26,7 @@ public interface IEntryController extends IFinder<ListEntry> {
      * @param _priority The priority of the entty.
      * @param _struck Whether the entry should be struck through.
      * @param _lastChanged A change date.
-     * @throws ConflictException If already a list with same uuid exists or the list was already
+     * @throws ConflictException If already an entry with same uuid exists or the list was already
      * deleted.
      * @throws BadRequestException If either linked product or list was not found.
      */
@@ -46,8 +45,8 @@ public interface IEntryController extends IFinder<ListEntry> {
      * @param _struck Whether the entry should be struck through. May be null for no change.
      * @param _lastChanged A change date.
      * @throws ConflictException If a change was made before.
-     * @throws GoneException If list was deleted before.
-     * @throws NotFoundException If list was not found.
+     * @throws GoneException If list entry was deleted before.
+     * @throws NotFoundException If entry was not found.
      * @throws BadRequestException If either linked product or list was not found.
      */
     void update(int _groupId, UUID _entryUUID, UUID _productUUID, UUID _listUUID, Float _amount,
@@ -58,8 +57,8 @@ public interface IEntryController extends IFinder<ListEntry> {
      * Deletes an entry.
      * @param _groupId The id of the group containing the entry.
      * @param _entryUUID The uuid of the entry identifying it in the group.
-     * @throws GoneException If list was deleted before.
-     * @throws NotFoundException If list was not found.
+     * @throws GoneException If list entry was deleted before.
+     * @throws NotFoundException If entry was not found.
      */
     void delete(int _groupId, UUID _entryUUID) throws GoneException, NotFoundException;
 }

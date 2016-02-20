@@ -14,11 +14,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * A controller for changing recipes.
+ * A controller for changing ingredients of recipes.
  */
 public interface IIngredientController extends IFinder<Ingredient> {
     /**
-     * Creates a ingredient.
+     * Creates an ingredient.
      * @param _groupId The id of the group that should contain the ingredient.
      * @param _ingredientUUID The uuid of the ingredient identifying it in the group.
      * @param _recipeUUID The uuid of the recipe with contains the ingredient.
@@ -34,7 +34,7 @@ public interface IIngredientController extends IFinder<Ingredient> {
              float _amount, Instant _lastChanged) throws ConflictException, BadRequestException;
 
     /**
-     * Updates a ingredient.
+     * Updates an ingredient.
      * @param _groupId The id of the group that contains the ingredient.
      * @param _ingredientUUID The uuid of the ingredient identifying it in the group.
      * @param _recipeUUID The uuid of the recipe with contains the ingredient.
@@ -42,8 +42,8 @@ public interface IIngredientController extends IFinder<Ingredient> {
      * @param _amount The amount of {@code _productUUID}.
      * @param _lastChanged A change date.
      * @throws ConflictException If a change was made before.
-     * @throws GoneException If recipe was deleted before.
-     * @throws NotFoundException If recipe was not found.
+     * @throws GoneException If ingredient was deleted before.
+     * @throws NotFoundException If object was not found.
      * @throws BadRequestException If either {@code _recipeUUID} or {@code _productUUID} could
      * not be resolved.
      */
@@ -52,7 +52,7 @@ public interface IIngredientController extends IFinder<Ingredient> {
             NotFoundException, BadRequestException;
 
     /**
-     * Deletes a recipe.
+     * Deletes an recipe.
      * @param _groupId The id of the group containing the ingredient.
      * @param _ingredientUUID The uuid of the ingredient identifying it in the group.
      * @throws GoneException If ingredient was deleted before.
