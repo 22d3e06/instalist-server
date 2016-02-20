@@ -5,6 +5,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * A Factory for generating Responses with different HTTP-Codes.
  * Created by damihe on 29.01.16.
  */
 public class ResponseFactory {

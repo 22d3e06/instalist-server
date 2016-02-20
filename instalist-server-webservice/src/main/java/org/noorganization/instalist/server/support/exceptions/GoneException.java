@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response;
 /**
  * Since JAX-RS does not specify this type of Exception, we had to do it ourself. This type of
  * exception gets thrown if a client tries to access or modify a deleted object.
- * Created by damihe on 08.02.16.
+ * Created by Michael Wodniok on 2016-02-08.
  */
 public class GoneException extends ClientErrorException {
     public GoneException() {

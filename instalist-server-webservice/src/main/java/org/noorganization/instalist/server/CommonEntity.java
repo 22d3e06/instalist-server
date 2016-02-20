@@ -3,7 +3,8 @@ package org.noorganization.instalist.server;
 import org.noorganization.instalist.comm.message.Error;
 
 /**
- * Created by damihe on 31.01.16.
+ * This class was made for extracting common entities for responses.
+ * Created by Michael Wodniok on 2016-01-31.
  */
 public class CommonEntity {
     public static final Error sNotAuthorized;

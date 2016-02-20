@@ -8,6 +8,8 @@ import org.noorganization.instalist.server.support.DatabaseHelper;
 
 /**
  * The Application defines all available resources and prepares the database connection.
+ *
+ * This Application is like a main-method.
  */
 public class Application extends ResourceConfig {
 
