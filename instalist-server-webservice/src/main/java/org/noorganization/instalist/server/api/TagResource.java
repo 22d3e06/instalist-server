@@ -4,7 +4,7 @@ package org.noorganization.instalist.server.api;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 import org.noorganization.instalist.comm.message.Error;
 import org.noorganization.instalist.comm.message.TagInfo;
-import org.noorganization.instalist.server.CommonEntity;
+import org.noorganization.instalist.server.support.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.ITagController;
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;

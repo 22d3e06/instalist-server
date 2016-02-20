@@ -1,4 +1,4 @@
-package org.noorganization.instalist.server;
+package org.noorganization.instalist.server.support;
 
 import org.noorganization.instalist.comm.message.Error;
 

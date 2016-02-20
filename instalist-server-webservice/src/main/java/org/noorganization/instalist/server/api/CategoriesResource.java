@@ -7,7 +7,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import org.noorganization.instalist.server.CommonEntity;
+import org.noorganization.instalist.server.support.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.comm.message.CategoryInfo;
 import org.noorganization.instalist.server.controller.ICategoryController;

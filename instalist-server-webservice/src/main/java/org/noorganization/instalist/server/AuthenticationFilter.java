@@ -2,18 +2,16 @@ package org.noorganization.instalist.server;
 
 import org.noorganization.instalist.server.controller.impl.ControllerFactory;
 import org.noorganization.instalist.server.model.Device;
-import org.noorganization.instalist.server.support.DatabaseHelper;
+import org.noorganization.instalist.server.support.CommonEntity;
 import org.noorganization.instalist.server.support.ResponseFactory;
 
 import javax.annotation.Priority;
-import javax.persistence.EntityManager;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 

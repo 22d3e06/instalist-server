@@ -6,7 +6,7 @@ import org.noorganization.instalist.comm.message.DeviceInfo;
 import org.noorganization.instalist.comm.message.DeviceRegistration;
 import org.noorganization.instalist.comm.message.GroupInfo;
 import org.noorganization.instalist.comm.message.TokenInfo;
-import org.noorganization.instalist.server.CommonEntity;
+import org.noorganization.instalist.server.support.CommonEntity;
 import org.noorganization.instalist.server.TokenSecured;
 import org.noorganization.instalist.server.controller.IAuthController;
 import org.noorganization.instalist.server.controller.IGroupController;
