@@ -52,25 +52,19 @@ class CategoryController implements ICategoryController {
     @Override
     public void update(int _groupId, UUID _categoryUUID, String _name, Instant _changed) throws
             ClientErrorException {
-        mManager.getTransaction().begin();
+        EntityTransaction tx = mManager.getTransaction();
+        tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        Category catToEdit = findByGroupAndUUID(group, _categoryUUID);
-        if (catToEdit == null) {
-            if (findDeletedByGroupAndUUID(group, _categoryUUID) == null) {
-                mManager.getTransaction().rollback();
-                throw new NotFoundException();
-            } else {
-                mManager.getTransaction().rollback();
-                throw new GoneException();
-            }
-        }
+        Category catToEdit = getCategory(group, _categoryUUID, tx);
+
         if (catToEdit.getUpdated().isAfter(_changed)) {
-            mManager.getTransaction().rollback();
+            tx.rollback();
             throw new ConflictException();
         }
         catToEdit.setName(_name);
         catToEdit.setUpdated(_changed);
-        mManager.getTransaction().commit();
+
+        tx.commit();
     }
 
     @Override
@@ -79,16 +73,7 @@ class CategoryController implements ICategoryController {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        Category catToDelete = findByGroupAndUUID(group, _categoryUUID);
-        if (catToDelete == null) {
-            if (findDeletedByGroupAndUUID(group, _categoryUUID) == null) {
-                tx.rollback();
-                throw new NotFoundException();
-            } else {
-                tx.rollback();
-                throw new GoneException();
-            }
-        }
+        Category catToDelete = getCategory(group, _categoryUUID, tx);
         if (catToDelete.getLists().size() != 0) {
             tx.rollback();
             throw new ConflictException();
@@ -100,6 +85,16 @@ class CategoryController implements ICategoryController {
         mManager.persist(deletedCat);
         mManager.remove(catToDelete);
         tx.commit();
+    }
+
+    private Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx)
+            throws NotFoundException, GoneException {
+        try {
+            return findOrThrow(_group, _categoryUUID);
+        } catch (NotFoundException|GoneException _e) {
+            _tx.rollback();
+            throw  _e;
+        }
     }
 
     CategoryController(EntityManager _manager) {

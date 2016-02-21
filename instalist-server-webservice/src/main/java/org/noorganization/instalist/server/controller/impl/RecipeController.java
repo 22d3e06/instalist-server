@@ -95,16 +95,12 @@ class RecipeController implements IRecipeController {
 
     private Recipe getRecipe(DeviceGroup _group, UUID _uuid, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        Recipe rtn = findByGroupAndUUID(_group, _uuid);
-        if (rtn == null) {
-            if (findDeletedByGroupAndUUID(_group, _uuid) == null) {
-                _tx.rollback();
-                throw new NotFoundException();
-            }
+        try {
+            return findOrThrow(_group, _uuid);
+        } catch (NotFoundException|GoneException _e) {
             _tx.rollback();
-            throw new GoneException();
+            throw  _e;
         }
-        return rtn;
     }
 
     @Override

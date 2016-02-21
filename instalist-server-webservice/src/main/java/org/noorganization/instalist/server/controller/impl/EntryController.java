@@ -131,16 +131,12 @@ class EntryController implements IEntryController {
 
     private ListEntry getEntry(DeviceGroup _group, UUID _entryUUID, EntityTransaction _tx) throws
             GoneException, NotFoundException {
-        ListEntry entry = findByGroupAndUUID(_group, _entryUUID);
-        if (entry == null) {
-            if (findDeletedByGroupAndUUID(_group, _entryUUID) == null) {
-                _tx.rollback();
-                throw new NotFoundException();
-            }
+        try {
+            return findOrThrow(_group, _entryUUID);
+        } catch (NotFoundException|GoneException _e) {
             _tx.rollback();
-            throw new GoneException();
+            throw  _e;
         }
-        return entry;
     }
 
     @Override

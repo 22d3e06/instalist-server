@@ -2,12 +2,14 @@ package org.noorganization.instalist.server.controller.generic;
 
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.support.exceptions.GoneException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,5 +60,24 @@ public interface IFinder<T> {
         if (delObjects.size() == 0)
             return null;
         return delObjects.get(0);
+    }
+
+    /**
+     * Find a item or throw an exception.
+     * @param _group The group, that contains the object to find.
+     * @param _uuid The uuid identifying the object in the group.
+     * @return The found object. Never null.
+     * @throws NotFoundException if item was not found and not deleted.
+     * @throws GoneException if item was deleted.
+     */
+    default T findOrThrow(DeviceGroup _group, UUID _uuid) throws NotFoundException, GoneException {
+        T rtn = findByGroupAndUUID(_group, _uuid);
+        if (rtn == null) {
+            if (findDeletedByGroupAndUUID(_group, _uuid) == null)
+                throw new NotFoundException();
+            else
+                throw new GoneException();
+        }
+        return rtn;
     }
 }

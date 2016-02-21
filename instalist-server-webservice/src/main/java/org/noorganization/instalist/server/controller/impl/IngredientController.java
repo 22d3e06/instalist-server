@@ -121,16 +121,12 @@ class IngredientController implements IIngredientController {
     private Ingredient getIngredient(DeviceGroup _group, UUID _ingredientUUID,
                                      EntityTransaction _tx)
             throws GoneException, NotFoundException {
-        Ingredient ingredient = findByGroupAndUUID(_group, _ingredientUUID);
-        if (ingredient == null) {
-            if (findDeletedByGroupAndUUID(_group, _ingredientUUID) == null) {
-                _tx.rollback();
-                throw new NotFoundException();
-            }
+        try {
+            return findOrThrow(_group, _ingredientUUID);
+        } catch (NotFoundException|GoneException _e) {
             _tx.rollback();
-            throw new GoneException();
+            throw  _e;
         }
-        return ingredient;
     }
 
     @Override

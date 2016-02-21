@@ -116,19 +116,15 @@ class TaggedProductController implements ITaggedProductController {
         mManager = _manager;
     }
 
-    private TaggedProduct getTP(DeviceGroup _group, UUID _ingredientUUID,
+    private TaggedProduct getTP(DeviceGroup _group, UUID _taggedProductUUID,
                                 EntityTransaction _tx)
             throws GoneException, NotFoundException {
-        TaggedProduct rtn = findByGroupAndUUID(_group, _ingredientUUID);
-        if (rtn == null) {
-            if (findDeletedByGroupAndUUID(_group, _ingredientUUID) == null) {
-                _tx.rollback();
-                throw new NotFoundException();
-            }
+        try {
+            return findOrThrow(_group, _taggedProductUUID);
+        } catch (NotFoundException|GoneException _e) {
             _tx.rollback();
-            throw new GoneException();
+            throw  _e;
         }
-        return rtn;
     }
 
     @Override

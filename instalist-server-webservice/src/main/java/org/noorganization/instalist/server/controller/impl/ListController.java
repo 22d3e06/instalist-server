@@ -57,15 +57,7 @@ class ListController implements IListController {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        ShoppingList listToUpdate = findByGroupAndUUID(group, _listUUID);
-        if (listToUpdate == null) {
-            if (findDeletedByGroupAndUUID(group, _listUUID) != null) {
-                tx.rollback();
-                throw new GoneException();
-            }
-            tx.rollback();
-            throw new NotFoundException();
-        }
+        ShoppingList listToUpdate = getList(group, _listUUID, tx);
         if (listToUpdate.getUpdated().isAfter(_lastChanged)) {
             tx.rollback();
             throw new ConflictException();
@@ -87,23 +79,16 @@ class ListController implements IListController {
     }
 
     public void delete(int _groupId, UUID _listUUID) throws GoneException, NotFoundException {
-        mManager.getTransaction().begin();
+        EntityTransaction tx = mManager.getTransaction();
+        tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
-        ShoppingList listToDelete = findByGroupAndUUID(group, _listUUID);
-        if (listToDelete == null) {
-            if (findDeletedByGroupAndUUID(group, _listUUID) != null) {
-                mManager.getTransaction().rollback();
-                throw new GoneException();
-            }
-            mManager.getTransaction().rollback();
-            throw new NotFoundException();
-        }
+        ShoppingList listToDelete = getList(group, _listUUID, tx);
 
         IEntryController entryController = ControllerFactory.getEntryController(mManager);
         for (ListEntry entry: listToDelete.getEntries()) {
             try {
                 entryController.delete(_groupId, entry.getUUID());
-            } catch (Exception _e) {}
+            } catch (Exception ignored) {}
         }
 
         DeletedObject deletedList = new DeletedObject().withType(DeletedObject.Type.LIST);
@@ -112,7 +97,7 @@ class ListController implements IListController {
         mManager.persist(deletedList);
         mManager.remove(listToDelete);
 
-        mManager.getTransaction().commit();
+        tx.commit();
     }
 
     private Category getCategory(DeviceGroup _group, UUID _category,
@@ -125,6 +110,16 @@ class ListController implements IListController {
             throw new BadRequestException();
         }
         return cat;
+    }
+
+    private ShoppingList getList(DeviceGroup _group, UUID _uuid, EntityTransaction _tx) throws
+            NotFoundException, GoneException {
+        try {
+            return findOrThrow(_group, _uuid);
+        } catch (NotFoundException|GoneException _e) {
+            _tx.rollback();
+            throw  _e;
+        }
     }
 
     @Override

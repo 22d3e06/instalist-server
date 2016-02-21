@@ -91,16 +91,12 @@ class UnitController implements IUnitController {
 
     private Unit getUnit(UUID _uuid, EntityTransaction _tx, DeviceGroup _group)
             throws NotFoundException, GoneException {
-        Unit unit = findByGroupAndUUID(_group, _uuid);
-        if (unit == null) {
-            if (findDeletedByGroupAndUUID(_group, _uuid) == null) {
-                _tx.rollback();
-                throw new NotFoundException();
-            }
+        try {
+            return findOrThrow(_group, _uuid);
+        } catch (NotFoundException|GoneException _e) {
             _tx.rollback();
-            throw new GoneException();
+            throw  _e;
         }
-        return unit;
     }
 
     UnitController(EntityManager _manager) {
