@@ -1,8 +1,10 @@
 package org.noorganization.instalist.server.controller.impl;
 
+import org.noorganization.instalist.server.controller.IProductController;
 import org.noorganization.instalist.server.controller.IUnitController;
 import org.noorganization.instalist.server.model.DeletedObject;
 import org.noorganization.instalist.server.model.DeviceGroup;
+import org.noorganization.instalist.server.model.Product;
 import org.noorganization.instalist.server.model.Unit;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
@@ -65,13 +67,20 @@ class UnitController implements IUnitController {
 
     @Override
     public void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException {
-        // TODO: remove Unit from Products
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
 
         DeletedObject oldUnit = new DeletedObject().withGroup(group);
         Unit toDelete = getUnit(_uuid, tx, group);
+
+        IProductController productController = ControllerFactory.getProductController(mManager);
+        for (Product productToUnlink: toDelete.getProducts()) {
+            try {
+                productController.update(_groupId, productToUnlink.getUUID(), null, null, null,
+                        null, true, Instant.now());
+            } catch (Exception ignored) {}
+        }
         oldUnit.setUUID(toDelete.getUUID());
         oldUnit.setType(DeletedObject.Type.UNIT);
         mManager.persist(oldUnit);
