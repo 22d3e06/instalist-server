@@ -16,7 +16,7 @@ public class Device extends NamedItem<Device> {
     private DeviceGroup mGroup;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     public int getId() {
         return mId;

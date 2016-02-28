@@ -26,7 +26,7 @@ public class Product extends NamedBaseItem<Product> {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return mId;

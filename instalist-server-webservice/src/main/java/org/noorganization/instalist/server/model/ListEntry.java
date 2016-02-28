@@ -27,7 +27,7 @@ public class ListEntry extends BaseItem<ListEntry> {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return mId;

@@ -33,7 +33,7 @@ public class DeviceGroup {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false)
     public int getId() {
         return mId;

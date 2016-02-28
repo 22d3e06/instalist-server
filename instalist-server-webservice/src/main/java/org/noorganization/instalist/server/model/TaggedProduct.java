@@ -19,7 +19,7 @@ public class TaggedProduct extends BaseItem<TaggedProduct> {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return mId;

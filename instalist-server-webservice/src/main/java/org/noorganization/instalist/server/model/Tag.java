@@ -20,7 +20,7 @@ public class Tag extends NamedBaseItem<Tag> {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return mId;
