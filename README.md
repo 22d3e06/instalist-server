@@ -1,42 +1,40 @@
-# Einkaufsliste Server
-Die Serverseite für das Plugin [InstalistSync](https://bitbucket.org/fhnoorg/instalistsynch). Dient 
-vor allem zur Synchronisation zwischen mehreren Geräten. 
-
-## Zustand
-[![Build Status](http://instalist.noorganization.org/jenkins/buildStatus/icon?job=Einkaufsliste-Server)](http://instalist.noorganization.org/jenkins/job/Einkaufsliste-Server/)
-Zumindest gilt das für den Build und die Tests.
-
-## Struktur
-Das Projekt ist in mehrere Module unterteilt (ebenfalls in IntelliJ sichtbar):
+# InstaList Server
+This is the server-side for the plugin [Instalist Synch](https://github.com/InstaList/instalist-synch).
+It holds a central database and allows clients organized in groups to access data.
  
- - `instalist-server-meta`: Das Projekt in dem alle serverseitigen Module enthalten sind.
- - `instalist-server-webservice`: Die Serverseite selbst.
- - `instalist-comm`: Klassen zur standardisierten Kommunikation mit dem Client. Dieses Projekt 
- wird ebenfalls im Client benutzt.
+## State
+This project was migrated shortly from BitBucket, since open source projects are more easily to 
+maintain on GitHub. Here and there may be a reference to BitBucket. Please have patience until the
+migration gets completed.
+
+Build and tests: 
+[![Build Status](http://instalist.noorganization.org/jenkins/buildStatus/icon?job=Einkaufsliste-Server)](http://instalist.noorganization.org/jenkins/job/Einkaufsliste-Server/)
+
+## Structure
+The project is split into multiple modules (also visible in IntelliJ):
+ 
+ - `instalist-server`: Meta-project containing all server side projects
+ - `instalist-server-webservice`: The real server side project
+ - `instalist-comm`: Classes for standardizing the communication with clients
 
 ## Setup
-Benötigt:
+System requirements:
  
  - Maven 3
- - MySQL 5.6/MariaDB 10.0 oder neuer.
+ - MySQL 5.6/MariaDB 10.0 or newer
  - JRE/JDK 8
- - Applikationsserver. Empfohlen: [Apache Tomcat 8](http://tomcat.apache.org/download-80.cgi)
- - Internetverbindung für den ersten Build (zum Abhängigkeiten herunterladen)
+ - an application server. We recommend [Apache Tomcat 8](http://tomcat.apache.org/download-80.cgi)
 
-Dies ist ein Maven-Projekt. Mit
+For building a connection to internet may be required for downloading dependencies. To start, clone
+the project and submodules and start building with maven as usual.
 
-    git clone ...
+    git clone https://github.com/InstaList/instalist-server.git
+    cd instalist-server
     git submodule update --init
     mvn compile
     mvn package
-    
-lässt es sich klonen, kompilieren bzw. in ein war-File verpacken.
 
-Zum Testen wird keine externe Datenbank-Verbindung benötigt. Für den Einsatz nach dem deployen 
-auf dem Applikationsserver wird die Datenbank benötigt und muss erstellt, sowie die Tabellen 
-angelegt sein. Verwendete Zugangsdaten sind in 
-`instalist-server-webservice/src/main/resources/META-INF/persistence.xml` hinterlegt. Die 
-Datenbank-Tabellen können mit dem SQL-Skript in `doc/database-model.sql` initialisiert werden.
-
-Dieses Projekt enthält außerdem ein Projekt für IntelliJ IDEA, der Applikations-Server muss jedoch 
-selbst eingebunden werden.
+For testing no database connection is needed since an in-memory database is used. For normal 
+deployment the database must be prepared with connection parameters from 
+`instalist-server-webservice/src/main/resources/META-INF/persistence.xml`. The tables can be created
+using the SQL-script in `doc/database-model.sql`.
