@@ -1,6 +1,7 @@
 # built objects.
 /target
-/instalist-server-webservice/target
+/build/**
+/.gradle/**
 
 # specific not usable IntelliJ-Files.
 /.idea/libraries

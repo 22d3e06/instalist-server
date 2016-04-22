@@ -8,11 +8,10 @@
     <type id="hibernate" />
   </component>
   <component name="MavenProjectsManager">
-    <option name="originalFiles">
-      <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/instalist-comm/pom.xml" />
-      </list>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/instalist-server-webservice/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">

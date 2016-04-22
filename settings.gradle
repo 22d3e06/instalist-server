@@ -1,0 +1,3 @@
+rootProject.name = 'instalist-server'
+//include ':instalist-server-webservice', ':instalist-comm'
+include ':instalist-comm'
