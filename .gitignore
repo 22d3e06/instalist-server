@@ -1,5 +1,5 @@
 # built objects.
-/target
+/out/**
 /build/**
 /.gradle/**
 
@@ -11,6 +11,11 @@
 /.idea/dataSources.*
 /.idea/artifacts
 /.idea/dataSources.xml
+
+# generated through gradle
+/instalist-server.iml
+/instalist-server.iws
+/instalist-server.ipr
 
 # Locks and backups.
 *~
