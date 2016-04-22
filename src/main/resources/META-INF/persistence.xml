@@ -30,6 +30,8 @@
         <class>org.noorganization.instalist.server.model.Product</class>
         <class>org.noorganization.instalist.server.model.Recipe</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
+        <class>org.noorganization.instalist.server.model.TaggedProduct</class>
+        <class>org.noorganization.instalist.server.model.Tag</class>
         <class>org.noorganization.instalist.server.model.Unit</class>
 
         <properties>
@@ -56,6 +58,8 @@
         <class>org.noorganization.instalist.server.model.Product</class>
         <class>org.noorganization.instalist.server.model.Recipe</class>
         <class>org.noorganization.instalist.server.model.ShoppingList</class>
+        <class>org.noorganization.instalist.server.model.TaggedProduct</class>
+        <class>org.noorganization.instalist.server.model.Tag</class>
         <class>org.noorganization.instalist.server.model.Unit</class>
 
         <properties>
