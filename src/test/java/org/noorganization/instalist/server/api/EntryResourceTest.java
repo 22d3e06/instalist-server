@@ -137,7 +137,7 @@ public class EntryResourceTest extends JerseyTest {
         Instant preUpdate = Instant.now();
 
         Response notAuthorizedResponse = target(String.format(url, mGroup.getId())).request().get();
-        assertEquals(500, notAuthorizedResponse.getStatus());
+        assertEquals(401, notAuthorizedResponse.getStatus());
 
         Response wrongAuthResponse = target(String.format(url, mGroup.getId())).request().
                 header(HttpHeaders.AUTHORIZATION, "X-Token wrongauth").get();
