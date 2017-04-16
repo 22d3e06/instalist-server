@@ -94,7 +94,7 @@ public class TaggedProductInfo extends EntityObject {
     }
 
     public void setProductUUID(UUID _productUUID) {
-        mProductUUID = (_productUUID != null ? _productUUID.toString() : null);
+        mProductUUID = _productUUID != null ? _productUUID.toString() : null;
     }
 
     public TaggedProductInfo withProductUUID(String _productUUID) {
