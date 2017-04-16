@@ -2,7 +2,6 @@
 /*
  * Copyright 2016 Tino Siegmund, Michael Wodniok
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -47,7 +46,7 @@ public class TaggedProductInfo extends EntityObject {
     }
 
     public void setUUID(UUID _uuid) {
-        mUUID = (_uuid != null ? _uuid.toString() : null);
+        mUUID = _uuid != null ? _uuid.toString() : null;
     }
 
     public TaggedProductInfo withUUID(String _uuid) {
