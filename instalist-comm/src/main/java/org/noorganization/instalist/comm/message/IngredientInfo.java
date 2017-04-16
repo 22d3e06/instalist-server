@@ -21,8 +21,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
