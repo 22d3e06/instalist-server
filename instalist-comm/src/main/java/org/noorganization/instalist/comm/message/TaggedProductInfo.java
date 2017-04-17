@@ -70,7 +70,7 @@ public class TaggedProductInfo extends EntityObject {
     }
 
     public void setTagUUID(UUID _tagUUID) {
-        mTagUUID = (_tagUUID != null ? _tagUUID.toString() : null);
+        mTagUUID = _tagUUID != null ? _tagUUID.toString() : null;
     }
 
     public TaggedProductInfo withTagUUID(String _tagUUID) {
