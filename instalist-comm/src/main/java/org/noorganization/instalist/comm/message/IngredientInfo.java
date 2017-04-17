@@ -44,7 +44,7 @@ public class IngredientInfo extends EntityObject {
     }
 
     public void setUUID(UUID _uuid) {
-        mUUID = (_uuid != null ? _uuid.toString() : null);
+        mUUID = _uuid != null ? _uuid.toString() : null;
     }
 
     public IngredientInfo withUUID(String _uuid) {
