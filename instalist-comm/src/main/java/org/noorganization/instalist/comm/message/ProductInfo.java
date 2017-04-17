@@ -17,8 +17,6 @@
 package org.noorganization.instalist.comm.message;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.*;
