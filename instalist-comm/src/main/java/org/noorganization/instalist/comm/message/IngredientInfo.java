@@ -68,7 +68,7 @@ public class IngredientInfo extends EntityObject {
     }
 
     public void setRecipeUUID(UUID _listUUID) {
-        mRecipeUUID = (_listUUID != null ? _listUUID.toString() : null);
+        mRecipeUUID = _listUUID != null ? _listUUID.toString() : null;
     }
 
     public IngredientInfo withRecipeUUID(String _listUUID) {
