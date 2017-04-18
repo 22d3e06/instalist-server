@@ -42,21 +42,21 @@ public class CategoryInfo extends EntityObject {
     }
 
     @JsonProperty("uuid")
-    public void setUUID(String _uuid) {
-        this.mUUID = _uuid;
+    public void setUUID(String uuid) {
+        this.mUUID = uuid;
     }
 
-    public void setUUID(UUID _uuid) {
-        setUUID(_uuid.toString());
+    public void setUUID(UUID uuid) {
+        setUUID(uuid.toString());
     }
 
-    public CategoryInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public CategoryInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public CategoryInfo withUUID(UUID _uuid) {
-        setUUID(_uuid.toString());
+    public CategoryInfo withUUID(UUID uuid) {
+        setUUID(uuid.toString());
         return this;
     }
 
