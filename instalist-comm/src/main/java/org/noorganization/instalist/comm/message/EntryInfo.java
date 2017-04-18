@@ -15,11 +15,14 @@
 
 package org.noorganization.instalist.comm.message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+
 import java.util.Date;
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "uuid", "listuuid", "productuuid", "amount", "priority", "struck",
@@ -45,17 +48,17 @@ public class EntryInfo extends EntityObject {
         this.mUUID = id;
     }
 
-    public void setUUID(UUID _uuid) {
-        mUUID = (_uuid != null ? _uuid.toString() : null);
+    public void setUUID(UUID uuid) {
+        mUUID = (uuid != null ? uuid.toString() : null);
     }
 
-    public EntryInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public EntryInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public EntryInfo withUUID(UUID _uuid) {
-        setUUID(_uuid);
+    public EntryInfo withUUID(UUID uuid) {
+        setUUID(uuid);
         return this;
     }
 
@@ -65,21 +68,21 @@ public class EntryInfo extends EntityObject {
     }
 
     @JsonProperty("listuuid")
-    public void setListUUID(String _listUUID) {
-        mListUUID = _listUUID;
+    public void setListUUID(String listUUID) {
+        mListUUID = listUUID;
     }
 
-    public void setListUUID(UUID _listUUID) {
-        mListUUID = (_listUUID != null ? _listUUID.toString() : null);
+    public void setListUUID(UUID listUUID) {
+        mListUUID = (listUUID != null ? listUUID.toString() : null);
     }
 
-    public EntryInfo withListUUID(String _listUUID) {
-        setListUUID(_listUUID);
+    public EntryInfo withListUUID(String listUUID) {
+        setListUUID(listUUID);
         return this;
     }
 
-    public EntryInfo withListUUID(UUID _listUUID) {
-        setListUUID(_listUUID);
+    public EntryInfo withListUUID(UUID listUUID) {
+        setListUUID(listUUID);
         return this;
     }
 
@@ -89,21 +92,21 @@ public class EntryInfo extends EntityObject {
     }
 
     @JsonProperty("productuuid")
-    public void setProductUUID(String _productUUID) {
-        mProductUUID = _productUUID;
+    public void setProductUUID(String productUUID) {
+        mProductUUID = productUUID;
     }
 
-    public void setProductUUID(UUID _productUUID) {
-        mProductUUID = (_productUUID != null ? _productUUID.toString() : null);
+    public void setProductUUID(UUID productUUID) {
+        mProductUUID = (productUUID != null ? productUUID.toString() : null);
     }
 
-    public EntryInfo withProductUUID(String _productUUID) {
-        setProductUUID(_productUUID);
+    public EntryInfo withProductUUID(String productUUID) {
+        setProductUUID(productUUID);
         return this;
     }
 
-    public EntryInfo withProductUUID(UUID _productUUID) {
-        setProductUUID(_productUUID);
+    public EntryInfo withProductUUID(UUID productUUID) {
+        setProductUUID(productUUID);
         return this;
     }
 
@@ -128,12 +131,12 @@ public class EntryInfo extends EntityObject {
     }
 
     @JsonProperty("priority")
-    public void setPriority(Integer _priority) {
-        mPriority = _priority;
+    public void setPriority(Integer priority) {
+        mPriority = priority;
     }
 
-    public EntryInfo withPriority(Integer _priority) {
-        setPriority(_priority);
+    public EntryInfo withPriority(Integer priority) {
+        setPriority(priority);
         return this;
     }
 
@@ -143,12 +146,12 @@ public class EntryInfo extends EntityObject {
     }
 
     @JsonProperty("struck")
-    public void setStruck(Boolean _struck) {
-        mStruck = _struck;
+    public void setStruck(Boolean struck) {
+        mStruck = struck;
     }
 
-    public EntryInfo withStruck(Boolean _struck) {
-        setStruck(_struck);
+    public EntryInfo withStruck(Boolean struck) {
+        setStruck(struck);
         return this;
     }
 
@@ -160,12 +163,12 @@ public class EntryInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public EntryInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public EntryInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -175,12 +178,12 @@ public class EntryInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public EntryInfo withDeleted(Boolean _deleted) {
-        setDeleted(_deleted);
+    public EntryInfo withDeleted(Boolean deleted) {
+        setDeleted(deleted);
         return this;
     }
 

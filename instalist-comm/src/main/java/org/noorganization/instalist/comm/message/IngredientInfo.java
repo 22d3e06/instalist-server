@@ -43,17 +43,17 @@ public class IngredientInfo extends EntityObject {
         this.mUUID = id;
     }
 
-    public void setUUID(UUID _uuid) {
-        mUUID = _uuid != null ? _uuid.toString() : null;
+    public void setUUID(UUID uuid) {
+        mUUID = uuid != null ? uuid.toString() : null;
     }
 
-    public IngredientInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public IngredientInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public IngredientInfo withUUID(UUID _uuid) {
-        setUUID(_uuid);
+    public IngredientInfo withUUID(UUID uuid) {
+        setUUID(uuid);
         return this;
     }
 
@@ -63,21 +63,21 @@ public class IngredientInfo extends EntityObject {
     }
 
     @JsonProperty("recipeuuid")
-    public void setRecipeUUID(String _recipeUUID) {
-        mRecipeUUID = _recipeUUID;
+    public void setRecipeUUID(String recipeUUID) {
+        mRecipeUUID = recipeUUID;
     }
 
-    public void setRecipeUUID(UUID _listUUID) {
-        mRecipeUUID = _listUUID != null ? _listUUID.toString() : null;
+    public void setRecipeUUID(UUID listUUID) {
+        mRecipeUUID = listUUID != null ? listUUID.toString() : null;
     }
 
-    public IngredientInfo withRecipeUUID(String _listUUID) {
-        setRecipeUUID(_listUUID);
+    public IngredientInfo withRecipeUUID(String listUUID) {
+        setRecipeUUID(listUUID);
         return this;
     }
 
-    public IngredientInfo withRecipeUUID(UUID _listUUID) {
-        setRecipeUUID(_listUUID);
+    public IngredientInfo withRecipeUUID(UUID listUUID) {
+        setRecipeUUID(listUUID);
         return this;
     }
 
@@ -87,21 +87,21 @@ public class IngredientInfo extends EntityObject {
     }
 
     @JsonProperty("productuuid")
-    public void setProductUUID(String _productUUID) {
-        mProductUUID = _productUUID;
+    public void setProductUUID(String productUUID) {
+        mProductUUID = productUUID;
     }
 
-    public void setProductUUID(UUID _productUUID) {
-        mProductUUID = (_productUUID != null ? _productUUID.toString() : null);
+    public void setProductUUID(UUID productUUID) {
+        mProductUUID = (productUUID != null ? productUUID.toString() : null);
     }
 
-    public IngredientInfo withProductUUID(String _productUUID) {
-        setProductUUID(_productUUID);
+    public IngredientInfo withProductUUID(String productUUID) {
+        setProductUUID(productUUID);
         return this;
     }
 
-    public IngredientInfo withProductUUID(UUID _productUUID) {
-        setProductUUID(_productUUID);
+    public IngredientInfo withProductUUID(UUID productUUID) {
+        setProductUUID(productUUID);
         return this;
     }
 
@@ -128,12 +128,12 @@ public class IngredientInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public IngredientInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public IngredientInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -143,12 +143,12 @@ public class IngredientInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public IngredientInfo withDeleted(Boolean _deleted) {
-        setDeleted(_deleted);
+    public IngredientInfo withDeleted(Boolean deleted) {
+        setDeleted(deleted);
         return this;
     }
 

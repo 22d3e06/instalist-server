@@ -33,8 +33,8 @@ public class DeviceInfo extends EntityObject {
     }
 
     @JsonProperty("id")
-    public void setId(Integer _id) {
-        mId = _id;
+    public void setId(Integer id) {
+        mId = id;
     }
 
     public DeviceInfo withId(Integer _id) {
@@ -48,8 +48,8 @@ public class DeviceInfo extends EntityObject {
     }
 
     @JsonProperty("name")
-    public void setName(String _name) {
-        mName = _name;
+    public void setName(String name) {
+        mName = name;
     }
 
     public DeviceInfo withName(String _name) {
@@ -63,8 +63,8 @@ public class DeviceInfo extends EntityObject {
     }
 
     @JsonProperty("authorized")
-    public void setAuthorized(Boolean _authorized) {
-        mAuthorized = _authorized;
+    public void setAuthorized(Boolean authorized) {
+        mAuthorized = authorized;
     }
 
     public DeviceInfo withAuthorized(Boolean _authorized) {

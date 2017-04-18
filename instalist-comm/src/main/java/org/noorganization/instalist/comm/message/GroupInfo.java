@@ -32,8 +32,8 @@ public class GroupInfo extends EntityObject {
         mReadableId = _readableId;
     }
 
-    public GroupInfo withReadableId(String _id) {
-        mReadableId = _id;
+    public GroupInfo withReadableId(String id) {
+        mReadableId = id;
         return this;
     }
 
@@ -43,12 +43,12 @@ public class GroupInfo extends EntityObject {
     }
 
     @JsonProperty("id")
-    public void setId(Integer _id) {
-        mId = _id;
+    public void setId(Integer id) {
+        mId = id;
     }
 
-    public GroupInfo withId(Integer _id) {
-        setId(_id);
+    public GroupInfo withId(Integer id) {
+        setId(id);
         return this;
     }
 }

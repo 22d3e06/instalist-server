@@ -16,11 +16,14 @@
 
 package org.noorganization.instalist.comm.message;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+
 import java.util.Date;
 import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "uuid", "name", "unituuid", "defaultamount", "stepamount", "lastchanged",
@@ -46,17 +49,17 @@ public class ProductInfo extends EntityObject {
         this.mUUID = id;
     }
 
-    public void setUUID(UUID _uuid) {
-        setUUID(_uuid != null ? _uuid.toString() : null);
+    public void setUUID(UUID uuid) {
+        setUUID(uuid != null ? uuid.toString() : null);
     }
 
-    public ProductInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public ProductInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public ProductInfo withUUID(UUID _uuid) {
-        setUUID(_uuid);
+    public ProductInfo withUUID(UUID uuid) {
+        setUUID(uuid);
         return this;
     }
 
@@ -66,8 +69,8 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("name")
-    public void setName(String _name) {
-        mName = _name;
+    public void setName(String name) {
+        mName = name;
     }
 
     public ProductInfo withName(String name) {
@@ -81,12 +84,12 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("defaultamount")
-    public void setDefaultAmount(Float _defaultAmount) {
-        mDefaultAmount = _defaultAmount;
+    public void setDefaultAmount(Float defaultAmount) {
+        mDefaultAmount = defaultAmount;
     }
 
-    public ProductInfo withDefaultAmount(Float _defaultAmount) {
-        setDefaultAmount(_defaultAmount);
+    public ProductInfo withDefaultAmount(Float defaultAmount) {
+        setDefaultAmount(defaultAmount);
         return this;
     }
 
@@ -96,12 +99,12 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("stepamount")
-    public void setStepAmount(Float _stepAmount) {
-        mStepAmount = _stepAmount;
+    public void setStepAmount(Float stepAmount) {
+        mStepAmount = stepAmount;
     }
 
-    public ProductInfo withStepAmount(Float _stepAmount) {
-        setStepAmount(_stepAmount);
+    public ProductInfo withStepAmount(Float stepAmount) {
+        setStepAmount(stepAmount);
         return this;
     }
 
@@ -111,21 +114,21 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("unituuid")
-    public void setUnitUUID(String _uuid) {
-        mUnitUUID = _uuid;
+    public void setUnitUUID(String uuid) {
+        mUnitUUID = uuid;
     }
 
-    public void setUnitUUID(UUID _uuid) {
-        setUnitUUID(_uuid != null ? _uuid.toString() : null);
+    public void setUnitUUID(UUID uuid) {
+        setUnitUUID(uuid != null ? uuid.toString() : null);
     }
 
-    public ProductInfo withUnitUUID(String _uuid) {
-        setUnitUUID(_uuid);
+    public ProductInfo withUnitUUID(String uuid) {
+        setUnitUUID(uuid);
         return this;
     }
 
-    public ProductInfo withUnitUUID(UUID _uuid) {
-        setUnitUUID(_uuid);
+    public ProductInfo withUnitUUID(UUID uuid) {
+        setUnitUUID(uuid);
         return this;
     }
 
@@ -135,12 +138,12 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("removeunit")
-    public void setRemoveUnit(Boolean _removeUnit) {
-        mRemoveUnit = _removeUnit;
+    public void setRemoveUnit(Boolean removeUnit) {
+        mRemoveUnit = removeUnit;
     }
 
-    public ProductInfo withRemoveUnit(Boolean _removeUnit) {
-        setRemoveUnit(_removeUnit);
+    public ProductInfo withRemoveUnit(Boolean removeUnit) {
+        setRemoveUnit(removeUnit);
         return this;
     }
 
@@ -152,12 +155,12 @@ public class ProductInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public ProductInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public ProductInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -167,12 +170,12 @@ public class ProductInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public ProductInfo withDeleted(Boolean _deleted) {
-        setDeleted(_deleted);
+    public ProductInfo withDeleted(Boolean deleted) {
+        setDeleted(deleted);
         return this;
     }
 

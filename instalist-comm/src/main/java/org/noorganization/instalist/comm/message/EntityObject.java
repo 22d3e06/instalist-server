@@ -39,13 +39,13 @@ public class EntityObject {
         return mAdditionalAttributes;
     }
 
-    public Object get(String _key) {
-        return mAdditionalAttributes.get(_key);
+    public Object get(String key) {
+        return mAdditionalAttributes.get(key);
     }
 
     @JsonAnySetter
-    public void set(String _key, Object _value) {
-        mAdditionalAttributes.put(_key, _value);
+    public void set(String key, Object value) {
+        mAdditionalAttributes.put(key, value);
     }
 
     public EntityObject() {

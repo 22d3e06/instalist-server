@@ -30,12 +30,12 @@ public class Error extends EntityObject {
     }
 
     @JsonProperty("mMessage")
-    public void setMessage(String _message) {
-        mMessage = _message;
+    public void setMessage(String message) {
+        mMessage = message;
     }
 
-    public Error withMessage(String _message) {
-        setMessage(_message);
+    public Error withMessage(String message) {
+        setMessage(message);
         return this;
     }
 }

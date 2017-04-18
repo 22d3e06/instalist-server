@@ -45,32 +45,32 @@ public class DeviceRegistration extends EntityObject {
     }
 
     @JsonProperty("groupid")
-    public void setGroupAuth(String _groupAuth) {
-        mGroupAuth = _groupAuth;
+    public void setGroupAuth(String groupAuth) {
+        mGroupAuth = groupAuth;
     }
 
-    public DeviceRegistration withGroupAuth(String _groupAuth) {
-        mGroupAuth = _groupAuth;
+    public DeviceRegistration withGroupAuth(String groupAuth) {
+        mGroupAuth = groupAuth;
         return this;
     }
 
     @JsonProperty("name")
-    public void setName(String _name) {
-        mName = _name;
+    public void setName(String name) {
+        mName = name;
     }
 
-    public DeviceRegistration withName(String _name) {
-        mName = _name;
+    public DeviceRegistration withName(String name) {
+        mName = name;
         return this;
     }
 
     @JsonProperty("secret")
-    public void setSecret(String _secret) {
-        mSecret = _secret;
+    public void setSecret(String secret) {
+        mSecret = secret;
     }
 
-    public DeviceRegistration withSecret(String _secret) {
-        mSecret = _secret;
+    public DeviceRegistration withSecret(String secret) {
+        mSecret = secret;
         return this;
     }
 }

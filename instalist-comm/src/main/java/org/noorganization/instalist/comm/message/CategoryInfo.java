@@ -70,8 +70,8 @@ public class CategoryInfo extends EntityObject {
         this.mName = name;
     }
 
-    public CategoryInfo withName(String _name) {
-        setName(_name);
+    public CategoryInfo withName(String name) {
+        setName(name);
         return this;
     }
 
@@ -83,12 +83,12 @@ public class CategoryInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public CategoryInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public CategoryInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -98,12 +98,12 @@ public class CategoryInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public CategoryInfo withDeleted(Boolean _deleted) {
-        setDeleted(_deleted);
+    public CategoryInfo withDeleted(Boolean deleted) {
+        setDeleted(deleted);
         return this;
     }
 }

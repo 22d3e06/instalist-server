@@ -42,17 +42,17 @@ public class RecipeInfo extends EntityObject {
         this.mUUID = id;
     }
 
-    public void setUUID(UUID _uuid) {
-        setUUID(_uuid != null ? _uuid.toString() : null);
+    public void setUUID(UUID uuid) {
+        setUUID(uuid != null ? uuid.toString() : null);
     }
 
-    public RecipeInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public RecipeInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public RecipeInfo withUUID(UUID _uuid) {
-        setUUID(_uuid);
+    public RecipeInfo withUUID(UUID uuid) {
+        setUUID(uuid);
         return this;
     }
 
@@ -62,8 +62,8 @@ public class RecipeInfo extends EntityObject {
     }
 
     @JsonProperty("name")
-    public void setName(String _name) {
-        mName = _name;
+    public void setName(String name) {
+        mName = name;
     }
 
     public RecipeInfo withName(String name) {
@@ -79,12 +79,12 @@ public class RecipeInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public RecipeInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public RecipeInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -94,12 +94,12 @@ public class RecipeInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public RecipeInfo withDeleted(Boolean _deleted) {
-        setDeleted(_deleted);
+    public RecipeInfo withDeleted(Boolean deleted) {
+        setDeleted(deleted);
         return this;
     }
 

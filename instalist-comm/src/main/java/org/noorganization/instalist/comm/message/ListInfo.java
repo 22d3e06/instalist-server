@@ -42,21 +42,21 @@ public class ListInfo extends EntityObject {
     }
 
     @JsonProperty("uuid")
-    public void setUUID(String _uuid) {
-        this.mUUID = _uuid;
+    public void setUUID(String uuid) {
+        this.mUUID = uuid;
     }
 
-    public void setUUID(UUID _uuid) {
-        setUUID(_uuid.toString());
+    public void setUUID(UUID uuid) {
+        setUUID(uuid.toString());
     }
 
-    public ListInfo withUUID(String _uuid) {
-        setUUID(_uuid);
+    public ListInfo withUUID(String uuid) {
+        setUUID(uuid);
         return this;
     }
 
-    public ListInfo withUUID(UUID _uuid) {
-        setUUID(_uuid.toString());
+    public ListInfo withUUID(UUID uuid) {
+        setUUID(uuid.toString());
         return this;
     }
 
@@ -83,12 +83,12 @@ public class ListInfo extends EntityObject {
 
     @JsonProperty("lastchanged")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StdDateFormat.DATE_FORMAT_STR_ISO8601)
-    public void setLastChanged(Date _lastChanged) {
-        mLastChanged = _lastChanged;
+    public void setLastChanged(Date lastChanged) {
+        mLastChanged = lastChanged;
     }
 
-    public ListInfo withLastChanged(Date _lastChanged) {
-        setLastChanged(_lastChanged);
+    public ListInfo withLastChanged(Date lastChanged) {
+        setLastChanged(lastChanged);
         return this;
     }
 
@@ -98,21 +98,21 @@ public class ListInfo extends EntityObject {
     }
 
     @JsonProperty("categoryuuid")
-    public void setCategoryUUID(String _categoryUUID) {
-        mCategoryUUID = _categoryUUID;
+    public void setCategoryUUID(String categoryUUID) {
+        mCategoryUUID = categoryUUID;
     }
 
-    public void setCategoryUUID(UUID _categoryUUID) {
-        mCategoryUUID = _categoryUUID.toString();
+    public void setCategoryUUID(UUID categoryUUID) {
+        mCategoryUUID = categoryUUID.toString();
     }
 
-    public ListInfo withCategoryUUID(String _uuid) {
-        setCategoryUUID(_uuid);
+    public ListInfo withCategoryUUID(String uuid) {
+        setCategoryUUID(uuid);
         return this;
     }
 
-    public ListInfo withCategoryUUID(UUID _uuid) {
-        setCategoryUUID(_uuid.toString());
+    public ListInfo withCategoryUUID(UUID uuid) {
+        setCategoryUUID(uuid.toString());
         return this;
     }
 
@@ -122,12 +122,12 @@ public class ListInfo extends EntityObject {
     }
 
     @JsonProperty("removecategory")
-    public void setRemoveCategory(Boolean _removeCat) {
-        mRemoveCategory = _removeCat;
+    public void setRemoveCategory(Boolean removeCat) {
+        mRemoveCategory = removeCat;
     }
 
-    public ListInfo withRemoveCategory(Boolean _removeCat) {
-        setRemoveCategory(_removeCat);
+    public ListInfo withRemoveCategory(Boolean removeCat) {
+        setRemoveCategory(removeCat);
         return this;
     }
 
@@ -137,12 +137,12 @@ public class ListInfo extends EntityObject {
     }
 
     @JsonProperty("deleted")
-    public void setDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public void setDeleted(Boolean deleted) {
+        mDeleted = deleted;
     }
 
-    public ListInfo withDeleted(Boolean _deleted) {
-        mDeleted = _deleted;
+    public ListInfo withDeleted(Boolean deleted) {
+        mDeleted = deleted;
         return this;
     }
 }
