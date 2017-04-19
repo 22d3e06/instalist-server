@@ -338,7 +338,7 @@ public class TagResourceTest extends JerseyTest {
         savedDeletedTagQuery.setParameter("uuid", mTag.getUUID());
         savedDeletedTagQuery.setParameter("type", DeletedObject.Type.TAG);
         List<DeletedObject> savedDeletedTags = savedDeletedTagQuery.getResultList();
-        assertEquals(1, savedDeletedTags.size());
+        assertEquals(0, savedDeletedTags.size());
         assertTrue(preDelete.isBefore(savedDeletedTags.get(0).getUpdated()));
     }
 }
