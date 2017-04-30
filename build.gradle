@@ -1,9 +1,19 @@
 plugins {
   id "org.sonarqube" version "2.3"
 }
+apply plugin: 'jacoco'
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'idea'
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
+    }
+}
 
 group = 'org.noorganization'
 version = '0.1-SNAPSHOT'
