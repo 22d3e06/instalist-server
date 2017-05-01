@@ -47,8 +47,8 @@ public interface IProductController extends IFinder<Product> {
      * {@code _created}.
      * @throws BadRequestException If the {@code _unitUUID} was not null and does not exist.
      */
-    void add(int _groupId, UUID _newUUID, String _name, float _defaultAmount, float _stepAmount,
-             UUID _unitUUID, Instant _created) throws ConflictException, BadRequestException;
+    Product add(int _groupId, UUID _newUUID, String _name, float _defaultAmount, float _stepAmount,
+                UUID _unitUUID, Instant _created) throws ConflictException, BadRequestException;
 
     /**
      * Updates a product.
@@ -68,8 +68,8 @@ public interface IProductController extends IFinder<Product> {
      * @throws GoneException If the product was not found because it has been deleted before.
      * @throws BadRequestException If the new linked Unit does not exist.
      */
-    void update(int _groupId, UUID _uuid, String _name, Float _defaultAmount, Float _stepAmount,
-                UUID _unitUUID, boolean _removeUnit, Instant _updated) throws ConflictException,
+    Product update(int _groupId, UUID _uuid, String _name, Float _defaultAmount, Float _stepAmount,
+                   UUID _unitUUID, boolean _removeUnit, Instant _updated) throws ConflictException,
             NotFoundException, GoneException, BadRequestException;
 
     /**
@@ -80,5 +80,5 @@ public interface IProductController extends IFinder<Product> {
      * @throws NotFoundException If the product was not found.
      * @throws GoneException If the product was not found because it has been deleted before.
      */
-    void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException;
+    DeletedObject delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException;
 }
