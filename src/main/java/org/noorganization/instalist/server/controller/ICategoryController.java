@@ -52,7 +52,7 @@ public interface ICategoryController extends IFinder<Category> {
      * @throws NotFoundException If category was not found.
      * @throws ConflictException If a change made after this occurred before.
      */
-    void update(int _id, UUID _categoryUUID, String _name, Instant _change)
+    Category update(int _id, UUID _categoryUUID, String _name, Instant _change)
             throws GoneException, NotFoundException, ConflictException;
 
     /**
@@ -61,7 +61,7 @@ public interface ICategoryController extends IFinder<Category> {
      * @throws GoneException If already deleted before.
      * @throws NotFoundException If category was not found.
      */
-    void delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
+    DeletedObject delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
             NotFoundException;
 
 }
