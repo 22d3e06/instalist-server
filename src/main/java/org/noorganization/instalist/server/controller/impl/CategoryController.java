@@ -102,11 +102,12 @@ class CategoryController implements ICategoryController {
         mManager.persist(deletedCat);
         mManager.remove(catToDelete);
         tx.commit();
-                
+
         return deletedCat;
+
     }
 
-    private Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx)
+    public Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx)
             throws NotFoundException, GoneException {
         try {
             return findOrThrow(_group, _categoryUUID);
