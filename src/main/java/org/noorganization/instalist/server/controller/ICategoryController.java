@@ -18,9 +18,12 @@ package org.noorganization.instalist.server.controller;
 
 import org.noorganization.instalist.server.controller.generic.IFinder;
 import org.noorganization.instalist.server.model.Category;
+import org.noorganization.instalist.server.model.DeletedObject;
+import org.noorganization.instalist.server.model.DeviceGroup;
 import org.noorganization.instalist.server.support.exceptions.ConflictException;
 import org.noorganization.instalist.server.support.exceptions.GoneException;
 
+import javax.persistence.EntityTransaction;
 import javax.ws.rs.NotFoundException;
 import java.time.Instant;
 import java.util.UUID;
@@ -64,4 +67,5 @@ public interface ICategoryController extends IFinder<Category> {
     DeletedObject delete(int _groupId, UUID _categoryUUID) throws ConflictException, GoneException,
             NotFoundException;
 
+    Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx);
 }
