@@ -49,7 +49,7 @@ public class CategoryTest{
     @Test
     // testing equals of Category
     public void equals(){
-        Category c = new Category();
+        Category c = category;
         c.setId(1);
 
         boolean equal = category.equals(c);
