@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/22d3e06/instalist-server/badge.svg?branch=master)](https://coveralls.io/github/22d3e06/instalist-server?branch=master)
+
 # InstaList Server
 This is the server-side for the plugin [Instalist Synch](https://github.com/InstaList/instalist-synch).
 It holds a central database and allows clients organized in groups to access data.
