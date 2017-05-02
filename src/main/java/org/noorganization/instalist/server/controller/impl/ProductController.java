@@ -38,8 +38,8 @@ class ProductController implements IProductController {
     private EntityManager mManager;
 
     @Override
-    public void add(int _groupId, UUID _newUUID, String _name, float _defaultAmount,
-                    float _stepAmount, UUID _unitUUID, Instant _created)
+    public Product add(int _groupId, UUID _newUUID, String _name, float _defaultAmount,
+                       float _stepAmount, UUID _unitUUID, Instant _created)
             throws ConflictException, BadRequestException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -75,11 +75,13 @@ class ProductController implements IProductController {
         mManager.persist(toCreate);
 
         tx.commit();
+
+        return toCreate;
     }
 
     @Override
-    public void update(int _groupId, UUID _uuid, String _name, Float _defaultAmount,
-                       Float _stepAmount, UUID _unitUUID, boolean _removeUnit, Instant _updated)
+    public Product update(int _groupId, UUID _uuid, String _name, Float _defaultAmount,
+                          Float _stepAmount, UUID _unitUUID, boolean _removeUnit, Instant _updated)
             throws ConflictException, NotFoundException, GoneException, BadRequestException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -113,10 +115,12 @@ class ProductController implements IProductController {
         toUpdate.setUpdated(_updated);
 
         tx.commit();
+
+        return toUpdate;
     }
 
     @Override
-    public void delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException {
+    public DeletedObject delete(int _groupId, UUID _uuid) throws NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
         DeviceGroup group = mManager.find(DeviceGroup.class, _groupId);
@@ -143,6 +147,8 @@ class ProductController implements IProductController {
         mManager.remove(toDelete);
 
         tx.commit();
+
+        return oldProduct;
     }
 
     ProductController(EntityManager _manager) {

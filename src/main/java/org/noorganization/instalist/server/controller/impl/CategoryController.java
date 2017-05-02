@@ -66,7 +66,7 @@ class CategoryController implements ICategoryController {
     }
 
     @Override
-    public void update(int _groupId, UUID _categoryUUID, String _name, Instant _changed) throws
+    public Category update(int _groupId, UUID _categoryUUID, String _name, Instant _changed) throws
             ClientErrorException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -81,10 +81,11 @@ class CategoryController implements ICategoryController {
         catToEdit.setUpdated(_changed);
 
         tx.commit();
+        return catToEdit;
     }
 
     @Override
-    public void delete(int _groupId, UUID _categoryUUID) throws ConflictException,
+    public DeletedObject delete(int _groupId, UUID _categoryUUID) throws ConflictException,
             NotFoundException, GoneException {
         EntityTransaction tx = mManager.getTransaction();
         tx.begin();
@@ -101,9 +102,12 @@ class CategoryController implements ICategoryController {
         mManager.persist(deletedCat);
         mManager.remove(catToDelete);
         tx.commit();
+
+        return deletedCat;
+
     }
 
-    private Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx)
+    public Category getCategory(DeviceGroup _group, UUID _categoryUUID, EntityTransaction _tx)
             throws NotFoundException, GoneException {
         try {
             return findOrThrow(_group, _categoryUUID);
