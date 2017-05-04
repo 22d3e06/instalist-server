@@ -62,7 +62,8 @@ class CategoryController implements ICategoryController {
         tx.commit();
         mManager.refresh(rtn);
 
-        return rtn;
+        return null;
+//        return rtn;
     }
 
     @Override
