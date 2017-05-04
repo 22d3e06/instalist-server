@@ -39,8 +39,7 @@ public class Recipe extends NamedBaseItem<Recipe> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
-        return -1;
-//        return mId;
+        return mId;
     }
 
     public void setId(int _id) {
